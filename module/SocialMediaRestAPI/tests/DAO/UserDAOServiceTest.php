@@ -202,4 +202,14 @@ class UserDAOServiceTest extends TestCase
          $user->username = "Joãozinho tem um nome bem comprido porque alguem tentou trocar o tabeliao por um programa de reconhecimento de voz e não desligaram na hora certa, faltou um pouco";
      }
 
+    /**
+     * @depends testCanValidateAUser
+     * @convers User::valid
+     * @convers User::validate
+     */
+     public function testIdCanBeNull ($user) {
+         $user->id = null;
+         $this->assertNull($user->id);
+     }
+
 }

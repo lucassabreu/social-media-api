@@ -9,6 +9,9 @@ use SocialMediaRestAPI\Service\UserDAOService;
 use SocialMediaRestAPI\Model\Entity\User;
 use Core\Model\DAO\Exception\DAOException;
 
+/**
+ * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
+ */
 class UserModelTest extends TestCase 
 {
     public function setUp()
@@ -21,7 +24,7 @@ class UserModelTest extends TestCase
         );
         parent::setUp();
     }
-    
+
     /**
      * @convers User::getInputFilter
      * @convers User::__set

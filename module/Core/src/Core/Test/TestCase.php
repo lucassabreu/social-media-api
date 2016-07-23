@@ -13,14 +13,18 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
  */
 abstract class TestCase extends AbstractHttpControllerTestCase {
 
+    protected $setUpDatabase = false;
+
     public function setup() {
         parent::setup();
-        $this->createDatabase();
+        if ($this->setUpDatabase)
+            $this->createDatabase();
     }
 
     public function tearDown() {
         parent::tearDown();
-        $this->dropDatabase();
+        if ($this->setUpDatabase)
+            $this->dropDatabase();
     }
 
     /**
@@ -40,7 +44,7 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
         }
 
         $config = \Bootstrap::getTestConfig();
-        if (isset($queries['ddl'])) {
+        if (isset($config['ddl'])) {
             $queries = $config['ddl'];
             foreach ($queries as $queries) {
                 foreach ($queries['create'] as $query)
@@ -65,7 +69,7 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
         }
 
         $config = \Bootstrap::getTestConfig();
-        if (isset($queries['ddl'])) {
+        if (isset($config['ddl'])) {
             $queries = $config['ddl'];
             foreach ($queries as $query) {
                 $dbAdapter->query($query['drop'], Adapter::QUERY_MODE_EXECUTE);

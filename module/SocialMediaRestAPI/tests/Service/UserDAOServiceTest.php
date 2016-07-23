@@ -16,12 +16,8 @@ class UserDAOServiceTest extends TestCase
 {
     public function setUp()
     {
-        $this->setApplicationConfig(
-            ArrayUtils::merge(
-                include __DIR__ . '/../../../../config/application.config.php',
-                \Bootstrap::getTestConfig()
-            )
-        );
+        $this->setApplicationConfig(\Bootstrap::getTestConfig());
+        $this->setUpDatabase = true;
         parent::setUp();
     }
 
@@ -46,8 +42,9 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testHasBeenRegisteredForDi
+     * @convers UserDAOService::save
      */
-    public function testSaveAndRetrieveAUser($uDAO) {
+    public function tesSaveAndRetrieveAUser($uDAO) {
         $user = $this->newUser('lucas.s.abreu@gmail.com', 'Lucas dos Santos Abreu', '123456');
         $user = $uDAO->save($user);
 
@@ -66,5 +63,6 @@ class UserDAOServiceTest extends TestCase
         $user2->name = "Lucas Abreu";
         $user = $uDAO->find(1);
         $this->assertEquals($user2->name, 'Lucas Abreu');
+        return $uDAO;
     }
 }

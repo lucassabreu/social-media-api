@@ -3,7 +3,6 @@
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
-use Zend\StdLib\ArrayUtils;
 
 error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
@@ -14,9 +13,10 @@ chdir(__DIR__);
 class Bootstrap
 {
     protected static $serviceManager;
+    protected static $config;
 
     public static function getTestConfig() {
-        return include __DIR__ . '/../config/test/application.config.php';
+        return static::$config;
     }
 
     public static function init()
@@ -31,19 +31,14 @@ class Bootstrap
 
         static::initAutoloader();
 
+        static::$config = include __DIR__ . '/../config/test/application.config.php';
+
         // use ModuleManager to load this module and it's dependencies
-        $config = array(
-            'module_listener_options' => array(
-                'module_paths' => $zf2ModulePaths,
-            ),
-            'config_glob_paths' => [
-                __DIR__ . '/../config/test/autoload/{,*.}php'
-            ],
-            'modules' => include __DIR__ . "/modules.test.config.php",
-        );
+        static::$config['module_listener_options']['module_paths'] = $zf2ModulePaths;
+        static::$config['modules'] = include __DIR__ . "/modules.test.config.php";
 
         $serviceManager = new ServiceManager(new ServiceManagerConfig());
-        $serviceManager->setService('ApplicationConfig', $config);
+        $serviceManager->setService('ApplicationConfig', static::$config);
         $serviceManager->get('ModuleManager')->loadModules();
         static::$serviceManager = $serviceManager;
     }

@@ -21,9 +21,11 @@ return [
                 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
                 `userId` int(11) unsigned NOT NULL,
                 `text` varchar(250) NOT NULL,
+                `datePublish` datetime(6) NOT NULL,
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `post_id_UNIQUE` (`id`),
                 KEY `fk_user_idx` (`userId`),
+                KEY `idx_date_publish` (`datePublish`,`userId`),
                 CONSTRAINT `fk_post_user` FOREIGN KEY (`userId`) 
                     REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
             ) ENGINE=InnoDB DEFAULT CHARSET=latin1;",

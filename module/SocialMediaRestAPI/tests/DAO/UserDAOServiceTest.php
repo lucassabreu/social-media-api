@@ -108,7 +108,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testCannotSetAUsernameThatIsNotAEmail ($user) {
          $user->username = "joaozinho da silva";
@@ -118,7 +118,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testEmailForUsernameMustBeComplete ($user) {
          $user->username = "joaozinho@";
@@ -128,7 +128,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testEmailForUsernameMustBeOnly100AtLength ($user) {
          $user->username = "joaozinhotemumenderecodeemailqueehgrandedemaisenaofazsentidoaquiaindaehcurtoprecisodenovasideiasdetextoipsum@localhost.com";
@@ -138,7 +138,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testUsernameMustBeInformmed ($user) {
          $user->username = "   ";
@@ -148,7 +148,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testUsernameMustBeInformmedAndNotNull ($user) {
          $user->username = null;
@@ -158,7 +158,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testPasswordMustBeInformmed ($user) {
          $user->password = "   ";
@@ -177,7 +177,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testNameMustBeInformmed ($user) {
          $user->name = "   ";
@@ -186,7 +186,7 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testCanValidateAUser
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testNameMustBeInformmedAndNotNull ($user) {
          $user->name = null;
@@ -196,7 +196,7 @@ class UserDAOServiceTest extends TestCase
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testNameMustBeOnly150AtLength ($user) {
          $user->username = "Joãozinho tem um nome bem comprido porque alguem tentou trocar o tabeliao por um programa de reconhecimento de voz e não desligaram na hora certa, faltou um pouco";

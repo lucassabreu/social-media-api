@@ -63,6 +63,19 @@ class User extends Entity {
 						['name' => 'StripTags'],
 						['name' => 'StringTrim'],
 					],
+					'validators' => [
+						[
+							'name' => 'StringLength',
+							'options' => [
+								'encoding' => 'UTF-8',
+								'min' => 1,
+								'max' => 100,
+							]
+						],
+						[
+							'name' => 'EmailAddress'
+						]
+					],
 				],
 				'password' => [
 					'name' => 'password',
@@ -78,6 +91,16 @@ class User extends Entity {
 					'filters' => [
 						['name' => 'StripTags'],
 						['name' => 'StringTrim'],
+					],
+					'validators' => [
+						[
+							'name' => 'StringLength',
+							'options' => [
+								'encoding' => 'UTF-8',
+								'min' => 1,
+								'max' => 150,
+							]
+						],
 					],
 				]
 			]);

@@ -4,6 +4,7 @@ namespace SocialMediaRestAPI\Model\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Core\Model\Entity\Entity;
+use Core\Model\Entity\EntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Zend\InputFilter\Factory;
 
@@ -19,6 +20,8 @@ use Zend\InputFilter\Factory;
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com> 
  */
 class User extends Entity {
+
+	use EntityTrait;
 
 	/**
 	 * @ORM\Id
@@ -42,5 +45,45 @@ class User extends Entity {
 	 */
     private $name;
 
+	public function getInputFilter () {
+		if ($this->inputFilter == null) {
+            $factory = new Factory();
+            $this->inputFilter = $factory->createInputFilter([
+				'id' => [
+					'name' => 'id',
+					'required' => false,
+					'filter' => [
+						['name' => 'Int']
+					] 
+				],
+				'username' => [
+					'name' => 'username',
+					'required' => true,
+					'filters' => [
+						['name' => 'StripTags'],
+						['name' => 'StringTrim'],
+					],
+				],
+				'password' => [
+					'name' => 'password',
+					'required' => true,
+					'filters' => [
+						['name' => 'StripTags'],
+						['name' => 'StringTrim'],
+					],
+				],
+				'name' => [
+					'name' => 'name',
+					'required' => true,
+					'filters' => [
+						['name' => 'StripTags'],
+						['name' => 'StringTrim'],
+					],
+				]
+			]);
+		}
+
+		return $this->inputFilter;
+	}
 
 }

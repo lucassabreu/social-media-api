@@ -20,7 +20,7 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  * @abstract
  */
-abstract class AbstractDoctrineDAO extends Service implements DAOInterface {
+abstract class AbstractDoctrineDAO implements DAOInterface {
 
     /**
      * @var array
@@ -33,11 +33,23 @@ abstract class AbstractDoctrineDAO extends Service implements DAOInterface {
     private $className = null;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * Retrieve the instance of EntityManager
      * @return EntityManager
      */
     public function getEntityManager() {
-        return $this->getService('Doctrine\ORM\EntityManager');
+        return $this->em;
+    }
+
+    /**
+     * Sets the EntityManager into the DoctrineDAO service
+     */
+    public function setEntityManager(EntityManager $em) {
+        $this->em = $em;
     }
 
     /**

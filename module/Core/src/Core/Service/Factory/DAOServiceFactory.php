@@ -36,7 +36,6 @@ final class DAOServiceFactory implements AbstractFactoryInterface {
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName) {
         $this->serviceLocator = $serviceLocator;
         $config = $this->getConfig();
-
         return isset($config[$requestedName]);
     }
 
@@ -45,16 +44,18 @@ final class DAOServiceFactory implements AbstractFactoryInterface {
         $config = $this->getConfig();
 
         if (!isset($this->services[$requestedName]) || $this->services[$requestedName] === null) {
+            $sm = $this->serviceLocator->get('Zend\Session\SessionManager');
+            $em = $this->serviceLocator->get('Doctrine\ORM\EntityManager');
+
             /**
              * @var DAOServiceInterface
              */
-
             $service = $this->returnInstanceOf($config[$requestedName]['service']);
             $model = $this->returnInstanceOf($config[$requestedName]['model']);
 
-            $service->setServiceManager($serviceLocator);
-            $model->setServiceManager($serviceLocator);
+            $model->setEntityManager($em);
 
+            $service->setSessionManager($sm);
             $service->setDAOInterface($model);
 
             $this->services[$requestedName] = $service;

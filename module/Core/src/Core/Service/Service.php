@@ -7,36 +7,19 @@ use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 use Zend\Session\Container;
+use Zend\Session\SessionManager;
 
 /**
  * Service base class
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class Service implements ServiceManagerAwareInterface {
+class Service {
 
     /**
-     * @var ServiceManager
+     * @var SessionManager
      */
-    private $serviceManager = null;
-
-    public function getServiceManager() {
-        return $this->serviceManager;
-    }
-
-    public function setServiceManager(ServiceManager $serviceManager) {
-        $this->serviceManager = $serviceManager;
-        return $this;
-    }
-
-    /**
-     * Retrieves a service by the name.
-     * @param string $name Name of requested service.
-     * @return Service | mixed
-     */
-    public function getService($name) {
-        return $this->getServiceManager()->get($name);
-    }
+    private $sessionManager;
 
     /**
      * Returns information of session user, or null if has no user logged
@@ -59,10 +42,25 @@ class Service implements ServiceManagerAwareInterface {
      * @return Container
      */
     protected function getSessionContainer($name = "Default") {
-        $this->getService('Zend\Session\SessionManager');
+        // $this->getService('Zend\Session\SessionManager');
         return new Container($name);
     }
 
+    /**
+     * Sets the <code>SessionManager</code>
+     * @param SessionManager
+     */
+    public function setSessionManager(SessionManager $sm) 
+    {
+        $this->sessionManager = $sm;
+    }
+
+    /**
+     * Retrieves the <code>SessionManager</code> associated with the session
+     */
+    protected function getSessionManager() {
+        return $this->sessionManager;
+    }
 }
 
 ?>

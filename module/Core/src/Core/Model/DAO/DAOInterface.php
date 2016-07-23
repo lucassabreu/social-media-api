@@ -6,14 +6,13 @@ use Core\Model\DAO\DAOInterface;
 use Core\Model\DAO\Exception\DAOException;
 use Core\Model\Entity\Entity;
 use Zend\Paginator\Adapter\AdapterInterface;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 /**
  * Basic interface for DAO classes.
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-interface DAOInterface extends ServiceManagerAwareInterface {
+interface DAOInterface {
 
     /**
      * Retrieves the name of entity going to be managed by.

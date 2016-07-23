@@ -57,12 +57,12 @@ return [
             'Core\Acl\Builder' => 'Core\Acl\Builder',
             'Core\Service\Util\MailUtilService' => 'Core\Service\Util\MailUtilService',
         ],
-        'dao_services' => [
-            // 'Admin\Service\UserDAOService' => [
-            //     'service' => 'Admin\Service\UserDAOService',
-            //     'model' => 'Admin\Model\Doctrine\UserDAODoctrine',
-            // ],
-        ],
+        // 'dao_services' => [
+        //      'Admin\Service\UserDAOService' => [
+        //          'service' => 'Admin\Service\UserDAOService',
+        //          'model' => 'Admin\Model\Doctrine\UserDAODoctrine',
+        //      ],
+        // ],
     ],
     'view_helpers' => [
         'invokables' => [

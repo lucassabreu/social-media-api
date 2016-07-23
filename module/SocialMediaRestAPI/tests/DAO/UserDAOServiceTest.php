@@ -167,7 +167,7 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testCanValidateAUser
      * @convers User::validate
-     * @expectedException DAOException
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testPasswordMustBeInformmedAndNotNull ($user) {
          $user->password = null;

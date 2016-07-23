@@ -7,6 +7,7 @@ use Core\Model\Entity\Entity;
 use Core\Model\Entity\EntityTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Zend\InputFilter\Factory;
+use Zend\Validator\NotEmpty;
 
 /**
  * @ORM\Entity
@@ -84,6 +85,12 @@ class User extends Entity {
 						['name' => 'StripTags'],
 						['name' => 'StringTrim'],
 					],
+					'validators' => [
+						[
+							'name' => 'NotEmpty',
+							'options' => [NotEmpty::NULL]
+						]
+					]
 				],
 				'name' => [
 					'name' => 'name',

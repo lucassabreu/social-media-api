@@ -3,6 +3,7 @@
 use Zend\Loader\AutoloaderFactory;
 use Zend\Mvc\Service\ServiceManagerConfig;
 use Zend\ServiceManager\ServiceManager;
+use Zend\StdLib\ArrayUtils;
 
 error_reporting(E_ALL | E_STRICT);
 chdir(__DIR__);
@@ -13,6 +14,10 @@ chdir(__DIR__);
 class Bootstrap
 {
     protected static $serviceManager;
+
+    public static function getTestConfig() {
+        return include __DIR__ . '/../config/test/application.config.php';
+    }
 
     public static function init()
     {
@@ -31,6 +36,9 @@ class Bootstrap
             'module_listener_options' => array(
                 'module_paths' => $zf2ModulePaths,
             ),
+            'config_glob_paths' => [
+                __DIR__ . '/../config/test/autoload/{,*.}php'
+            ],
             'modules' => include __DIR__ . "/modules.test.config.php",
         );
 
@@ -54,8 +62,6 @@ class Bootstrap
     protected static function initAutoloader()
     {
         $vendorPath = static::findParentPath('vendor');
-
-        echo $vendorPath;
 
         if (file_exists($vendorPath . '/autoload.php')) {
             include $vendorPath . '/autoload.php';

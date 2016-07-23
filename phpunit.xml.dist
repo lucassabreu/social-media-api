@@ -5,5 +5,8 @@
         <testsuite name="tests">
             <directory>./module/Application/tests</directory>
         </testsuite>
+        <testsuite name="social-media-api">
+            <directory>./module/SocialMediaRestAPI/tests</directory>
+        </testsuite>
     </testsuites>
 </phpunit>

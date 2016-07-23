@@ -1,6 +1,6 @@
 <?php
 
-namespace SocialMediaRestAPITest\DAO;
+namespace SocialMediaRestAPITest\Model;
 
 use Core\Test\TestCase;
 use Zend\StdLib\ArrayUtils;
@@ -9,7 +9,7 @@ use SocialMediaRestAPI\Service\UserDAOService;
 use SocialMediaRestAPI\Model\Entity\User;
 use Core\Model\DAO\Exception\DAOException;
 
-class UserDAOServiceTest extends TestCase 
+class UserModelTest extends TestCase 
 {
     public function setUp()
     {
@@ -21,13 +21,7 @@ class UserDAOServiceTest extends TestCase
         );
         parent::setUp();
     }
-
-    public function testHasBeenRegisteredForDi() {
-        $userDAOService = $this->getServiceManager()->get('SocialMediaRestAPI\Service\UserDAOService');
-        $this->assertNotNull($userDAOService);
-        $this->assertEquals(get_class($userDAOService), UserDAOService::class);
-    }
-
+    
     /**
      * @convers User::getInputFilter
      * @convers User::__set

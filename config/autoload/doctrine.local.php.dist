@@ -1,0 +1,19 @@
+<?php
+
+return array(
+    'doctrine' => array(
+        'connection' => array(
+            'orm_default' => array(
+                'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
+                'params' => array(
+                    'host' => GetEnv('OPENSHIFT_MYSQL_DB_HOST') == null ? "localhost" : GetEnv('OPENSHIFT_MYSQL_DB_HOST'),
+                    'port' => GetEnv('OPENSHIFT_MYSQL_DB_PORT') == null ? "3306" : GetEnv('OPENSHIFT_MYSQL_DB_PORT'),
+                    'user' => GetEnv('OPENSHIFT_MYSQL_DB_USERNAME') == null ? "root" : GetEnv('OPENSHIFT_MYSQL_DB_USERNAME'),
+                    'password' => GetEnv('OPENSHIFT_MYSQL_DB_PASSWORD') == null ? "root" : GetEnv('OPENSHIFT_MYSQL_DB_PASSWORD'),
+                    'dbname' => 'cofi',
+                )
+            )
+        )
+    )
+);
+?>

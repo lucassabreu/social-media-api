@@ -1,0 +1,26 @@
+{
+    "name": "lucassabreu/social-media-api",
+    "description": "Basic API for a Social Media portal",
+    "type": "project",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "framework",
+        "mvc",
+        "zf2",
+        "social-media",
+        "rest"
+    ],
+    "homepage": "https://github.com/lucassabreu/social-media-api",
+    "require": {
+        "php": ">=5.5",
+        "zendframework/zendframework": "~2.5",
+        "doctrine/doctrine-orm-module": "*",
+        "zendframework/zftool": "^0.1.0"
+    },
+    "scripts" : {
+        "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
+    }
+}

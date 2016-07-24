@@ -180,7 +180,9 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
     public function findById($id) {
         if (!is_array($id))
             $id = array($id);
-        return $this->find($id);
+        $ent = $this->find($id);
+        $this->getEntityManager()->refresh($ent);
+        return $ent;
     }
 
     protected function find(array $id) {

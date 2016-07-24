@@ -149,7 +149,7 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      */
     public function validate() {
 
-        $data = get_object_vars($this);
+        $data = $this->getData();
 
         foreach ($data as $key => $value) {
             $this->{$key} = $value;

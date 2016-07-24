@@ -12,10 +12,10 @@ use Core\Model\DAO\Exception\DAOException;
 /**
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class UserDAOServiceTest extends TestCase 
+class UserDAOServiceTest extends TestCase
 {
-    public function setUp()
-    {
+
+    public function setUp() {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         $this->setUpDatabase = true;
         parent::setUp();
@@ -49,7 +49,8 @@ class UserDAOServiceTest extends TestCase
      * @convers UserDAOService::save
      * @convers UserDAOService::findById
      */
-    public function testSaveAndRetrieveAUser($uDAO) {
+    public function testSaveAndRetrieveAUser() {
+        $uDAO = $this->getUserDAOService();
         $user = $this->newUser('lucas.s.abreu@gmail.com', 'Lucas dos Santos Abreu', '123456');
         $user = $uDAO->save($user);
 
@@ -66,8 +67,10 @@ class UserDAOServiceTest extends TestCase
         $this->assertEquals($user2->password, 'e10adc3949ba59abbe56e057f20f883e'); // md5('123456')
 
         $user2->name = "Lucas Abreu";
+        $uDAO->save($user2);
+
         $user = $uDAO->findById(1);
-        $this->assertEquals($user2->name, 'Lucas Abreu');
+        $this->assertEquals($user->name, 'Lucas Abreu');
         return $uDAO;
     }
 
@@ -75,47 +78,54 @@ class UserDAOServiceTest extends TestCase
      * @depends testSaveAndRetrieveAUser
      * @convers UserDAOService::findByUsername
      */
-    public function testCanFindByUsername ($userDAOService) {
-
+    public function testCanFindByUsername () {
+        $userDAOService = $this->getUserDAOService();
         $user = $this->newUser('alguem@gmail.com', 'Alguem', '123456');
         $userDAOService->save($user);
 
-        $user2 = $userDAOService->findByUsername('lucas.s.abreu@gmail.com');
+        $user2 = $userDAOService->findByUsername('alguem@gmail.com');
 
         $this->assertNotNull($user2);
 
         $this->assertEquals($user2->username, 'alguem@gmail.com');
         $this->assertEquals($user2->name, 'Alguem');
         $this->assertEquals($user2->password, 'e10adc3949ba59abbe56e057f20f883e'); // md5('123456')
+        return $userDAOService;
     }
 
     /**
-     * @depends testCanFindByUsername
      * @convers UserDAOService::save
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessageRegExp /Aready exists a User with the username \".+\"/ 
      */
-    public function testCanHasOnlyOneUserPerUsername ($userDAOService) {
+    public function testCanHasOnlyOneUserPerUsername () {
+        $userDAOService = $this->getUserDAOService();
+        $user = $this->newUser();
+        $user->username = "lucas.s.abreu@gmail.com";
+        $userDAOService->save($user);
+
+        /// creating a second one
         $user = $this->newUser();
         $user->username = "lucas.s.abreu@gmail.com";
         $userDAOService->save($user);
     }
 
     /**
-     * @depends testCanFindByUsername
      * @convers UserDAOService::save
      * @convers UserDAOService::findByUsername
      * @expectedException \Core\Model\DAO\Exception\DAOException
-     * @expectedExceptionMessage "Username can't be changed !" 
+     * @expectedExceptionMessage Username can't be changed ! 
      */
-    public function testCantChangeUsername ($userDAOService) {
+    public function testCantChangeUsername () {
+        $userDAOService = $this->getUserDAOService();
         $user = $this->newUser();
         $user->username = 'um@localhost.com';
         $userDAOService->save($user);
 
         $user2 = $userDAOService->findByUsername('um@localhost.com');
         $user2->username = 'dois@localhost.com';
-        $userDAOService->save($user);
+
+        $userDAOService->save($user2);
     }
 
     /**
@@ -123,16 +133,38 @@ class UserDAOServiceTest extends TestCase
      * @convers UserDAOService::save
      * @convers UserDAOService::findByUsername
      * @expectedException \Core\Model\DAO\Exception\DAOException
-     * @expectedExceptionMessage "To change the password must use changeUserPassword method !" 
+     * @expectedExceptionMessage To change the password must use changeUserPassword method ! 
      */
-    public function testCantChangePasswordOnSave ($userDAOService) {
-        $user = $this->newUser();
+    public function testCantChangePasswordOnSave () {
+        $userDAOService = $this->getUserDAOService();
+        $user = $this->newUser('lucas.s.abreu2@gmail.com');
         $user->password = '123456';
         $userDAOService->save($user);
 
         $user2 = $userDAOService->findByUsername($user->username);
         $user2->password = '654321';
         $userDAOService->save($user);
+
+        return $userDAOService;
+    }
+
+    /**
+     * @depends testCantChangePasswordOnSave
+     * @convers UserDAOService::save
+     * @convers UserDAOService::changeUserPassword
+     * @convers UserDAOService::findByUsername
+     */
+    public function testChangeUsersPassword () {
+
+        $userDAOService = $this->getUserDAOService();
+
+        $user = $this->newUser("lucas@localhost.com");
+        $user->password = '123456';
+        $userDAOService->save($user);
+
+        $user = $userDAOService->changeUserPassword($user, '123456', '654321');
+        $user = $userDAOService->findByUsername($user->username);
+        $this->assertEquals($user->password, 'c33367701511b4f6020ec61ded352059'); // md5('654321')
     }
 
     /**
@@ -140,13 +172,8 @@ class UserDAOServiceTest extends TestCase
      * @convers UserDAOService::save
      * @convers UserDAOService::findById
      */
-    public function testChangeUsersPassword ($userDAOService) {
-        $user = $this->newUser();
-        $user->password = '123456';
-        $userDAOService->save($user);
-
-        $user = $userDAOService->changeUserPassword($user->username, '123456', '654321');
-        $user = $userDAOService->findByUsername($user->username);
-        $this->assertEquals($user->password, 'c33367701511b4f6020ec61ded352059'); // md5('654321')
+    public function testCantChangePasswordIfTheOldIsWrong () {
+        $userDAOService = $this->getUserDAOService();
+        $user = $userDAOService->findByUsername('lucas.s.abreu@gmail.com');        
     }
 }

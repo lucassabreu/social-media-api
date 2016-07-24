@@ -14,10 +14,10 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 abstract class TestCase extends AbstractHttpControllerTestCase {
 
     protected $setUpDatabase = false;
-
-    public function setup() {
+    
+    public function setUp() {
         parent::setup();
-        if ($this->setUpDatabase)
+        if ($this->setUpDatabase == true)
             $this->createDatabase();
     }
 
@@ -31,25 +31,44 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
      * @return void
      */
     public function createDatabase() {
-        $dbAdapter = $this->getAdapter();
 
-        if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Sqlite') {
-            //enable foreign keys on sqlite
-            $dbAdapter->query('PRAGMA foreign_keys = ON;', Adapter::QUERY_MODE_EXECUTE);
-        }
+        if ($this->getServiceManager()->has('Doctrine\ORM\EntityManager')) {
+            $this->generateSchema();
+        } else {
+            $dbAdapter = $this->getAdapter();
 
-        if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Mysql') {
-            //enable foreign keys on mysql
-            $dbAdapter->query('SET FOREIGN_KEY_CHECKS = 1;', Adapter::QUERY_MODE_EXECUTE);
-        }
-
-        $config = \Bootstrap::getTestConfig();
-        if (isset($config['ddl'])) {
-            $queries = $config['ddl'];
-            foreach ($queries as $queries) {
-                foreach ($queries['create'] as $query)
-                    $dbAdapter->query($query, Adapter::QUERY_MODE_EXECUTE);
+            if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Sqlite') {
+                //enable foreign keys on sqlite
+                $dbAdapter->query('PRAGMA foreign_keys = ON;', Adapter::QUERY_MODE_EXECUTE);
             }
+
+            if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Mysql') {
+                //enable foreign keys on mysql
+                $dbAdapter->query('SET FOREIGN_KEY_CHECKS = 1;', Adapter::QUERY_MODE_EXECUTE);
+            }
+
+            $config = \Bootstrap::getTestConfig();
+            if (isset($config['ddl'])) {
+                $queries = $config['ddl'];
+                foreach ($queries as $queries) {
+                    foreach ($queries['create'] as $query)
+                        $dbAdapter->query($query, Adapter::QUERY_MODE_EXECUTE);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return null
+     */
+    protected function generateSchema()
+    {
+        $em = $this->getServiceManager()->get('Doctrine\ORM\EntityManager');
+        $metadatas = $em->getMetaDataFactory()->getAllMetaData();
+        if (!empty($metadatas)) {
+            $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+            $tool->dropSchema($metadatas);
+            $tool->createSchema($metadatas);
         }
     }
 
@@ -57,22 +76,24 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
      * @return void
      */
     public function dropDatabase() {
-        $dbAdapter = $this->getAdapter();
+        if (!$this->getServiceManager()->has('Doctrine\ORM\EntityManager')) {
+            $dbAdapter = $this->getAdapter();
 
-        if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Sqlite') {
-            //disable foreign keys on sqlite
-            $dbAdapter->query('PRAGMA foreign_keys = OFF;', Adapter::QUERY_MODE_EXECUTE);
-        }
-        if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Mysql') {
-            //disable foreign keys on mysql
-            $dbAdapter->query('SET FOREIGN_KEY_CHECKS = 0;', Adapter::QUERY_MODE_EXECUTE);
-        }
+            if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Sqlite') {
+                //disable foreign keys on sqlite
+                $dbAdapter->query('PRAGMA foreign_keys = OFF;', Adapter::QUERY_MODE_EXECUTE);
+            }
+            if (get_class($dbAdapter->getPlatform()) == 'Zend\Db\Adapter\Platform\Mysql') {
+                //disable foreign keys on mysql
+                $dbAdapter->query('SET FOREIGN_KEY_CHECKS = 0;', Adapter::QUERY_MODE_EXECUTE);
+            }
 
-        $config = \Bootstrap::getTestConfig();
-        if (isset($config['ddl'])) {
-            $queries = $config['ddl'];
-            foreach ($queries as $query) {
-                $dbAdapter->query($query['drop'], Adapter::QUERY_MODE_EXECUTE);
+            $config = \Bootstrap::getTestConfig();
+            if (isset($config['ddl'])) {
+                $queries = $config['ddl'];
+                foreach ($queries as $query) {
+                    $dbAdapter->query($query['drop'], Adapter::QUERY_MODE_EXECUTE);
+                }
             }
         }
     }

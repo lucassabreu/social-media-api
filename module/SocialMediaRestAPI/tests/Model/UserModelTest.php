@@ -102,6 +102,16 @@ class UserModelTest extends TestCase
     }
 
     /**
+     * @convers User::valid
+     * @convers User::validate
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     */
+    public function testIfNothingWasInsertedMustThrowError() {
+        $user = new User();
+        $this->assertFalse($user->validate());
+    }
+
+    /**
      * @depends testCanValidateAUser
      * @convers User::valid
      * @convers User::validate

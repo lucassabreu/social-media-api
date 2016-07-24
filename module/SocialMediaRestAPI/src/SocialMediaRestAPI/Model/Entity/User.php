@@ -75,6 +75,10 @@ class User extends Entity {
 						],
 						[
 							'name' => 'EmailAddress'
+						],
+						[
+							'name' => 'NotEmpty',
+							'options' => [NotEmpty::NULL]
 						]
 					],
 				],
@@ -108,6 +112,10 @@ class User extends Entity {
 								'max' => 150,
 							]
 						],
+						[
+							'name' => 'NotEmpty',
+							'options' => [NotEmpty::NULL]
+						]
 					],
 				]
 			]);

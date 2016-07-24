@@ -46,6 +46,24 @@ class User extends Entity {
 	 */
     private $name;
 
+	/**
+	 * @ORM\ManyToMany(targetEntity="User")
+	 * @ORM\JoinTable(name="friendship",
+     *      joinColumns={@ORM\JoinColumn(name="userId", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="userFriendId", 
+	 *									    	referencedColumnName="id", unique=true)}
+	 * )
+	 */
+	private $friends;
+
+	public function __construct() {
+		$this->friends = new ArrayCollection();
+	}
+
+	public function getFriends() {
+		return $this->friends;
+	}
+
 	public function getInputFilter () {
 		if ($this->inputFilter == null) {
             $factory = new Factory();

@@ -14,7 +14,7 @@ class UserRestControllerTest extends TestCase {
 
     public function testListActionCanBeAccessed()
     {
-        $this->dispatch('/');
+        $this->dispatch('/api/users');
         $this->assertResponseStatusCode(200);
 
         $this->assertModuleName('SocialMediaAPI');

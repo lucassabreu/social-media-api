@@ -98,7 +98,7 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessageRegExp /Aready exists a User with the username \".+\"/ 
      */
-    public function testCanHasOnlyOneUserPerUsername () {
+    public function testCanHasOnlyOneUserByUsername () {
         $userDAOService = $this->getUserDAOService();
         $user = $this->newUser();
         $user->username = "lucas.s.abreu@gmail.com";
@@ -175,5 +175,131 @@ class UserDAOServiceTest extends TestCase
     public function testCantChangePasswordIfTheOldIsWrong () {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->findByUsername('lucas.s.abreu@gmail.com');        
+    }
+
+    public function testCanDeleteUsers() {
+
+        $user1 = $this->newUser('user1@localhost.com');
+        $user2 = $this->newUser('user2@localhost.com');
+
+        $userDAOService = $this->getUserDAOService();
+
+        $userDAOService->save($user1);
+        $userDAOService->save($user2);
+
+        $user = $userDAOService->findById(1);
+        $this->assertEquals($user->username, $user1->username);
+
+        $userDAOService->remove($user);
+        $user = $userDAOService->findById(1);
+        $this->assertNull($user);        
+    }
+
+    /**
+     * @covers UserDAOService::createFriendship
+     */
+    public function testMakeFriends() {
+
+        $userDAOService = $this->getUserDAOService();
+
+        $user1 = $this->newUser('user0@localhost.net');
+        $user2 = $this->newUser('user1@localhost.net');
+
+        $userDAOService->createFriendship($user1, $user2);
+
+        $user = $userDAOService->findById(1);
+        $friend = $user->getFriends()[0];
+
+        $this->assertEquals($friend->id, $user2->id);
+
+        $friend2 = $friend->getFriends()[0];
+        $this->assertEquals($friend2->id, $user1->id);
+
+        $this->assertEquals(count($user->getFriends()), 1);
+        $this->assertEquals(count($friend->getFriends()), 1);
+    }
+
+    /**
+     * @convers UserDAOService::removeFriendship
+     * @depends testMakeFriends
+     */
+    public function testRemoveFriendship() {
+        $users = [];
+
+        $users[] = $this->newUser("user0@localhost.com");
+        $users[] = $this->newUser("user1@localhost.com");
+
+        $userDAOService = $this->getUserDAOService();
+
+        $userDAOService->createFriendship($users[0], $users[1]);
+
+        $this->assertEquals(count($users[0]->getFriends()), 1);
+        $this->assertEquals(count($users[1]->getFriends()), 1);
+
+        $userDAOService->removeFrienship($users[0], $users[1]);
+
+        $this->assertEquals(count($users[0]->getFriends()), 0);
+        $this->assertEquals(count($users[1]->getFriends()), 0);
+    }
+
+    /**
+     * @convers UserDAOService::createFriendship
+     * @depends testMakeFriends
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     * @expectedExceptionMessage You can not befriend yourself
+     */
+    public function testCanBefriendYourself() {
+        $userDAOService = $this->getUserDAOService();
+
+        $user = $this->newUser();
+
+        $userDAOService->createFriendship($user, $user);
+    }
+
+    /**
+     * @convers UserDAOService::removeFriendship
+     * @depends testRemoveFriendship
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     * @expectedExceptionMessage /You and \".+\" are aready friends \!/
+     */
+    public function testOnlyOneFriendshipByDuo () {
+
+        $userDAOService = $this->getUserDAOService();
+
+        $user = $this->newUser('user@localhost.net');
+        $friend = $this->newUser('friend@localhost.net');
+
+        $userDAOService->createFriendship($user, $friend);
+
+        $this->assertEquals(count($user->getFriends()), 1);
+        $this->assertEquals(count($friend->getFriends()), 1);
+
+        $userDAOService->createFriendship($user, $friend);
+    }
+
+    /**
+     * @convers UserDAOService::createFriendship
+     * @depends testMakeFriends
+     */
+    public function testRemoveUser () {
+
+        $userDAOService = $this->getUserDAOService();
+
+        $user = $this->newUser('user@localhost.net');
+        $friend = $this->newUser('friend@localhost.net');
+
+        $userDAOService->createFriendship($user, $friend);
+
+        $this->assertEquals(count($user->getFriends()), 1);
+        $this->assertEquals(count($friend->getFriends()), 1);
+
+        $userDAOService->remove($friend);
+
+        $friend = $this->findByUsername('friend@localhost.net');
+        $this->assertNull($friend);
+
+        $user = $this->findByUsername('user@localhost.net');
+        $this->assertEquals(count($user->getFriends()), 0);
+
     }
 }

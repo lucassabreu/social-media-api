@@ -181,7 +181,8 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
         if (!is_array($id))
             $id = array($id);
         $ent = $this->find($id);
-        $this->getEntityManager()->refresh($ent);
+        if($ent !== null)
+            $this->getEntityManager()->refresh($ent);
         return $ent;
     }
 

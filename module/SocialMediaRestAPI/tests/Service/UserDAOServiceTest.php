@@ -188,7 +188,7 @@ class UserDAOServiceTest extends TestCase
         $user->password = '123456';
         $userDAOService->save($user);
 
-        $user = $userDAOService->changeUserPassword($user, 'errado', '');
+        $user = $userDAOService->changeUserPassword($user, '123456', '');
     }
 
     /**

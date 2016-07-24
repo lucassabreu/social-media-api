@@ -2,18 +2,22 @@
 
 namespace SocialMediaRestAPITest\Service;
 
+include_once __DIR__ . '/../Traits/UserTestTrait.php';
+
 use Core\Test\TestCase;
 use Zend\StdLib\ArrayUtils;
 use SocialMediaRestAPI\DAO\UserDAOInterface;
 use SocialMediaRestAPI\Service\UserDAOService;
 use SocialMediaRestAPI\Model\Entity\User;
 use Core\Model\DAO\Exception\DAOException;
+use SocialMediaRestAPITest\Traits\UserTestTrait;
 
 /**
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 class UserDAOServiceTest extends TestCase
 {
+    use UserTestTrait;
 
     public function setUp() {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
@@ -26,22 +30,6 @@ class UserDAOServiceTest extends TestCase
         $this->assertNotNull($userDAOService);
         $this->assertEquals(get_class($userDAOService), UserDAOService::class);
         return $userDAOService;
-    }
-
-    private function getUserDAOService() {
-        return $this->getServiceManager()->get('SocialMediaRestAPI\Service\UserDAOService');
-    }
-
-    private function newUser($username = "lucas.s.abreu@gmail.com", 
-                             $name = "Lucas dos Santos Abreu",
-                             $password = '123456') {
-        $user = new User();
-        $user->setData([
-            'name' => $name,
-            'username' => $username,
-            'password' => $password,
-        ]);
-        return $user;
     }
 
     /**
@@ -165,6 +153,42 @@ class UserDAOServiceTest extends TestCase
         $user = $userDAOService->changeUserPassword($user, '123456', '654321');
         $user = $userDAOService->findByUsername($user->username);
         $this->assertEquals($user->password, 'c33367701511b4f6020ec61ded352059'); // md5('654321')
+    }
+
+    /**
+     * @depends testChangeUsersPassword
+     * @convers UserDAOService::save
+     * @convers UserDAOService::changeUserPassword
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     * @expectedExceptionMessage Password is not correct !
+     */
+    public function testMustInformTheCurrentPasswordToChangeIt () {
+
+        $userDAOService = $this->getUserDAOService();
+
+        $user = $this->newUser("lucas@localhost.com");
+        $user->password = '123456';
+        $userDAOService->save($user);
+
+        $user = $userDAOService->changeUserPassword($user, 'errado', '654321');
+    }
+
+    /**
+     * @depends testChangeUsersPassword
+     * @convers UserDAOService::save
+     * @convers UserDAOService::changeUserPassword
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     * @expectedExceptionMessage Must be informmed a new password !
+     */
+    public function testMustInformTheNewPassword () {
+
+        $userDAOService = $this->getUserDAOService();
+
+        $user = $this->newUser("lucas@localhost.com");
+        $user->password = '123456';
+        $userDAOService->save($user);
+
+        $user = $userDAOService->changeUserPassword($user, 'errado', '');
     }
 
     /**

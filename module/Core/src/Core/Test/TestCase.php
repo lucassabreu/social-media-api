@@ -124,4 +124,11 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
         return $this->getServiceManager()->get($service);
     }
 
+    /**
+     * Retrieves the ViewModel returned by the Controller
+     * return \Zend\View\Model\ViewModel
+     */
+    protected function getViewModel() {
+        return $this->getApplication()->getMvcEvent()->getViewModel();
+    }
 }

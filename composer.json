@@ -22,5 +22,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4"
+    },
+    "autoload-dev": {
+        "psr-4": { "SocialMediaRestAPITest\\": "module/SocialMediaRestAPI/tests/" }
     }
 }

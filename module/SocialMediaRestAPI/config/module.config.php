@@ -11,6 +11,27 @@ return [
             ],
         ],
     ],
+    'controllers' => [
+        'invokables' => [
+            'SocialMediaRestAPI\Controller\UserRest' => Controller\UserRestController::class,
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'users-rest' => [
+                'type'    => 'segment',
+                'options' => [
+                    'route'    => '/api/users[/[:id]]',
+                    'constraints' => [
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => 'SocialMediaRestAPI\Controller\UserRest',
+                    ],
+                ],
+            ],
+        ],
+    ],
     // Doctrine config
     'doctrine' => [
         'driver' => [
@@ -25,5 +46,10 @@ return [
                 ]
             ]
         ]
+    ],
+    'view_manager' => [ //Add this config
+        'strategies' => [
+            'ViewJsonStrategy',
+        ],
     ],
 ];

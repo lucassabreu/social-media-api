@@ -1,10 +1,13 @@
 <?php
 
-namespace SocialMediaAPITest\Controller;
+namespace SocialMediaRestAPITest\Controller;
 
 use Core\Test\TestCase;
+use Core\Test\RestAPITestTrait;
 
 class UserRestControllerTest extends TestCase {
+
+    use RestAPITestTrait;
 
     public function setUp() {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
@@ -12,13 +15,13 @@ class UserRestControllerTest extends TestCase {
         parent::setUp();
     }
 
-    public function testListActionCanBeAccessed()
+    public function testGetListCanBeAccessed()
     {
         $this->dispatch('/api/users');
         $this->assertResponseStatusCode(200);
 
-        $this->assertModuleName('SocialMediaAPI');
-        $this->assertControllerName('SocialMediaAPI\Controller\UserRestController');
+        $this->assertModuleName('SocialMediaRestAPI');
+        $this->assertControllerName('SocialMediaRestAPI\Controller\UserRest');
         $this->assertControllerClass('UserRestController');
         $this->assertMatchedRouteName('users-rest');
     }

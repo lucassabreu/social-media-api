@@ -84,7 +84,7 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
             $qbParams[] = $clause[0];
             $qbParams[] = $clause[1];
         } else {
-            if (strpos($clause, '%') > 0)
+            if (strpos($clause, '%') !== false)
                 $and->add($qb->expr()->like($column, "?" . count($qbParams)));
             else {
                 if (strtoupper($clause) === 'IS NULL' || $clause === null) {

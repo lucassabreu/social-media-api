@@ -124,6 +124,9 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
         if($user === null)
             throw new DAOException("This method can only be used for user that exists !");
 
+        if($newPassword === null || trim($newPassword) == "")
+            throw new DAOException("Must be informmed a new password !");
+
         $password = md5($password);
 
         if ($password !== $user->password)

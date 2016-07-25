@@ -48,7 +48,7 @@ class User extends Entity {
 
 	/**
 	 * @ORM\ManyToMany(targetEntity="User")
-	 * @ORM\JoinTable(name="friendship",
+	 * @ORM\JoinTable(name="friendships",
      *      joinColumns={@ORM\JoinColumn(name="userId", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="userFriendId", 
 	 *									    	referencedColumnName="id", unique=true)}

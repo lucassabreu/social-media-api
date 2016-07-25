@@ -13,7 +13,13 @@ return [
     ],
     'controllers' => [
         'invokables' => [
-            'SocialMediaRestAPI\Controller\UserRest' => Controller\UserRestController::class,
+        ],
+        'factories' => [
+            'SocialMediaRestAPI\Controller\UserRest' => function($sm) {
+                $sl = $sm->getServiceLocator();
+                $dao = $sl->get('SocialMediaRestAPI\Service\UserDAOService');
+                return new Controller\UserRestController($dao);
+            },
         ],
     ],
     'router' => [
@@ -30,6 +36,19 @@ return [
                     ],
                 ],
             ],
+            'user-password-rest' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/api/users/:id/change-password',
+                    'constraints' => array(
+                        'id'     => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'SocialMediaRestAPI\Controller\UserRest',
+                        'action' => 'changePassword',
+                    ),
+                ),
+            ),
         ],
     ],
     // Doctrine config

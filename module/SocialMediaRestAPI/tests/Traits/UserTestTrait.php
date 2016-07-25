@@ -41,4 +41,20 @@ trait UserTestTrait {
         return $user;
     }
 
+    /**
+     * Create the number of users passed by parameter
+     * @param $howMany Number of users to be created
+     * @return array Array with the created users
+     */
+    private function createGenericUsers($howMany) {
+        $userDAOService = $this->getUserDAOService();
+        $users = [];
+        for($i = 1; $i <= $howMany; $i++) {
+            $users[] = $userDAOService->save(
+                $this->newUser("user$i@localhost.net",
+                               "Usuário $i"));
+        }
+        return $users;
+    }
+
 }

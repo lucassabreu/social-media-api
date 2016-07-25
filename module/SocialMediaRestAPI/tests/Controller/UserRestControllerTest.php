@@ -77,17 +77,6 @@ class UserRestControllerTest extends TestCase {
         $this->assertEquals(5, $vars['paging']['total']);
     }
 
-    private function createGenericUsers($howMany) {
-        $userDAOService = $this->getUserDAOService();
-        $users = [];
-        for($i = 1; $i <= $howMany; $i++) {
-            $users[] = $userDAOService->save(
-                $this->newUser("user$i@localhost.net",
-                               "Usuário $i"));
-        }
-        return $users;
-    }
-
     /**
      * @depends testListUsers
      */
@@ -165,7 +154,8 @@ class UserRestControllerTest extends TestCase {
 
         // limit = 10
         $this->dispatch('/api/users', HttpRequest::METHOD_GET, array(
-            'limit' => 10
+            'limit' => 10,
+            'offset' => 0
         ));
         $this->assertResponseStatusCode(200);
         $this->assertControllerName('SocialMediaRestAPI\Controller\UserRest');
@@ -199,12 +189,12 @@ class UserRestControllerTest extends TestCase {
         $vars = $viewModel->getVariables();
 
         $this->assertArrayHasKey('result', $vars);
-        $this->assertCount(10, $vars['result']); // only 3
+        $this->assertCount(3, $vars['result']); // only 3
 
         // pagination
         $this->assertArrayHasKey('paging', $vars);
         $this->assertArrayHasKey('count', $vars['paging']);
-        $this->assertEquals(10, $vars['paging']['count']);
+        $this->assertEquals(3, $vars['paging']['count']);
         $this->assertArrayHasKey('offset', $vars['paging']);
         $this->assertEquals(100, $vars['paging']['offset']); // last page
         $this->assertArrayHasKey('total', $vars['paging']);
@@ -238,7 +228,7 @@ class UserRestControllerTest extends TestCase {
         $this->dispatch('/api/users', HttpRequest::METHOD_GET, array(
             'limit' => 100,
         ));
-        $this->assertResponseStatusCode(400);
+        $this->assertResponseStatusCode(403);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
@@ -263,9 +253,9 @@ class UserRestControllerTest extends TestCase {
                 $this->newUser("outro$i@localhost.net",
                                "Joãozinho $i da Silva"));
 
-        $this->dispatch('/api/users', HttpRequest::METHOD_GET, array(
+        $this->dispatch('/api/users', HttpRequest::METHOD_GET, [
             'q' => 'name:Silva'
-        ));
+        ]);
         $this->assertResponseStatusCode(200);
         $this->assertControllerName('SocialMediaRestAPI\Controller\UserRest');
 
@@ -277,8 +267,7 @@ class UserRestControllerTest extends TestCase {
         $this->assertCount(5, $vars['result']);
 
         foreach($vars['result'] as $user) {
-            $this->assertTrue(preg_match("/Joãozinho [0-9] da Silva/", $users['name']),
-                                "Returned a User that was not in the filter");
+            $this->assertRegExp("/Joãozinho [0-9] da Silva/", $user['name']);
         }
 
         // pagination
@@ -289,36 +278,6 @@ class UserRestControllerTest extends TestCase {
         $this->assertEquals(0, $vars['paging']['offset']);
         $this->assertArrayHasKey('total', $vars['paging']);
         $this->assertEquals(5, $vars['paging']['total']);
-
-        $this->dispatch('/api/users', HttpRequest::METHOD_GET, array(
-            'q' => 'password:123456'
-        ));
-        $this->assertResponseStatusCode(400);
-        $this->assertControllerName('SocialMediaRestAPI\Controller\UserRest');
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayNotHasKey('result', $vars);
-        $this->assertArrayHasKey('error', $vars);
-        $this->assertArrayHasKey('message', $vars['error']);
-        $this->assertEquals("Invalid filter property \"password\"", $vars['error']['message']);
-    
-        $this->dispatch('/api/users', HttpRequest::METHOD_GET, array(
-            'q' => 'xyz:banana'
-        ));
-        $this->assertResponseStatusCode(400);
-        $this->assertControllerName('SocialMediaRestAPI\Controller\UserRest');
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayNotHasKey('result', $vars);
-        $this->assertArrayHasKey('error', $vars);
-        $this->assertArrayHasKey('message', $vars['error']);
-        $this->assertEquals("Invalid filter property \"xyz\"", $vars['error']['message']);
     }
 
     /**
@@ -420,7 +379,7 @@ class UserRestControllerTest extends TestCase {
         $this->assertArrayNotHasKey('result', $vars);
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
-        $this->assertEquals('Aready exists a User with the username \"joao@localhost.net\"', $vars['error']['message']);
+        $this->assertEquals('Aready exists a User with the username "joao@localhost.net"', $vars['error']['message']);
     }
 
     /**
@@ -461,16 +420,16 @@ class UserRestControllerTest extends TestCase {
         $this->dispatch('/api/users/1', HttpRequest::METHOD_PUT, [
             'name' => '',
         ]);
-        $this->assertResponseStatusCode(400);
+        $this->assertResponseStatusCode(403);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
         $vars = $viewModel->getVariables();
 
-        $this->assertNotHasKey('result', $vars);
-        $this->assertHasKey('error', $vars);
-        $this->assertHasKey('message', $vars['message']);
-        $this->assertRegExp('/Invalid input: name \".+\"/', $vars['error']['message']);
+        $this->assertArrayNotHasKey('result', $vars);
+        $this->assertArrayHasKey('error', $vars);
+        $this->assertArrayHasKey('message', $vars['error']);
+        $this->assertRegExp("/Invalid input: name = ''\. .+/", $vars['error']['message']);
     }
 
     public function testCanChangePassword() {
@@ -492,13 +451,13 @@ class UserRestControllerTest extends TestCase {
         $this->assertArrayHasKey('result', $vars);
         $this->assertArrayHasKey('success', $vars['result']);
         
-        $this->assertTrue($vars['result']['success']);
+        $this->assertEquals('true', $vars['result']['success']);
 
         $this->dispatch('/api/users/1/change-password', HttpRequest::METHOD_PUT, [
             'password' => 'errado',
             'newPassword' => '654321',
         ]);
-        $this->assertResponseStatusCode(400);
+        $this->assertResponseStatusCode(403);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
@@ -513,7 +472,7 @@ class UserRestControllerTest extends TestCase {
         $this->dispatch('/api/users/1/change-password', HttpRequest::METHOD_PUT, [
             'newPassword' => '654321',
         ]);
-        $this->assertResponseStatusCode(400);
+        $this->assertResponseStatusCode(403);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
@@ -525,8 +484,10 @@ class UserRestControllerTest extends TestCase {
         
         $this->assertEquals("Password is not correct !", $vars['error']['message']);
 
-        $this->dispatch('/api/users/1/change-password', HttpRequest::METHOD_PUT);
-        $this->assertResponseStatusCode(400);
+        $this->dispatch('/api/users/1/change-password', HttpRequest::METHOD_PUT, [
+            'password' => '123456',
+        ]);
+        $this->assertResponseStatusCode(403);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
@@ -539,7 +500,7 @@ class UserRestControllerTest extends TestCase {
         $this->assertEquals("Must be informmed a new password !", $vars['error']['message']);
 
         $this->dispatch('/api/users/2/change-password', HttpRequest::METHOD_PUT);
-        $this->assertResponseStatusCode(400);
+        $this->assertResponseStatusCode(404);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
@@ -549,7 +510,7 @@ class UserRestControllerTest extends TestCase {
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
         
-        $this->assertEquals("User 100 does not exist !", $vars['error']['message']);
+        $this->assertEquals("User 2 does not exist !", $vars['error']['message']);
     }
 
     /**
@@ -565,161 +526,5 @@ class UserRestControllerTest extends TestCase {
 
         $user = $userDAOService->findById(1);
         $this->assertNull($user);                
-    }
-
-    /**
-     * @depends testRestAPICanBeAccessed 
-     */
-    public function testCreateAFriendship() {
-        $users = $this->createGenericUsers(2);
-        $userDAOService = $this->getUserDAOService();
-
-        $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
-            'id' => 2,
-        ]);
-        $this->assertResponseStatusCode(201);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayHasKey('result', $vars);
-        $this->assertArrayHasKey('id', $vars['result']);
-        $this->assertArrayHasKey('name', $vars['result']);
-        
-        $this->assertEquals(2, $vars['result']['id']);
-        $this->assertEquals('Usuário 2', $vars['result']['id']);
-
-        $user = $userDAOService->findById(1);
-        $this->assertCount(1, $user->getFriends());
-        $this->assertEquals(2, $user->getFriends()[0]->id);
-
-        // again?
-        $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
-            'id' => 2,
-        ]);
-        $this->assertResponseStatusCode(400);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayNotHasKey('result', $vars);
-        $this->assertArrayHasKey('error', $vars);
-        $this->assertArrayHasKey('message', $vars['error']);
-
-        $this-assertRegExp('/You and \".+\" are aready friends \!/', $vars['error']['message']);
-
-        $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
-            'id' => 1,
-        ]);
-        $this->assertResponseStatusCode(400);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayNotHasKey('result', $vars);
-        $this->assertArrayHasKey('error', $vars);
-        $this->assertArrayHasKey('message', $vars['error']);
-
-        $this-assertEquals("You can not befriend yourself !", $vars['error']['message']);
-
-        $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST);
-        $this->assertResponseStatusCode(400);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayNotHasKey('result', $vars);
-        $this->assertArrayHasKey('error', $vars);
-        $this->assertArrayHasKey('message', $vars['error']);
-
-        $this-assertEquals("Must be informmed the two users to create a friendship !", 
-            $vars['error']['message']);
-    }
-
-    /**
-     * @depends testRestAPICanBeAccessed 
-     */
-    public function testListFriends() {
-        $users = $this->createGenericUsers(3);
-        $userDAOService = $this->getUserDAOService();
-
-        $userDAOService->createFriendship($users[0], $users[1]);
-        
-        $this->dispatch('/api/users/1/friends');
-        $this->assertResponseStatusCode(200);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayHasKey('result', $vars);
-        $this->assertCount(1, $vars['result']);
-
-        $this->assertArrayHasKey('id', $vars['result'][0]);
-        $this->assertArrayHasKey('name', $vars['result'][0]);
-
-        // user 2
-        $this->assertEquals($users[1]->id, $vars['result'][0]['id']);
-        $this->assertEquals($users[1]->name, $vars['result'][0]['name']);
-        
-        $this->dispatch('/api/users/2/friends');
-        $this->assertResponseStatusCode(200);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayHasKey('result', $vars);
-        $this->assertCount(1, $vars['result']);
-
-        $this->assertArrayHasKey('id', $vars['result'][0]);
-        $this->assertArrayHasKey('name', $vars['result'][0]);
-
-        // user 1
-        $this->assertEquals($users[0]->id, $vars['result'][0]['id']);
-        $this->assertEquals($users[0]->name, $vars['result'][0]['name']);
-        
-        $this->dispatch('/api/users/3/friends');
-        $this->assertResponseStatusCode(200);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayHasKey('result', $vars);
-        $this->assertCount(0, $vars['result']);
-
-        $this->dispatch('/api/users/4/friends'); // not exist
-        $this->assertResponseStatusCode(404);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayNotHasKey('result', $vars);
-        $this->assertArrayHasKey('error', $vars);
-        $this->assertArrayHasKey('message', $vars['error']);
-
-        $this->assertEquals('User 4 does not exist !', $vars['error']['message']);
-    }
-
-    public function testCanUnfriendUsers() {
-        $users = $this->createGenericUsers(2);
-        $userDAOService = $this->getUserDAOService();
-
-        $userDAOService->createFriendship($users[0], $users[1]);
-
-        $this->dispatch('/api/users/1/friends/2', HttpRequest::METHOD_DELETE);
-        $this->assertResponseStatusCode(204);
-
-        $user = $userDAOService->findById(1);
-        $this->assertCount(0, $user->getFriends());
-
-        $user = $userDAOService->findById(2);
-        $this->assertCount(0, $user->getFriends());
     }
 }

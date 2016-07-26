@@ -28,7 +28,7 @@ class PostModelTest extends TestCase {
     public function testPostInputFilter () {
         $post = new Post();
 
-        $if = $user->getInputFilter();
+        $if = $post->getInputFilter();
         $this->assertNotNull($if);
 
         $this->assertTrue($if->has('id'));
@@ -108,7 +108,7 @@ class PostModelTest extends TestCase {
      */
     public function testCantPostNothing() {
         $post = new Post();
-        $this->text = "";
+        $post->text = "";
     }
 
     /**
@@ -118,7 +118,7 @@ class PostModelTest extends TestCase {
      */
     public function testCantSetInvalidDate() {
         $post = new Post();
-        $this->datePublish = "ipsum";        
+        $post->datePublish = "ipsum";        
     }
 
     /**
@@ -128,7 +128,7 @@ class PostModelTest extends TestCase {
      */
     public function testPublishDateMustInformmed() {
         $post = new Post();
-        $this->datePublish = null;
+        $post->datePublish = null;
     }
 
 }

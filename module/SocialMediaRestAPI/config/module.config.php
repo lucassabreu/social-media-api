@@ -20,6 +20,11 @@ return [
                 $dao = $sl->get('SocialMediaRestAPI\Service\UserDAOService');
                 return new Controller\UserRestController($dao);
             },
+            'SocialMediaRestAPI\Controller\FriendRest' => function($sm) {
+                $sl = $sm->getServiceLocator();
+                $dao = $sl->get('SocialMediaRestAPI\Service\UserDAOService');
+                return new Controller\FriendRestController($dao);
+            },
         ],
     ],
     'router' => [
@@ -49,6 +54,19 @@ return [
                     ),
                 ),
             ),
+            'user-friends-rest' => [
+                'type'    => 'segment',
+                'options' => [
+                    'route'    => '/api/users/:userId/friends[/[:id]]',
+                    'constraints' => [
+                        'id'     => '[0-9]+',
+                        'user'   => '[0-9]+'
+                    ],
+                    'defaults' => [
+                        'controller' => 'SocialMediaRestAPI\Controller\FriendRest',
+                    ],
+                ],
+            ],
         ],
     ],
     // Doctrine config

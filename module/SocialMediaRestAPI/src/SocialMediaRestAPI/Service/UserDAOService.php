@@ -7,12 +7,14 @@ use Core\Service\AbstractDAOService;
 use SocialMediaRestAPI\Model\DAO\UserDAOInterface;
 use SocialMediaRestAPI\Model\Entity\User;
 use Core\Model\DAO\Exception\DAOException;
+use SocialMediaRestAPI\Traits\UserHelperTrait;
 
 /**
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 class UserDAOService extends AbstractDAOService implements UserDAOInterface
 {
+    use UserHelperTrait;
 
     public function remove (Entity $user) {
 
@@ -205,16 +207,4 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
         $this->dao->save($friend);
     }
 
-    /**
-     * Find a user into the array of friends
-     * @param $id User's Id
-     * @param $friends User's friends
-     * @return User
-     */
-    private function returnFriendById($id, $friends) {
-        foreach($friends as $friend) {
-            if($friend->id === $id)
-                return $friend;
-        }
-    }
 }

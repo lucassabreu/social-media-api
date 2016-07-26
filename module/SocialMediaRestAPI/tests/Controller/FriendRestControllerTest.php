@@ -53,7 +53,7 @@ class FriendRestControllerTest extends TestCase {
         $this->assertArrayHasKey('name', $vars['result']);
         
         $this->assertEquals(2, $vars['result']['id']);
-        $this->assertEquals('Usuário 2', $vars['result']['id']);
+        $this->assertEquals('Usuário 2', $vars['result']['name']);
 
         $user = $userDAOService->findById(1);
         $this->assertCount(1, $user->getFriends());
@@ -73,7 +73,7 @@ class FriendRestControllerTest extends TestCase {
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
 
-        $this-assertRegExp('/You and \".+\" are aready friends \!/', $vars['error']['message']);
+        $this->assertRegExp('/You and \".+\" are aready friends \!/', $vars['error']['message']);
 
         $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
             'id' => 1,
@@ -88,9 +88,11 @@ class FriendRestControllerTest extends TestCase {
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
 
-        $this-assertEquals("You can not befriend yourself !", $vars['error']['message']);
+        $this->assertEquals("You can not befriend yourself !", $vars['error']['message']);
 
-        $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST);
+        $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
+            'id' => "",
+        ]);
         $this->assertResponseStatusCode(403);
 
         $viewModel = $this->getViewModel();
@@ -101,7 +103,7 @@ class FriendRestControllerTest extends TestCase {
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
 
-        $this-assertEquals("Must be informmed the two users to create a friendship !", 
+        $this->assertEquals("Must be informmed the two users to create a friendship !", 
             $vars['error']['message']);
     }
 

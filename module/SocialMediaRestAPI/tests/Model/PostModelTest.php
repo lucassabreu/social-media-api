@@ -101,4 +101,34 @@ class PostModelTest extends TestCase {
         $this->assertFalse($post->validate());
     }
 
+    /**
+     * @covers Post::valid
+     * @covers Post::validate
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     */
+    public function testCantPostNothing() {
+        $post = new Post();
+        $this->text = "";
+    }
+
+    /**
+     * @covers Post::valid
+     * @covers Post::validate
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     */
+    public function testCantSetInvalidDate() {
+        $post = new Post();
+        $this->datePublish = "ipsum";        
+    }
+
+    /**
+     * @covers Post::valid
+     * @covers Post::validate
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     */
+    public function testPublishDateMustInformmed() {
+        $post = new Post();
+        $this->datePublish = null;
+    }
+
 }

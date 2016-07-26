@@ -34,8 +34,8 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testHasBeenRegisteredForDi
-     * @convers UserDAOService::save
-     * @convers UserDAOService::findById
+     * @covers UserDAOService::save
+     * @covers UserDAOService::findById
      */
     public function testSaveAndRetrieveAUser() {
         $uDAO = $this->getUserDAOService();
@@ -64,7 +64,7 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testSaveAndRetrieveAUser
-     * @convers UserDAOService::findByUsername
+     * @covers UserDAOService::findByUsername
      */
     public function testCanFindByUsername () {
         $userDAOService = $this->getUserDAOService();
@@ -82,7 +82,7 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::save
+     * @covers UserDAOService::save
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessageRegExp /Aready exists a User with the username \".+\"/ 
      */
@@ -99,8 +99,8 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::save
-     * @convers UserDAOService::findByUsername
+     * @covers UserDAOService::save
+     * @covers UserDAOService::findByUsername
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Username can't be changed ! 
      */
@@ -118,8 +118,8 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testCanFindByUsername
-     * @convers UserDAOService::save
-     * @convers UserDAOService::findByUsername
+     * @covers UserDAOService::save
+     * @covers UserDAOService::findByUsername
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage To change the password must use changeUserPassword method ! 
      */
@@ -138,9 +138,9 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testCantChangePasswordOnSave
-     * @convers UserDAOService::save
-     * @convers UserDAOService::changeUserPassword
-     * @convers UserDAOService::findByUsername
+     * @covers UserDAOService::save
+     * @covers UserDAOService::changeUserPassword
+     * @covers UserDAOService::findByUsername
      */
     public function testChangeUsersPassword () {
 
@@ -157,8 +157,8 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testChangeUsersPassword
-     * @convers UserDAOService::save
-     * @convers UserDAOService::changeUserPassword
+     * @covers UserDAOService::save
+     * @covers UserDAOService::changeUserPassword
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Password is not correct !
      */
@@ -175,8 +175,8 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testChangeUsersPassword
-     * @convers UserDAOService::save
-     * @convers UserDAOService::changeUserPassword
+     * @covers UserDAOService::save
+     * @covers UserDAOService::changeUserPassword
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed a new password !
      */
@@ -193,8 +193,8 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @depends testCantChangePasswordOnSave
-     * @convers UserDAOService::save
-     * @convers UserDAOService::findById
+     * @covers UserDAOService::save
+     * @covers UserDAOService::findById
      */
     public function testCantChangePasswordIfTheOldIsWrong () {
         $userDAOService = $this->getUserDAOService();
@@ -247,7 +247,7 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::removeFriendship
+     * @covers UserDAOService::removeFriendship
      * @depends testMakeFriends
      */
     public function testRemoveFriendship() {
@@ -272,7 +272,7 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::createFriendship
+     * @covers UserDAOService::createFriendship
      * @depends testMakeFriends
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage You can not befriend yourself !
@@ -287,7 +287,7 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::removeFriendship
+     * @covers UserDAOService::removeFriendship
      * @depends testRemoveFriendship
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessageRegExp /You and \".+\" are aready friends \!/
@@ -311,7 +311,7 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::createFriendship
+     * @covers UserDAOService::createFriendship
      * @depends testMakeFriends
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed the two users to create a friendship !
@@ -325,7 +325,7 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::createFriendship
+     * @covers UserDAOService::createFriendship
      * @depends testMakeFriends
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed the two users to remove a friendship !
@@ -338,7 +338,7 @@ class UserDAOServiceTest extends TestCase
         $userDAOService->removeFriendship($user, null);
     }
     /**
-     * @convers UserDAOService::createFriendship
+     * @covers UserDAOService::createFriendship
      * @depends testMakeFriends
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage You can not unfriend yourself !
@@ -353,7 +353,7 @@ class UserDAOServiceTest extends TestCase
     }
 
     /**
-     * @convers UserDAOService::createFriendship
+     * @covers UserDAOService::createFriendship
      * @depends testMakeFriends
      */
     public function testRemoveUser () {

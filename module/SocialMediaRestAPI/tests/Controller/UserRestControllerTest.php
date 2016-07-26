@@ -31,7 +31,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @convers 
+     * @covers 
      */
     public function testListUsers() {
 

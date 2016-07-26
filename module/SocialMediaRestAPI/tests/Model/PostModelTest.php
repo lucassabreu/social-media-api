@@ -124,6 +124,17 @@ class PostModelTest extends TestCase {
     /**
      * @covers Post::valid
      * @covers Post::validate
+     */
+    public function testCanSetValidDateString() {
+        $post = new Post();
+        $post->datePublish = "2016-07-01 12:00:00";
+        $this->assertTrue($post->datePublish instanceof \DateTime, "It is not a \DateTime object");
+        $this->assertEquals($post->datePublish->format('Y-m-d H:i:s'), "2016-07-01 12:00:00");        
+    }
+
+    /**
+     * @covers Post::valid
+     * @covers Post::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
     public function testPublishDateMustInformmed() {

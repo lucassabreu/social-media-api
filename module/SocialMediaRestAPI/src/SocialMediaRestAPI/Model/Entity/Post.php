@@ -33,8 +33,8 @@ class Post extends Entity {
     private $id;
     
     /**
-     * @ManyToOne(targetEntity="User")
-     * @JoinColumn(name="userId", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="userId", referencedColumnName="id")
      */
     private $user;
     

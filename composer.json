@@ -21,7 +21,8 @@
         "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.4"
+        "phpunit/phpunit": "^5.4",
+        "phpunit/php-code-coverage": "^4.0"
     },
     "autoload-dev": {
         "psr-4": { "SocialMediaRestAPITest\\": "module/SocialMediaRestAPI/tests/" }

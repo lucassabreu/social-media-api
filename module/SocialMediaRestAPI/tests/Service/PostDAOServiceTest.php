@@ -73,6 +73,7 @@ class PostDAOServiceTest extends TestCase
     /**
      * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Publish date cannot be changed !
      */
     public function testCannotChangeDatePublish() {
@@ -88,6 +89,7 @@ class PostDAOServiceTest extends TestCase
     /**
      * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage User cannot be changed !
      */
     public function testCannotChangeUser() {
@@ -106,8 +108,9 @@ class PostDAOServiceTest extends TestCase
      * @depends testCanCreateAndRetrieve
      */
     public function testCanRemoveAPost() {
-        $post = $this->createGenericPosts(1)[0];
-        $this->assertEquals(1, $post-id);
+        $user = $this->createGenericUsers(1)[0];
+        $post = $this->createGenericPosts($user, 1)[0];
+        $this->assertEquals(1, $post->id);
 
         $postDAOService = $this->getPostDAOService();
         $postDAOService->remove($post);
@@ -157,6 +160,7 @@ class PostDAOServiceTest extends TestCase
     /**
      * @covers PostDAOService::fetchUserPosts
      * @depends testCanGetAUsersPost
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
     public function testCanotGetPostsFromNobody() {
@@ -236,6 +240,7 @@ class PostDAOServiceTest extends TestCase
     /**
      * @covers PostDAOService::fetchUserFeed
      * @depends testCanGetUsersFeed
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
     public function testCanotGetFeedFromNobody() {
@@ -275,7 +280,7 @@ class PostDAOServiceTest extends TestCase
         foreach($posts as $post)
             $postDAOService->save($post);
 
-        $paginator = $this->getUserFeedAdapterPaginator($users[0]);
+        $paginator = $postDAOService->getUserFeedAdapterPaginator($users[0]);
         $this->assertNotNull($paginator);
         $this->assertTrue($paginator instanceof AdapterInterface, "It is not a AdapterInterface");
 
@@ -288,7 +293,7 @@ class PostDAOServiceTest extends TestCase
         // last
         $this->assertEquals("2016-07-01 11:00:00", $feed[3]->datePublish->format("Y-m-d H:i:s"));
 
-        $paginator = $this->getUserFeedAdapterPaginator($users[2]);
+        $paginator = $postDAOService->getUserFeedAdapterPaginator($users[2]);
         $this->assertEquals(4, $paginator->count());
         $feed = $paginator->getItems(2, 5);
         $this->assertCout(2, $feed);
@@ -302,6 +307,7 @@ class PostDAOServiceTest extends TestCase
     /**
      * @covers PostDAOService::getUserFeedAdapterPaginator
      * @depends testGetPaginatedFeed
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
     public function testCanotGetFeedPaginatorFromNobody() {
@@ -343,6 +349,7 @@ class PostDAOServiceTest extends TestCase
     /**
      * @covers PostDAOService::getUserPostsAdapterPaginator
      * @depends testCanGetAUsersPostPaginator
+     * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
     public function testCanotGetUserPostsPaginatorFromNobody() {

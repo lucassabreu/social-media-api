@@ -51,7 +51,7 @@ class User extends Entity {
 	 * @ORM\JoinTable(name="friendships",
      *      joinColumns={@ORM\JoinColumn(name="userId", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="userFriendId", 
-	 *									    	referencedColumnName="id", unique=true)}
+	 *									    	referencedColumnName="id", unique=false)}
 	 * )
 	 */
 	private $friends;

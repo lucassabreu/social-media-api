@@ -228,9 +228,11 @@ class UserDAOServiceTest extends TestCase
 
         $user1 = $this->newUser('user0@localhost.net');
         $user2 = $this->newUser('user1@localhost.net');
+        $user3 = $this->newUser('user2@localhost.net');
 
         $userDAOService->save($user1);
         $userDAOService->save($user2);
+        $userDAOService->save($user3);
 
         $userDAOService->createFriendship($user1, $user2);
 
@@ -244,6 +246,20 @@ class UserDAOServiceTest extends TestCase
 
         $this->assertEquals(count($user->getFriends()), 1);
         $this->assertEquals(count($friend->getFriends()), 1);
+
+        $userDAOService->createFriendship($user1, $user3);
+        
+        $user = $userDAOService->findById(3);
+        $friend = $user->getFriends()[0];
+
+        $this->assertEquals($friend->id, $user1->id);
+
+        $friend2 = $friend->getFriends()[1];
+        $this->assertEquals($friend2->id, $user3->id);
+
+        $this->assertEquals(count($user->getFriends()), 1);
+        $this->assertEquals(count($friend->getFriends()), 2);
+
     }
 
     /**

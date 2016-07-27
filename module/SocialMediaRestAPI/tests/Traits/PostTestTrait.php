@@ -4,6 +4,7 @@ namespace SocialMediaRestAPITest\Traits;
 
 include_once __DIR__ . '/../Traits/UserTestTrait.php';
 
+use SocialMediaRestAPI\Model\Entity\User;
 use SocialMediaRestAPI\Model\Entity\Post;
 use SocialMediaRestAPI\Service\PostDAOService;
 use SocialMediaRestAPITest\Traits\UserTestTrait;

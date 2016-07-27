@@ -106,6 +106,41 @@ class PostDAOServiceTest extends TestCase
     /**
      * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     * @expectedExceptionMessage Must be informmed a valid User !
+     */
+    public function testCantSetAInvalidUser () {
+        $post = new Post();
+        $post->datePublish = new DateTime();
+        $post->text = "something funny";
+
+        // user does not exist yet
+        $post->user = new User();
+
+        $postDAOService = $this->getPostDAOService();
+        $postDAOService->save($post);
+    }
+
+    /**
+     * @covers PostDAOService::save
+     * @depends testCanCreateAndRetrieve
+     * @expectedException \Core\Model\DAO\Exception\DAOException
+     * @expectedExceptionMessage Must be informmed a valid publish date !
+     */
+    public function testCantSetAInvalidPublishDate () {
+        $post = new Post();
+        $post->text = "something funny";
+        $post->user = $this->createGenericUsers(1)[0];
+
+        // no publish date was informmed
+
+        $postDAOService = $this->getPostDAOService();
+        $postDAOService->save($post);
+    }
+
+    /**
+     * @covers PostDAOService::save
+     * @depends testCanCreateAndRetrieve
      */
     public function testCanRemoveAPost() {
         $user = $this->createGenericUsers(1)[0];

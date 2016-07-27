@@ -10,7 +10,10 @@ return [
                 'model' => 'SocialMediaRestAPI\Model\Doctrine\UserDAODoctrine',
             ],
             'SocialMediaRestAPI\Service\PostDAOService' => [
-                'service' => 'SocialMediaRestAPI\Service\PostDAOService',
+                'service' => function($sm) {
+                    $dao = $sm->get('SocialMediaRestAPI\Service\UserDAOService');
+                    return new Service\PostDAOService($dao);
+                },
                 'model' => 'SocialMediaRestAPI\Model\Doctrine\PostDAODoctrine',
             ],
         ],

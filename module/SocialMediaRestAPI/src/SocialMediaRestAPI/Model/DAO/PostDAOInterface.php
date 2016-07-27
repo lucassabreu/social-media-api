@@ -44,6 +44,6 @@ interface PostDAOInterface extends DAOInterface {
      * @param array $orderBy (optional) posts order 
      * @return array user's posts
      */
-    public function getUserPostsAdapterPaginator ($user, $params = [], $limit = null, $offset = null);
+    public function getUserPostsAdapterPaginator ($user, $params = [], $orderBy = null);
 
 }

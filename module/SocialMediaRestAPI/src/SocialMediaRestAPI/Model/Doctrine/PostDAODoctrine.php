@@ -35,7 +35,7 @@ class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
     /**
      * @override
      */
-    public function getUserPostsAdapterPaginator ($user, $params = [], $limit = null, $offset = null) {
+    public function getUserPostsAdapterPaginator ($user, $params = [], $orderBy = null) {
         throw new \Exception('Not implemented');
     }
 

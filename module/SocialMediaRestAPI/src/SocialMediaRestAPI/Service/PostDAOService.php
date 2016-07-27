@@ -18,27 +18,27 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
      * @override
      */
     public function fetchUserFeed ($user, $params = [], $limit = null, $offset = null) {
-        throw new \Exception('Not implemented');
+        return $this->dao->fetchUserFeed($user, $params, $limit, $offset);
     }
 
     /**
      * @override
      */
     public function getUserFeedAdapterPaginator($user, $params = [], $orderBy = null) {
-        throw new \Exception('Not implemented');
+        return $this->dao->getUserFeedAdapterPaginator($user, $params, $orderBy);
     }
 
     /**
      * @override
      */
     public function fetchUserPosts ($user, $params = [], $limit = null, $offset = null) {
-        throw new \Exception('Not implemented');
+        return $this->dao->fetchUserPosts($user, $params, $limit, $offset);
     }
 
     /**
      * @override
      */
-    public function getUserPostsAdapterPaginator ($user, $params = [], $limit = null, $offset = null) {
-        throw new \Exception('Not implemented');
+    public function getUserPostsAdapterPaginator ($user, $params = [], $orderBy = null) {
+        return $this->dao->fetchUserPosts($user, $params, $orderBy);
     }
 }

@@ -9,6 +9,10 @@ return [
                 'service' => 'SocialMediaRestAPI\Service\UserDAOService',
                 'model' => 'SocialMediaRestAPI\Model\Doctrine\UserDAODoctrine',
             ],
+            'SocialMediaRestAPI\Service\PostDAOService' => [
+                'service' => 'SocialMediaRestAPI\Service\PostDAOService',
+                'model' => 'SocialMediaRestAPI\Model\Doctrine\PostDAODoctrine',
+            ],
         ],
     ],
     'controllers' => [

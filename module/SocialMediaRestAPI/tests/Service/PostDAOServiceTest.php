@@ -12,6 +12,7 @@ use SocialMediaRestAPI\Model\Entity\Post;
 use Core\Model\DAO\Exception\DAOException;
 use SocialMediaRestAPITest\Traits\PostTestTrait;
 use Zend\Paginator\Adapter\AdapterInterface;
+use DateTime;
 
 /**
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
@@ -177,19 +178,19 @@ class PostDAOServiceTest extends TestCase
         $uPosts = $postDAOService->fetchUserPosts($user);
         $this->assertCount(5, $uPosts);
 
-        $this->assertEquals("2016-07-03 13:00:00", $uPosts[0]->datePublish);
-        $this->assertEquals("2016-07-02 12:00:00", $uPosts[1]->datePublish);
-        $this->assertEquals("2016-07-01 18:00:00", $uPosts[2]->datePublish);
-        $this->assertEquals("2016-07-01 12:00:00", $uPosts[3]->datePublish);
-        $this->assertEquals("2016-07-01 11:00:00", $uPosts[4]->datePublish);
+        $this->assertEquals("2016-07-03 13:00:00", $uPosts[0]->datePublish->format("Y-m-d H:i:s"));
+        $this->assertEquals("2016-07-02 12:00:00", $uPosts[1]->datePublish->format("Y-m-d H:i:s"));
+        $this->assertEquals("2016-07-01 18:00:00", $uPosts[2]->datePublish->format("Y-m-d H:i:s"));
+        $this->assertEquals("2016-07-01 12:00:00", $uPosts[3]->datePublish->format("Y-m-d H:i:s"));
+        $this->assertEquals("2016-07-01 11:00:00", $uPosts[4]->datePublish->format("Y-m-d H:i:s"));
 
-        $uPosts = $postDAOService->fetchUserPosts($user, 3, 1);
+        $uPosts = $postDAOService->fetchUserPosts($user, [], 3, 1);
         $this->assertCount(3, $uPosts);
 
         // first
-        $this->assertEquals("2016-07-02 12:00:00", $uPosts[0]->datePublish);
+        $this->assertEquals("2016-07-02 12:00:00", $uPosts[0]->datePublish->format("Y-m-d H:i:s"));
         // last
-        $this->assertEquals("2016-07-01 12:00:00", $uPosts[2]->datePublish);
+        $this->assertEquals("2016-07-01 12:00:00", $uPosts[2]->datePublish->format("Y-m-d H:i:s"));
     }
 
     /**
@@ -263,13 +264,13 @@ class PostDAOServiceTest extends TestCase
         $this->assertEquals("2016-07-03 12:00:00", $feed[2]->datePublish->format("Y-m-d H:i:s"));
         $this->assertEquals("2016-07-01 01:00:00", $feed[3]->datePublish->format("Y-m-d H:i:s"));
 
-        $feed = $postDAOService->fetchUserFeed($users[0], 5, 1);
+        $feed = $postDAOService->fetchUserFeed($users[0], [], 5, 1);
         $this->assertCount(5, $feed);
 
         // first
         $this->assertEquals("2016-07-03 12:00:00", $feed[0]->datePublish->format("Y-m-d H:i:s"));
         // last
-        $this->assertEquals("2016-07-01 18:00:00", $feed[4]->datePublish->format("Y-m-d H:i:s"));
+        $this->assertEquals("2016-07-01 12:00:00", $feed[4]->datePublish->format("Y-m-d H:i:s"));
     }
 
     /**
@@ -285,7 +286,7 @@ class PostDAOServiceTest extends TestCase
 
     /**
      * @covers PostDAOService::getUserFeedAdapterPaginator
-     * @depends testCanCreateAndRetrieve
+     * @--depends testCanCreateAndRetrieve
      */
     public function testGetPaginatedFeed() {
         $userDAOService = $this->getUserDAOService();
@@ -320,23 +321,23 @@ class PostDAOServiceTest extends TestCase
         $this->assertTrue($paginator instanceof AdapterInterface, "It is not a AdapterInterface");
 
         $this->assertEquals(7, $paginator->count());
-        $feed = $paginator->getItems(2, 5);
-        $this->assertCout(4, $feed);
+        $feed = $paginator->getItems(3, 5);
+        $this->assertCount(4, $feed);
 
         // first
-        $this->assertEquals("2016-07-02 12:00:00", $feed[0]->datePublish->format("Y-m-d H:i:s"));
+        $this->assertEquals("2016-07-01 18:00:00", $feed[0]->datePublish->format("Y-m-d H:i:s"));
         // last
         $this->assertEquals("2016-07-01 11:00:00", $feed[3]->datePublish->format("Y-m-d H:i:s"));
 
         $paginator = $postDAOService->getUserFeedAdapterPaginator($users[2]);
         $this->assertEquals(4, $paginator->count());
         $feed = $paginator->getItems(2, 5);
-        $this->assertCout(2, $feed);
+        $this->assertCount(2, $feed);
 
         // first
         $this->assertEquals("2016-07-03 12:00:00", $feed[0]->datePublish->format("Y-m-d H:i:s"));
         // last
-        $this->assertEquals("2016-07-01 01:00:00", $feed[3]->datePublish->format("Y-m-d H:i:s"));
+        $this->assertEquals("2016-07-01 01:00:00", $feed[1]->datePublish->format("Y-m-d H:i:s"));
     }
 
     /**
@@ -371,9 +372,9 @@ class PostDAOServiceTest extends TestCase
             $postDAOService->save($post);
         
         $paginator = $postDAOService->getUserPostsAdapterPaginator($user);
-        $this->assertCount(5, $paginator->count());
+        $this->assertEquals(5, $paginator->count());
         $feed = $paginator->getItems(2, 5);
-        $this->assertCout(3, $feed);
+        $this->assertCount(3, $feed);
 
         // first
         $this->assertEquals("2016-07-01 18:00:00", $feed[0]->datePublish->format("Y-m-d H:i:s"));

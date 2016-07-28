@@ -17,7 +17,7 @@ interface PostDAOInterface extends DAOInterface {
      * @param int $offset (optional)
      * @return array Posts on the feed
      */
-    public function fetchUserFeed ($user, $params = [], $limit = null, $offset = null);
+    public function fetchUserFeed ($user, array $params = [], $limit = null, $offset = null);
 
     /**
      * Returns a Paginator Adapter for the user's feed based on params.
@@ -25,7 +25,7 @@ interface PostDAOInterface extends DAOInterface {
      * @param array $orderBy (optional) posts order 
      * @return AdapterInterface
      */
-    public function getUserFeedAdapterPaginator($user, $params = [], $orderBy = null);
+    public function getUserFeedAdapterPaginator($user, array $params = [], $orderBy = null);
 
     /**
      * Returns the posts created by parameters user
@@ -35,7 +35,7 @@ interface PostDAOInterface extends DAOInterface {
      * @param int $offset (optional)
      * @return array user's posts
      */
-    public function fetchUserPosts ($user, $params = [], $limit = null, $offset = null);
+    public function fetchUserPosts ($user, array $params = [], $limit = null, $offset = null);
 
     /**
      * Returns a Paginator Adapter with the posts created by parameters user
@@ -44,6 +44,6 @@ interface PostDAOInterface extends DAOInterface {
      * @param array $orderBy (optional) posts order 
      * @return array user's posts
      */
-    public function getUserPostsAdapterPaginator ($user, $params = [], $orderBy = null);
+    public function getUserPostsAdapterPaginator ($user, array $params = [], $orderBy = null);
 
 }

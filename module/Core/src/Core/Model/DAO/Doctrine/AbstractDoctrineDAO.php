@@ -80,9 +80,14 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
 
     protected function _processClause($column, $clause, &$qbParams, $qb, $and) {
         if (is_array($clause)) {
-            $and->add($qb->expr()->between($column, "?" . count($qbParams), "?" . (count($qbParams) + 1)));
-            $qbParams[] = $clause[0];
-            $qbParams[] = $clause[1];
+            if (isset($clause['in'])) {
+                $and->add("$column IN (?" . count($qbParams) . ")");
+                $qbParams[] = $clause['in'];
+            } else {
+                $and->add($qb->expr()->between($column, "?" . count($qbParams), "?" . (count($qbParams) + 1)));
+                $qbParams[] = $clause[0];
+                $qbParams[] = $clause[1];
+            }
         } else {
             if (strpos($clause, '%') !== false)
                 $and->add($qb->expr()->like($column, "?" . count($qbParams)));

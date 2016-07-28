@@ -98,28 +98,56 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
     /**
      * @override
      */
-    public function fetchUserFeed ($user, $params = [], $limit = null, $offset = null) {
+    public function fetchUserFeed ($user, array $params = [], $limit = null, $offset = null) {
+
+        if ($user === null)
+            throw new DAOException("Must inform a user to list posts !");
+
+        if (!($user instanceof User))
+            $user = $this->userDAOService->findById($user);
+
         return $this->dao->fetchUserFeed($user, $params, $limit, $offset);
     }
 
     /**
      * @override
      */
-    public function getUserFeedAdapterPaginator($user, $params = [], $orderBy = null) {
+    public function getUserFeedAdapterPaginator($user, array $params = [], $orderBy = null) {
+
+        if ($user === null)
+            throw new DAOException("Must inform a user to list posts !");
+
+        if (!($user instanceof User))
+            $user = $this->userDAOService->findById($user);
+
         return $this->dao->getUserFeedAdapterPaginator($user, $params, $orderBy);
     }
 
     /**
      * @override
      */
-    public function fetchUserPosts ($user, $params = [], $limit = null, $offset = null) {
+    public function fetchUserPosts ($user, array $params = [], $limit = null, $offset = null) {
+
+        if ($user === null)
+            throw new DAOException("Must inform a user to list posts !");
+
+        if (!($user instanceof User))
+            $user = $this->userDAOService->findById($user);
+
         return $this->dao->fetchUserPosts($user, $params, $limit, $offset);
     }
 
     /**
      * @override
      */
-    public function getUserPostsAdapterPaginator ($user, $params = [], $orderBy = null) {
-        return $this->dao->fetchUserPosts($user, $params, $orderBy);
+    public function getUserPostsAdapterPaginator ($user, array $params = [], $orderBy = null) {
+
+        if ($user === null)
+            throw new DAOException("Must inform a user to list posts !");
+
+        if (!($user instanceof User))
+            $user = $this->userDAOService->findById($user);
+
+        return $this->dao->getUserPostsAdapterPaginator($user, $params, $orderBy);
     }
 }

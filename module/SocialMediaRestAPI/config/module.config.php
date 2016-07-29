@@ -3,7 +3,25 @@
 namespace SocialMediaRestAPI;
 
 return [
+    'http_auth' => [
+        'adapter' => [
+            'options' => [
+                'accept_schemes' => ['basic'],
+                'realm' => 'social-media-api',
+            ],
+        ],
+        'resolvers' => [
+            'basic_resolver' => function ($sm) {
+                $userDAOService = $sm->get('SocialMediaRestAPI\Service\UserDAOService');
+                return Authentication\Resolver\UserResolver($userDAOService);
+            }
+        ]
+    ],
     'service_manager' => [
+        'factories' => [
+            'Zend\Authentication\Adapter\Http' => 
+                'Core\Authentification\Http\AuthentificationAdapterFactory',
+        ],
         'dao_services' => [
             'SocialMediaRestAPI\Service\UserDAOService' => [
                 'service' => 'SocialMediaRestAPI\Service\UserDAOService',

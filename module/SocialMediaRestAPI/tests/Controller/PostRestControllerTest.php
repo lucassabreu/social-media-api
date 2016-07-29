@@ -1,6 +1,6 @@
 <?php
 
-namespace SocialMetiaRestAPITest\Controller;
+namespace SocialMediaRestAPITest\Controller;
 
 include_once __DIR__ . '/../Traits/PostTestTrait.php';
 

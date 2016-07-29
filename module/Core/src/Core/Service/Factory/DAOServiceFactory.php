@@ -8,6 +8,7 @@ use Core\Service\DAOServiceInterface;
 use Exception;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Core\Service\Util\ParameterInstanciatorTrait;
 
 /**
  * Factory of DAO Service classes.
@@ -15,6 +16,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 final class DAOServiceFactory implements AbstractFactoryInterface {
+
+    use ParameterInstanciatorTrait;
 
     protected $services = array();
 
@@ -50,8 +53,8 @@ final class DAOServiceFactory implements AbstractFactoryInterface {
             /**
              * @var DAOServiceInterface
              */
-            $service = $this->returnInstanceOf($config[$requestedName]['service']);
-            $model = $this->returnInstanceOf($config[$requestedName]['model']);
+            $service = $this->returnInstanceOf($config[$requestedName]['service'], $this->serviceLocator);
+            $model = $this->returnInstanceOf($config[$requestedName]['model'], $this->serviceLocator);
 
             $model->setEntityManager($em);
 
@@ -62,28 +65,6 @@ final class DAOServiceFactory implements AbstractFactoryInterface {
         }
 
         return $this->services[$requestedName];
-    }
-
-    /**
-     * Retrieves a instance of param.
-     * @param Closure|string $param
-     * @return DAOInterface
-     * @throws Exception When the param not be a Closure or a valid class name.
-     */
-    protected function returnInstanceOf($param) {
-        $instance = null;
-
-        if ($param instanceof Closure) {
-            $instance = $param->__invoke($this->serviceLocator);
-        } else {
-            if (class_exists('\\' . $param)) {
-                $param = ('\\' . $param);
-                $instance = new $param();
-            } else
-                throw new Exception("A service/model of DAOService must be a anonimous function or a class name valid. Param: $param");
-        }
-
-        return $instance;
     }
 
 }

@@ -15,7 +15,8 @@
         "php": ">=5.5",
         "zendframework/zendframework": "~2.5",
         "doctrine/doctrine-orm-module": "*",
-        "zendframework/zftool": "^0.1.0"
+        "zendframework/zftool": "^0.1.0",
+        "zfcampus/zf-mvc-auth": "^1.4"
     },
     "scripts" : {
         "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php"

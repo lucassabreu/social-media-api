@@ -2,6 +2,8 @@
 
 namespace SocialMediaRestAPI;
 
+use Zend\Authentication\AuthenticationService;
+
 return [
     'http_auth' => [
         'adapter' => [
@@ -21,6 +23,10 @@ return [
         'factories' => [
             'Zend\Authentication\Adapter\Http' => 
                 'Core\Authentification\Http\AuthentificationAdapterFactory',
+            'Zend\Authentication\AuthenticationService' => function ($sm) {
+                $adapter = $sm->get('Zend\Authentication\Adapter\Http');
+                return new AuthenticationService(null, $adapter);
+            },
         ],
         'dao_services' => [
             'SocialMediaRestAPI\Service\UserDAOService' => [

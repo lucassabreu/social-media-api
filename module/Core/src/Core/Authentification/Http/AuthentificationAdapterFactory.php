@@ -20,6 +20,8 @@ class AuthentificationAdapterFactory implements FactoryInterface {
 
         $authConfig = $config['http_auth'];
         $adapter = new HttpAdapter($authConfig['adapter']['options']);
+        $adapter->setRequest($serviceLocator->get('Request'));
+        $adapter->setResponse($serviceLocator->get('Response'));
 
         if (isset($authConfig['resolvers']['basic_resolver']))
             $adapter->setBasicResolver(

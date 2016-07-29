@@ -3,15 +3,17 @@
 namespace SocialMediaRestAPITest\Controller;
 
 include_once __DIR__ . '/../Traits/UserTestTrait.php';
+include_once __DIR__ . '/../Traits/HttpAuthorizationBasicTrait.php';
 
 use Core\Test\TestCase;
-use SocialMediaRestAPITest\Traits\UserTestTrait;
+use SocialMediaRestAPITest\Traits;
 use Zend\View\Model\JsonModel;
 use Zend\Http\Request as HttpRequest;
 
 class FriendRestControllerTest extends TestCase {
 
-    use UserTestTrait;
+    use Traits\UserTestTrait;
+    use Traits\HttpAuthorizationBasicTrait;
 
     public function setUp() {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
@@ -36,9 +38,20 @@ class FriendRestControllerTest extends TestCase {
      * @depends testRestAPICanBeAccessed 
      */
     public function testCreateAFriendship() {
-        $users = $this->createGenericUsers(2);
         $userDAOService = $this->getUserDAOService();
 
+        $users = [];
+        $users[] = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
+                                                        'Lucas dos Santos Abreu',
+                                                        '123456'));
+        $users[] = $this->createGenericUsers(1)[0];
+
+        $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
+            'id' => 2,
+        ]);
+        $this->assertResponseStatusCode(401);
+
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
         $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
             'id' => 2,
         ]);
@@ -60,6 +73,7 @@ class FriendRestControllerTest extends TestCase {
         $this->assertEquals(2, $user->getFriends()[0]->id);
 
         // again?
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
         $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
             'id' => 2,
         ]);
@@ -75,6 +89,7 @@ class FriendRestControllerTest extends TestCase {
 
         $this->assertRegExp('/You and \".+\" are aready friends \!/', $vars['error']['message']);
 
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
         $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
             'id' => 1,
         ]);
@@ -90,6 +105,7 @@ class FriendRestControllerTest extends TestCase {
 
         $this->assertEquals("You can not befriend yourself !", $vars['error']['message']);
 
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
         $this->dispatch('/api/users/1/friends', HttpRequest::METHOD_POST, [
             'id' => "",
         ]);
@@ -105,6 +121,22 @@ class FriendRestControllerTest extends TestCase {
 
         $this->assertEquals("Must be informmed the two users to create a friendship !", 
             $vars['error']['message']);
+
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
+        $this->dispatch('/api/users/2/friends', HttpRequest::METHOD_POST, [
+            'id' => "1",
+        ]);
+        $this->assertResponseStatusCode(403);
+
+        $viewModel = $this->getViewModel();
+        $this->assertEquals(get_class($viewModel), JsonModel::class);
+        $vars = $viewModel->getVariables();
+
+        $this->assertArrayNotHasKey('result', $vars);
+        $this->assertArrayHasKey('error', $vars);
+        $this->assertArrayHasKey('message', $vars['error']);
+
+        $this->assertEquals("You can't modify others users data !", $vars['error']['message']);
     }
 
     /**
@@ -175,11 +207,20 @@ class FriendRestControllerTest extends TestCase {
     }
 
     public function testCanUnfriendUsers() {
-        $users = $this->createGenericUsers(2);
         $userDAOService = $this->getUserDAOService();
+
+        $users = [];
+        $users[] = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
+                                                        'Lucas dos Santos Abreu',
+                                                        '123456'));
+        $users[] = $this->createGenericUsers(1)[0];
 
         $userDAOService->createFriendship($users[0], $users[1]);
 
+        $this->dispatch('/api/users/1/friends/2', HttpRequest::METHOD_DELETE);
+        $this->assertResponseStatusCode(401);
+
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
         $this->dispatch('/api/users/1/friends/2', HttpRequest::METHOD_DELETE);
         $this->assertResponseStatusCode(204);
 
@@ -188,5 +229,19 @@ class FriendRestControllerTest extends TestCase {
 
         $user = $userDAOService->findById(2);
         $this->assertCount(0, $user->getFriends());
+
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
+        $this->dispatch('/api/users/2/friends/1', HttpRequest::METHOD_DELETE);
+        $this->assertResponseStatusCode(403);
+
+        $viewModel = $this->getViewModel();
+        $this->assertEquals(get_class($viewModel), JsonModel::class);
+        $vars = $viewModel->getVariables();
+
+        $this->assertArrayNotHasKey('result', $vars);
+        $this->assertArrayHasKey('error', $vars);
+        $this->assertArrayHasKey('message', $vars['error']);
+        
+        $this->assertEquals("You can't modify others users data !", $vars['error']['message']); 
     }
 }

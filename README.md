@@ -197,7 +197,7 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 ```sh
 curl --request DELETE \
   --url 'http://localhost:8080/api/users/[:id]' \
-  --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
+  --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
 
 ## POST Criar Amizade
@@ -579,5 +579,5 @@ Permite eliminar a Postagem informada na URL.
 curl --request DELETE \
   --url 'http://localhost:8080/api/posts/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
-  --header 'content-type: multipart/form-data; boundary=---011000010111000001101001' \
+  --header 'content-type: multipart/form-data; boundary=---011000010111000001101001'
 ```  

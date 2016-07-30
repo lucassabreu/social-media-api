@@ -17,11 +17,11 @@ http://localhost:8080/api/users
 ```
 Cria um novo usuário no sistema validando para que o mesmo e-mail não seja utilizado duas vezes.
 
-| BODY | |
-|----|-|
-|name|Lucas dos Santos Abreu|
-|username|lucas.s.abreu@gmail.com|
-|password|123456|
+| BODY     |                         |
+|---------:|-------------------------|
+| name     | Lucas dos Santos Abreu  |
+| username | lucas.s.abreu@gmail.com |
+| password | 123456                  |
 
 
 ### Exemplo Chamada em cURL
@@ -50,9 +50,9 @@ Uma vez que seja informado usuário e senha corretos será retornado um JSON no 
 }
 ```
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -67,11 +67,11 @@ http://localhost:8080/api/users
 ```
 Retorna os usuário cadastrados no sistema no momento, suporta filtro por nome de usuário e paginação.
 
-|Parâmetros| |
-|----------:|-|
-|limit | Número de registros por página, limitado a 50| 
-|offset | Ponto para iniciar a listagem de registros |
-|q | filtro de página, o valor deve estar no formato: "q=name:Lucas", o sistema irá processar um like no banco o termo %Lucas% dessa forma. |
+| Parâmetros |                                                                                                                                        |
+|-----------:|----------------------------------------------------------------------------------------------------------------------------------------|
+| limit      | Número de registros por página, limitado a 50                                                                                          |
+| offset     | Ponto para iniciar a listagem de registros                                                                                             |
+| q          | filtro de página, o valor deve estar no formato: "q=name:Lucas", o sistema irá processar um like no banco o termo %Lucas% dessa forma. |
 
 ### Retorno:
 ```json
@@ -139,13 +139,14 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
     } 
 }
 ```
-| HEADERS | |
-|---------|-|
-|Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2|
 
-| BODY | |
-|------|-|
-|name|Lucas Abreu
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
+
+| BODY |             |
+|------|-------------|
+| name | Lucas Abreu |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -163,14 +164,14 @@ Permite que seja alterada a senha do usuário do parâmetro.
 
 Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
-| HEADERS | |
-|---------|-|
-|Authorization |Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
-| BODY | |
-|------|-|
-|password |123456|
-|newPassword|654321|
+| BODY        |        |
+|-------------|--------|
+| password    | 123456 |
+| newPassword | 654321 |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -188,20 +189,15 @@ Permite eliminar um usuário de acordo com o parâmetro.
 
 Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
-| HEADERS | |
-|---------|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
-
-| BODY | |
-|-|-|
-|id|6|
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
 ```sh
 curl --request DELETE \
   --url 'http://localhost:8080/api/users/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
-  --data id=6
 ```
 
 ## POST Criar Amizade
@@ -222,13 +218,13 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 }
 ```
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2|
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
-| BODY | |
-|-|-|
-|id|[:idFriend]|
+| BODY |             |
+|-----:|-------------|
+| id   | [:idFriend] |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -257,9 +253,9 @@ Permite listar as amizades do usuário da URL
 }
 ```
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -276,8 +272,8 @@ Permite eliminar uma relação de amizade entre os dois usuários do parâmetro 
 
 Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
-| HEADERS | |
-|---------|-|
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
 | Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
@@ -293,7 +289,7 @@ http://localhost:8080/api/posts
 ```
 Permite criar uma nova Postagem para o usuário autorizado no sistema. Somente é informado o texto da mensagem.
 
-Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
+*Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.*
 
 ### Retorno: 
 ```json
@@ -307,13 +303,13 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 }
 ```
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
-| BODY | |
-|-|-|
-|text|something funny
+| BODY |                 |
+|-----:|-----------------|
+| text | something funny |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -329,11 +325,11 @@ http://localhost:8080/api/posts
 ```
 Retorna as Postagens de todo o sistema, essa função permite paginação dos resultados e filtro de texto.
 
-|Parâmetros| |
-|----------:|-|
-|limit | Número de registros por página, limitado a 50| 
-|offset | Ponto para iniciar a listagem de registros |
-|q | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
+| Parâmetros |                                                                                                                                        |
+|-----------:|----------------------------------------------------------------------------------------------------------------------------------------|
+| limit      | Número de registros por página, limitado a 50                                                                                          |
+| offset     | Ponto para iniciar a listagem de registros                                                                                             |
+| q          | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
 
 ### Retorno:
 
@@ -379,11 +375,11 @@ http://localhost:8080/api/posts?q=text:funny
 ```
 Retorna as Postagens de todo o sistema, essa função permite paginação dos resultados e filtro de texto.
 
-|Parâmetros| |
-|----------:|-|
-|limit | Número de registros por página, limitado a 50| 
-|offset | Ponto para iniciar a listagem de registros |
-|q | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
+| Parâmetros |                                                                                                                                        |
+|-----------:|----------------------------------------------------------------------------------------------------------------------------------------|
+| limit      | Número de registros por página, limitado a 50                                                                                          |
+| offset     | Ponto para iniciar a listagem de registros                                                                                             |
+| q          | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
 
 ### Retorno:
 ```json
@@ -422,11 +418,11 @@ http://localhost:8080/api/posts/user/[:id]
 ```
 Permite listar todas as Postagens de *UM* usuário, como um perfil, esta função permite paginação e filtro.
 
-|Parâmetros| |
-|----------:|-|
-|limit | Número de registros por página, limitado a 50| 
-|offset | Ponto para iniciar a listagem de registros |
-|q | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
+| Parâmetros |                                                                                                                                        |
+|-----------:|----------------------------------------------------------------------------------------------------------------------------------------|
+| limit      | Número de registros por página, limitado a 50                                                                                          |
+| offset     | Ponto para iniciar a listagem de registros                                                                                             |
+| q          | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
 
 ### Retorno: 
 ```json
@@ -454,10 +450,9 @@ Permite listar todas as Postagens de *UM* usuário, como um perfil, esta funçã
 }
 ```
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
-
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -471,11 +466,11 @@ http://localhost:8080/api/feed
 ```
 Retorna o Feed do usuário autenticado, sendo com## POSTa das próprias Postagens do usuário e de seus amigos. É possível usar paginação e filtragem.
 
-|Parâmetros| |
-|----------:|-|
-|limit | Número de registros por página, limitado a 50| 
-|offset | Ponto para iniciar a listagem de registros |
-|q | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
+| Parâmetros |                                                                                                                                        |
+|-----------:|----------------------------------------------------------------------------------------------------------------------------------------|
+| limit      | Número de registros por página, limitado a 50                                                                                          |
+| offset     | Ponto para iniciar a listagem de registros                                                                                             |
+| q          | filtro de página, o valor deve estar no formato: "q=text:funny", o sistema irá processar um like no banco o termo %funny% dessa forma. |
 
 ### Retorno: 
 ```json
@@ -506,10 +501,9 @@ Retorna o Feed do usuário autenticado, sendo com## POSTa das próprias Postagen
 }
 ```
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
-
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -535,9 +529,9 @@ Retorna a data de publicação, Id do usuário, texto e Id da mesma.
 }
 ```
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -553,14 +547,13 @@ Modifica o texto da Postagem informada no parâmetro da URL.
 
 *Apenas irá funcionar se o usuário autenticado for o mesmo que esta publicou a Postagem.*
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
-| BODY | |
-|-|-|
-|text|not that funny
-
+| BODY |                |
+|-----:|----------------|
+| text | not that funny |
 
 ### Exemplo Chamada em cURL
 ```sh
@@ -577,13 +570,9 @@ Permite eliminar a Postagem informada na URL.
 
 *Apenas irá funcionar se o usuário autenticado for o mesmo que esta publicou a Postagem.*
 
-| HEADERS | |
-|-|-|
-|Authorization|Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2
-
-| BODY | |
-|-|-|
-|text|something funny
+| HEADERS       |                                                |
+|---------------|------------------------------------------------|
+| Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
 ```
@@ -591,5 +580,4 @@ curl --request DELETE \
   --url 'http://localhost:8080/api/posts/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --header 'content-type: multipart/form-data; boundary=---011000010111000001101001' \
-  --form 'text=something funny'
 ```  

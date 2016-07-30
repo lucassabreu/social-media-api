@@ -2,16 +2,16 @@
 
 namespace SocialMediaRestAPITest\AuthentificationResolver;
 
-include_once __DIR__ . '/../Traits/UserTestTrait.php';
+include_once __DIR__ . '/../Traits/ModelHelpTestTrait.php';
 
 use Core\Test\TestCase;
-use SocialMediaRestAPI\Authentification\Resolver\UserResolver;
+use SocialMediaRestAPI\Authentication\Resolver\UserResolver;
 use SocialMediaRestAPI\Model\Entity\User;
-use SocialMediaRestAPITest\Traits\UserTestTrait;
+use SocialMediaRestAPITest\Traits\ModelHelpTestTrait;
 
 class UserResolverTest extends TestCase {
 
-    use UserTestTrait;
+    use ModelHelpTestTrait;
 
     public function setUp() {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());

@@ -3,18 +3,33 @@
 namespace SocialMediaRestAPI\Controller;
 
 use Core\Controller\AbstractRestfulController;
-use Zend\View\Model\JsonModel;
-use SocialMediaRestAPI\Service\UserDAOService;
+use Core\Controller\AuthenticationHelperTrait;
 use Core\Controller\ProcessQueryStringTrait;
-use Zend\Paginator\Adapter\AdapterInterface;
 use Core\Model\Entity\Entity;
+use SocialMediaRestAPI\Controller\Exception\ForbiddenModifyRequestException;
 use SocialMediaRestAPI\Model\Entity\User;
+use SocialMediaRestAPI\Service\UserDAOService;
+use Zend\Authentication\AuthenticationService;
+use Zend\Paginator\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 
+/**
+ * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
+ */
 class UserRestController extends AbstractRestfulController
 {
     use ProcessQueryStringTrait;
+    use AuthenticationHelperTrait;
 
+    /**
+     * @var UserDAOService
+     */
     protected $dao;
+
+    /**
+     * @var AuthenticationService
+     */
+    protected $authService;
 
     protected function entityToJson(Entity $user) {
         return [
@@ -23,8 +38,9 @@ class UserRestController extends AbstractRestfulController
         ];
     }
 
-    public function __construct(UserDAOService $dao) {
+    public function __construct(UserDAOService $dao, AuthenticationService $authService) {
         $this->dao = $dao;
+        $this->authService = $authService;
     }
 
     public function getList() {
@@ -75,6 +91,12 @@ class UserRestController extends AbstractRestfulController
     }
 
     public function update($id, $data) {
+
+        $identityUser = $this->getIdentity($this->authService)['user'];
+
+        if ($identityUser->id != $id)
+            throw new ForbiddenModifyRequestException();
+
         $user = $this->dao->findById($id);
 
         if ($user === null)
@@ -90,6 +112,12 @@ class UserRestController extends AbstractRestfulController
     }
 
     public function delete($id) {
+
+        $identityUser = $this->getIdentity($this->authService)['user'];
+
+        if ($identityUser->id != $id)
+            throw new ForbiddenModifyRequestException();
+
         $user = $this->dao->findById($id);
 
         if ($user === null)
@@ -110,8 +138,12 @@ class UserRestController extends AbstractRestfulController
             ];
         }
 
+        $identityUser = $this->getIdentity($this->authService)['user'];
         $id = $this->params('id');        
         $data = $this->processBodyContent($this->getRequest());
+
+        if ($identityUser->id != $id)
+            throw new ForbiddenModifyRequestException();
 
         $user = $this->dao->findById($id);
 
@@ -127,6 +159,18 @@ class UserRestController extends AbstractRestfulController
             'result' => [
                 'success' => 'true'
             ]
+        ]);
+    }
+
+    public function selfAction() {
+        $identityUser = $this->getIdentity($this->authService)['user'];
+        $user = $this->dao->findById($identityUser->id);
+
+        if ($user === null)
+            return $this->returnError(404, sprintf("User %d does not exist !", $id));
+        
+        return new JsonModel([
+            'result' => $this->entityToJson($user),
         ]);
     }
 

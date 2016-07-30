@@ -3,20 +3,35 @@
 namespace SocialMediaRestAPI\Controller;
 
 use Core\Controller\AbstractRestfulController;
-use Zend\View\Model\JsonModel;
-use SocialMediaRestAPI\Service\UserDAOService;
+use Core\Controller\AuthenticationHelperTrait;
 use Core\Controller\ProcessQueryStringTrait;
-use Zend\Paginator\Adapter\AdapterInterface;
 use Core\Model\Entity\Entity;
+use SocialMediaRestAPI\Controller\Exception\ForbiddenModifyRequestException;
 use SocialMediaRestAPI\Model\Entity\User;
+use SocialMediaRestAPI\Service\UserDAOService;
 use SocialMediaRestAPI\Traits\UserHelperTrait;
+use Zend\Authentication\AuthenticationService;
+use Zend\Paginator\Adapter\AdapterInterface;
+use Zend\View\Model\JsonModel;
 
+/**
+ * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
+ */
 class FriendRestController extends AbstractRestfulController
 {
     use ProcessQueryStringTrait;
     use UserHelperTrait;
+    use AuthenticationHelperTrait;
 
+    /**
+     * @var UserDAOService
+     */
     protected $dao;
+
+    /**
+     * @var AuthenticationService
+     */
+    protected $authService;
 
     protected function entityToJson(Entity $user) {
         return [
@@ -37,8 +52,9 @@ class FriendRestController extends AbstractRestfulController
         return $result;
     }
 
-    public function __construct(UserDAOService $dao) {
+    public function __construct(UserDAOService $dao, AuthenticationService $authService) {
         $this->dao = $dao;
+        $this->authService = $authService;
     }
 
     public function getList() {
@@ -54,8 +70,13 @@ class FriendRestController extends AbstractRestfulController
     }
 
     public function create ($data) {
+
+        $identityUser = $this->getIdentity($this->authService)['user'];
         $userId = $this->params('userId');
         $id = isset($data['id']) ? $data['id'] : null;
+
+        if ($identityUser->id != $userId)
+            throw new ForbiddenModifyRequestException();
 
         $user = $this->dao->findById($userId);
 
@@ -76,8 +97,13 @@ class FriendRestController extends AbstractRestfulController
     }
 
     public function delete($id) {
+
+        $identityUser = $this->getIdentity($this->authService)['user'];
         $userId = $this->params('userId');
         $user = $this->dao->findById($userId);
+
+        if ($identityUser->id != $userId)
+            throw new ForbiddenModifyRequestException();
 
         if ($user === null)
             return $this->returnError(404, sprintf("User %d does not exist !", $id));

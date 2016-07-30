@@ -2,7 +2,7 @@
 
 namespace SocialMediaRestAPITest\Service;
 
-include_once __DIR__ . '/../Traits/PostTestTrait.php';
+include_once __DIR__ . '/../Traits/ModelHelpTestTrait.php';
 
 use Core\Test\TestCase;
 use SocialMediaRestAPI\DAO\PostDAOInterface;
@@ -10,7 +10,7 @@ use SocialMediaRestAPI\Service\PostDAOService;
 use SocialMediaRestAPI\Model\Entity\User;
 use SocialMediaRestAPI\Model\Entity\Post;
 use Core\Model\DAO\Exception\DAOException;
-use SocialMediaRestAPITest\Traits\PostTestTrait;
+use SocialMediaRestAPITest\Traits\ModelHelpTestTrait;
 use Zend\Paginator\Adapter\AdapterInterface;
 use DateTime;
 
@@ -19,7 +19,7 @@ use DateTime;
  */
 class PostDAOServiceTest extends TestCase
 {
-    use PostTestTrait;
+    use ModelHelpTestTrait;
 
     public function setUp() {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());

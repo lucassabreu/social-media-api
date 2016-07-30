@@ -2,8 +2,6 @@
 
 namespace SocialMediaRestAPITest\Traits;
 
-include_once __DIR__ . '/../Traits/UserTestTrait.php';
-
 use SocialMediaRestAPI\Model\Entity\User;
 use SocialMediaRestAPI\Model\Entity\Post;
 use SocialMediaRestAPI\Service\PostDAOService;
@@ -11,15 +9,58 @@ use SocialMediaRestAPITest\Traits\UserTestTrait;
 use DateTime;
 
 /**
- * Some methods to help test post related things
+ * Some methods to help test post, user and related things
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  *
  * @see \SocialMediaRestAPI\Model\Entity\Post
+ * @see \SocialMediaRestAPI\Model\Entity\User
  * @see \SocialMediaRestAPI\Service\PostDAOService
+ * @see \SocialMediaRestAPI\Service\UserDAOService
  */
-trait PostTestTrait {
+trait ModelHelpTestTrait {
 
-    use UserTestTrait;
+    /**
+     * Retrieve the <code>UserDAOService</code>
+     * @return UserDAOService
+     */
+    private function getUserDAOService() {
+        return $this->getServiceManager()->get('SocialMediaRestAPI\Service\UserDAOService');
+    }
+
+    /**
+     * Create a new user instance based on parameters
+     * @param $username optional default = lucas.s.abreu@gmail.com
+     * @param $name optional default = Lucas dos Santos Abreu
+     * @param $password optional default = 123465
+     * @return User
+     */
+    private function newUser($username = "lucas.s.abreu@gmail.com", 
+                             $name = "Lucas dos Santos Abreu",
+                             $password = '123456') {
+        $user = new User();
+        $user->setData([
+            'name' => $name,
+            'username' => $username,
+            'password' => $password,
+        ]);
+        return $user;
+    }
+
+    /**
+     * Create the number of users passed by parameter
+     * @param $howMany Number of users to be created
+     * @return array Array with the created users
+     */
+    private function createGenericUsers($howMany) {
+        $userDAOService = $this->getUserDAOService();
+        $users = [];
+        for($i = 1; $i <= $howMany; $i++) {
+            $users[] = $userDAOService->save(
+                $this->newUser("user$i@localhost.net",
+                               "Usuário $i"));
+        }
+        return $users;
+    }
 
     /**
      * Retrieve the <code>PostDAOService</code>

@@ -2,17 +2,17 @@
 
 namespace SocialMediaRestAPITest\Model;
 
-include_once __DIR__ . '/../Traits/UserTestTrait.php';
+include_once __DIR__ . '/../Traits/ModelHelpTestTrait.php';
 
 use Core\Test\TestCase;
 use SocialMediaRestAPI\Model\Entity\User;
 use SocialMediaRestAPI\Model\Entity\Post;
-use SocialMediaRestAPITest\Traits\UserTestTrait;
+use SocialMediaRestAPITest\Traits\ModelHelpTestTrait;
 use DateTime;
 
 class PostModelTest extends TestCase {
 
-    use UserTestTrait;
+    use ModelHelpTestTrait;
 
     public function setup () {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());

@@ -2,16 +2,17 @@
 
 namespace Core\Controller;
 
-use Zend\Mvc\Controller\AbstractRestfulController as ZendRestfulController;
-use Exception;
-use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
-use Zend\Paginator\Adapter\AdapterInterface;
+use Core\Controller\Exception\AuthenticationException;
 use Core\Model\Entity\Entity;
+use Exception;
+use Zend\Mvc\Controller\AbstractRestfulController as ZendRestfulController;
+use Zend\Mvc\MvcEvent;
+use Zend\Paginator\Adapter\AdapterInterface;
 use Zend\Stdlib\ParametersInterface;
 use Zend\Stdlib\RequestInterface as Request;
 use Zend\Stdlib\ResponseInterface as Response;
-use Zend\Mvc\MvcEvent;
+use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 
 /**
  * AbstractRestfulController with some alterations to fulfill needs
@@ -31,6 +32,10 @@ class AbstractRestfulController extends ZendRestfulController {
     {
         try {
             return parent::onDispatch($e);
+        } catch (AuthenticationException $ae) {
+            $model = $this->returnAuthenticationFail();
+            $e->setResult($model);
+            return $model;
         } catch(Exception $ex) {
             $model = $this->returnError(403, $ex->getMessage());
             $e->setResult($model);
@@ -69,6 +74,10 @@ class AbstractRestfulController extends ZendRestfulController {
         ]);
         $model->setTerminal(true);
         return $model;
+    }
+
+    protected function returnAuthenticationFail () {
+        return $this->returnError(401, "You must be authenticated to perform this action !");
     }
 
     /**

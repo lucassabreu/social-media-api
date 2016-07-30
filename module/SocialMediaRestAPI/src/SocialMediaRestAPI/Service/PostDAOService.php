@@ -23,8 +23,11 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
      */
     private $userDAOService;
 
-    public function __construct (UserDAOService $userDAOService) {
-        $this->userDAOService = $userDAOService; 
+    protected function getUserDAOService() {
+        if ($this->userDAOService === null)
+            $this->userDAOService = $this->getServiceLocator()->get(UserDAOService::class);
+        
+        return $this->userDAOService;
     }
 
     public function save($ent, array $values = null) {
@@ -52,7 +55,7 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
                 if (!($values['user'] instanceof User) || $values['user']->id === null) 
                     throw new DAOException("Must be informmed a valid User !");
 
-                $values['user'] = $this->userDAOService->findById($values['user']->id);
+                $values['user'] = $this->getUserDAOService()->findById($values['user']->id);
                 if ($values['user'] === null)
                     throw new DAOException("Must be informmed a valid User !");
             }
@@ -96,6 +99,15 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
     }
 
     /**
+     * Retrieves a user based on the parameter
+     * @param int $id
+     * @return User
+     */
+    public function findUserById ($id) {
+        return $this->getUserDAOService()->findById($id);
+    }
+
+    /**
      * @override
      */
     public function fetchUserFeed ($user, array $params = [], $limit = null, $offset = null) {
@@ -104,7 +116,7 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
             throw new DAOException("Must inform a user to list posts !");
 
         if (!($user instanceof User))
-            $user = $this->userDAOService->findById($user);
+            $user = $this->getUserDAOService()->findById($user);
 
         return $this->dao->fetchUserFeed($user, $params, $limit, $offset);
     }
@@ -118,7 +130,7 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
             throw new DAOException("Must inform a user to list posts !");
 
         if (!($user instanceof User))
-            $user = $this->userDAOService->findById($user);
+            $user = $this->getUserDAOService()->findById($user);
 
         return $this->dao->getUserFeedAdapterPaginator($user, $params, $orderBy);
     }
@@ -132,7 +144,7 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
             throw new DAOException("Must inform a user to list posts !");
 
         if (!($user instanceof User))
-            $user = $this->userDAOService->findById($user);
+            $user = $this->getUserDAOService()->findById($user);
 
         return $this->dao->fetchUserPosts($user, $params, $limit, $offset);
     }
@@ -146,7 +158,7 @@ class PostDAOService extends AbstractDAOService implements PostDAOInterface
             throw new DAOException("Must inform a user to list posts !");
 
         if (!($user instanceof User))
-            $user = $this->userDAOService->findById($user);
+            $user = $this->getUserDAOService()->findById($user);
 
         return $this->dao->getUserPostsAdapterPaginator($user, $params, $orderBy);
     }

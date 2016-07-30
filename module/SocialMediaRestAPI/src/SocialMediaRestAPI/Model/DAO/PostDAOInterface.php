@@ -7,8 +7,11 @@ use SocialMediaRestAPI\Model\Entity\User;
 use SocialMediaRestAPI\Model\Entity\Post;
 use Zend\Paginator\Adapter\AdapterInterface;
 
+/**
+ * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
+ */
 interface PostDAOInterface extends DAOInterface {
-    
+
     /**
      * Retrieves an user's feed
      * @param mixed|User $user

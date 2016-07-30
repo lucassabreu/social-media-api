@@ -2,7 +2,7 @@
 
 namespace SocialMediaRestAPITest\Controller;
 
-include_once __DIR__ . '/../Traits/PostTestTrait.php';
+include_once __DIR__ . '/../Traits/ModelHelpTestTrait.php';
 include_once __DIR__ . '/../Traits/HttpAuthorizationBasicTrait.php';
 
 use DateTime;
@@ -12,7 +12,7 @@ use Zend\View\Model\JsonModel;
 use Zend\Http\Request as HttpRequest;
 
 class PostRestControllerTest extends TestCase {
-    use Traits\PostTestTrait;
+    use Traits\ModelHelpTestTrait;
     use Traits\HttpAuthorizationBasicTrait;
 
     public function setUp() {
@@ -37,7 +37,7 @@ class PostRestControllerTest extends TestCase {
         $this->assertControllerClass('PostRestController');
         $this->assertMatchedRouteName('posts-user-rest');
 
-        $this->dispatch('/api/posts/feed');
+        $this->dispatch('/api/feed');
 
         $this->assertModuleName('SocialMediaRestAPI');
         $this->assertControllerName('SocialMediaRestAPI\Controller\PostRest');
@@ -66,7 +66,7 @@ class PostRestControllerTest extends TestCase {
         $this->dispatch('/api/posts', HttpRequest::METHOD_POST, [
             'text' => 'something funny'
         ]);
-        $this->assertResponseStatusCode(200);
+        $this->assertResponseStatusCode(201);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
@@ -85,9 +85,19 @@ class PostRestControllerTest extends TestCase {
 
         $post = $postDAOService->findById(1);
         $this->assertNotNull($post);
-        $this->assertEquals(1, $post->user-id);
+        $this->assertEquals(1, $post->user->id);
         $this->assertEquals($vars['result']['datePublish'], $post->datePublish->format('Y-m-d H:i:s'));
         $this->assertEquals("something funny", $post->text);
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCantUpdateAPostWithoutAuthentication () {
+        $this->dispatch('/api/posts/1', HttpRequest::METHOD_PUT, [
+            'text' => 'not that funny'
+        ]);
+        $this->assertResponseStatusCode(401);
     }
 
     /**
@@ -105,11 +115,6 @@ class PostRestControllerTest extends TestCase {
                                $user,
                                '2016-07-28 00:00:00');
         $postDAOService->save($post);
-
-        $this->dispatch('/api/posts/1', HttpRequest::METHOD_PUT, [
-            'text' => 'not that funny'
-        ]);
-        $this->assertResponseStatusCode(401);
 
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
         $this->dispatch('/api/posts/1', HttpRequest::METHOD_PUT, [
@@ -134,9 +139,46 @@ class PostRestControllerTest extends TestCase {
 
         $post = $postDAOService->findById(1);
         $this->assertNotNull($post);
-        $this->assertEquals(1, $post->user-id);
+        $this->assertEquals(1, $post->user->id);
         $this->assertEquals('2016-07-28 00:00:00', $post->datePublish->format('Y-m-d H:i:s'));
         $this->assertEquals("not that funny", $post->text);
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCantUpdateOthersUsersPosts () {
+        $postDAOService = $this->getPostDAOService();
+
+        $user = $this->getUserDAOService()->save(
+            $this->newUser('lucas.s.abreu@gmail.com',
+                           'Lucas dos Santos Abreu',
+                           '123456'));
+
+        $post = $this->newPost('something funny',
+                               $user,
+                               '2016-07-28 00:00:00');
+        $postDAOService->save($post);
+
+        $user = $this->getUserDAOService()->save(
+            $this->newUser('joaozinho@localhost.net',
+                           'Joãozinho',
+                           '123456'));
+
+        $this->setAuthorizationHeader('joaozinho@localhost.net', '123456');
+        $this->dispatch('/api/posts/1', HttpRequest::METHOD_PUT, [
+            'text' => 'not that funny'
+        ]);
+        $this->assertResponseStatusCode(403);
+
+        $viewModel = $this->getViewModel();
+        $this->assertEquals(get_class($viewModel), JsonModel::class);
+        $vars = $viewModel->getVariables();
+
+        $this->assertArrayNotHasKey('result', $vars);
+        $this->assertArrayHasKey('error', $vars);
+        $this->assertArrayHasKey('message', $vars['error']);
+        $this->assertEquals("You can't modify others users data !", $vars['error']['message']);
     }
 
     /**
@@ -211,13 +253,46 @@ class PostRestControllerTest extends TestCase {
         $this->assertResponseStatusCode(204);
 
         $post = $postDAOService->findById(1);
-        $this->assetNull($post);
+        $this->assertNull($post);
     }
 
     /**
      * @depends testRestAPICanBeAccessed
      */
-    public function testCanListPosts () {
+    public function testCantDeleteAPostWithoutAuthentication () {
+        $postDAOService = $this->getPostDAOService();
+
+        $user = $this->newUser('lucas.s.abreu@gmail.com',
+                               'Lucas dos Santos Abreu',
+                               '123456');
+        $this->getUserDAOService()->save($user);
+
+        $post = $this->newPost('something funny',
+                               $user,
+                               '2016-07-28 00:00:00');
+        $postDAOService->save($post);
+
+        $user = $this->newUser('joaozinho@localhost.net',
+                               'Joãozinho',
+                               '123456');
+        $this->getUserDAOService()->save($user);
+
+        $this->setAuthorizationHeader('joaozinho@localhost.net', '123456');
+        $this->dispatch('/api/posts/1', HttpRequest::METHOD_DELETE);
+        $this->assertResponseStatusCode(403);
+
+        $viewModel = $this->getViewModel();
+        $this->assertEquals(get_class($viewModel), JsonModel::class);
+        $vars = $viewModel->getVariables();
+
+        $this->assertArrayNotHasKey('result', $vars);
+        $this->assertArrayHasKey('error', $vars);
+        $this->assertArrayHasKey('message', $vars['error']);
+        $this->assertEquals("You can't modify others users data !", $vars['error']['message']);
+    }
+
+    private function loadBasicDataPosts () {
+
         $postDAOService = $this->getPostDAOService();
 
         $users = $this->createGenericUsers(3);
@@ -232,6 +307,16 @@ class PostRestControllerTest extends TestCase {
 
         foreach($posts as $post)
             $postDAOService->save($post);
+
+        return $users;
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCanListPostsWithFilter () {
+        $this->loadBasicDataPosts();
+        $postDAOService = $this->getPostDAOService();
 
         $this->dispatch('/api/posts', HttpRequest::METHOD_GET, [
             'q' => 'text:cheese'
@@ -265,10 +350,18 @@ class PostRestControllerTest extends TestCase {
         // order
         $this->assertEquals("2016-07-02 12:00:00", $vars['result'][0]['datePublish']);
         $this->assertEquals("2016-07-01 11:00:00", $vars['result'][1]['datePublish']);
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCanListPostsWithoutFilter () {
+        $users = $this->loadBasicDataPosts();
+        $postDAOService = $this->getPostDAOService();
         
         $this->createGenericPosts($users[0], 100);
 
-        $this->dispatch('/api/posts');
+        $this->dispatch('/api/posts', HttpRequest::METHOD_GET, []);
         $this->assertResponseStatusCode(200);
 
         $viewModel = $this->getViewModel();
@@ -333,7 +426,8 @@ class PostRestControllerTest extends TestCase {
 
         // page 1 limit
         $this->dispatch('/api/posts', HttpRequest::METHOD_GET, [
-            'limit' => 10
+            'limit' => 10,
+            'offset' => 0
         ]);
         $this->assertResponseStatusCode(200);
 
@@ -392,10 +486,7 @@ class PostRestControllerTest extends TestCase {
         $this->assertEquals("Maximum limit is 50, parameter used was 100", $vars['error']['message']);
     }
 
-    /**
-     * @depends testRestAPICanBeAccessed
-     */
-    public function testCanListPostsFromAUser () {
+    private function loadDataListPostsFromUser() {
         $postDAOService = $this->getPostDAOService();
 
         $users = $this->createGenericUsers(3);
@@ -410,6 +501,16 @@ class PostRestControllerTest extends TestCase {
 
         foreach($posts as $post)
             $postDAOService->save($post);
+
+        return $users;   
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCanListPostsFromAUser () {
+
+        $this->loadDataListPostsFromUser();
 
         $this->dispatch('/api/posts/user/2', HttpRequest::METHOD_GET, [
             'q' => 'text:cheese'
@@ -445,9 +546,17 @@ class PostRestControllerTest extends TestCase {
         $this->assertEquals("2016-07-03 11:00:00", $vars['result'][0]['datePublish']);
         $this->assertEquals("2016-07-01 11:00:00", $vars['result'][1]['datePublish']);
         
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCanListPostsFromAUserWithoutFilter () {
+        $users = $this->loadDataListPostsFromUser();
+
         $this->createGenericPosts($users[0], 100);
 
-        $this->dispatch('/api/posts/user/1');
+        $this->dispatch('/api/posts/user/1', HttpRequest::METHOD_GET, []);
         $this->assertResponseStatusCode(200);
 
         $viewModel = $this->getViewModel();
@@ -524,7 +633,8 @@ class PostRestControllerTest extends TestCase {
 
         // page 1 limit
         $this->dispatch('/api/posts/user/1', HttpRequest::METHOD_GET, [
-            'limit' => 10
+            'limit' => 10,
+            'offset' => 0,
         ]);
         $this->assertResponseStatusCode(200);
 
@@ -571,13 +681,13 @@ class PostRestControllerTest extends TestCase {
         $this->assertArrayHasKey('count', $vars['paging']);
         $this->assertEquals(7, $vars['paging']['count']);
         $this->assertArrayHasKey('offset', $vars['paging']);
-        $this->assertEquals(100, $vars['paging']['offset']);
+        $this->assertEquals(95, $vars['paging']['offset']);
         $this->assertArrayHasKey('total', $vars['paging']);
         $this->assertEquals(102, $vars['paging']['total']);
         
         // too much on limit
         $this->dispatch('/api/posts/user/1', HttpRequest::METHOD_GET, [
-            'limit' => 100
+            'limit' => 100,
         ]);
         $this->assertResponseStatusCode(403);
 
@@ -608,8 +718,15 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestAPICanBeAccessed
      */
-    public function testCanSeeTheFeed () {
+    public function testCantSeeTheFeedWithoutAuthorization () {
+        $this->dispatch('/api/feed', HttpRequest::METHOD_GET);
+        $this->assertResponseStatusCode(401);
+    }
+
+    public function loadDataSeeTheFeed () {
+
         $postDAOService = $this->getPostDAOService();
+        $userDAOService = $this->getUserDAOService();
 
         $users = $this->createGenericUsers(2);
 
@@ -619,33 +736,40 @@ class PostRestControllerTest extends TestCase {
         $this->getUserDAOService()->save($users[2]);
 
         $userDAOService->createFriendship($users[0], $users[2]);
-        $userDAOService->createFriendship($users[1], $users[2]);
+        $userDAOService->createFriendship($users[1], $users[0]);
 
         $posts = [];
 
         // user 1
-        $posts[] = $this->newPost("a post with cheese", $users[0], "2016-07-01 12:00:00");
+        $posts[] = $this->newPost("a post", $users[0], "2016-07-01 12:00:00");
         $posts[] = $this->newPost("a post", $users[0], "2016-07-01 11:00:00");
         $posts[] = $this->newPost("a post", $users[0], "2016-07-01 13:00:00");
         $posts[] = $this->newPost("a post", $users[0], "2016-07-01 18:00:00");
-        $posts[] = $this->newPost("a post", $users[0], "2016-07-02 12:00:00");
+        $posts[] = $this->newPost("a post with cream cheese", $users[0], "2016-07-01 01:00:00");
 
         // user 2
         $posts[] = $this->newPost("a post", $users[1], "2016-07-03 13:00:00");
-        $posts[] = $this->newPost("a post with cream cheese", $users[1], "2016-07-03 12:00:00");
+        $posts[] = $this->newPost("a post", $users[1], "2016-07-03 12:00:00");
 
         // user 3
-        $posts[] = $this->newPost("a post", $users[2], "2016-07-01 01:00:00");
-        $posts[] = $this->newPost("a post", $users[2], "2016-07-03 18:00:00");
+        $posts[] = $this->newPost("a post", $users[2], "2016-07-02 12:00:00");
+        $posts[] = $this->newPost("a post with cheese", $users[2], "2016-07-03 18:00:00");
 
         foreach($posts as $post)
             $postDAOService->save($post);
 
-        $this->dispatch('/api/posts/feed', HttpRequest::METHOD_GET);
-        $this->assertResponseStatusCode(401);
+        return $users;
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCanSeeTheFeed () {
+
+        $this->loadDataSeeTheFeed();
 
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
-        $this->dispatch('/api/posts/feed', HttpRequest::METHOD_GET, [
+        $this->dispatch('/api/feed', HttpRequest::METHOD_GET, [
             'q' => 'text:cheese'
         ]);
         $this->assertResponseStatusCode(200);
@@ -675,15 +799,21 @@ class PostRestControllerTest extends TestCase {
         }
 
         // order
-        $this->assertEquals("2016-07-03 12:00:00", $vars['result'][0]['datePublish']);
-        $this->assertEquals(1, $vars['result'][0]['userId']);
-        $this->assertEquals("2016-07-01 12:00:00", $vars['result'][1]['datePublish']);
-        $this->assertEquals(2, $vars['result'][1]['userId']);
-        
+        $this->assertEquals("2016-07-03 18:00:00", $vars['result'][0]['datePublish']);
+        $this->assertEquals(3, $vars['result'][0]['userId']);
+        $this->assertEquals("2016-07-01 01:00:00", $vars['result'][1]['datePublish']);
+        $this->assertEquals(1, $vars['result'][1]['userId']);
+    }
+
+    /**
+     * @depends testRestAPICanBeAccessed
+     */
+    public function testCanSeeTheFeedWithoutFilter () {
+        $users = $this->loadDataSeeTheFeed();
         $this->createGenericPosts($users[2], 100);
 
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
-        $this->dispatch('/api/posts/feed');
+        $this->dispatch('/api/feed');
         $this->assertResponseStatusCode(200);
 
         $viewModel = $this->getViewModel();
@@ -700,11 +830,11 @@ class PostRestControllerTest extends TestCase {
         $this->assertArrayHasKey('offset', $vars['paging']);
         $this->assertEquals(0, $vars['paging']['offset']);
         $this->assertArrayHasKey('total', $vars['paging']);
-        $this->assertEquals(102, $vars['paging']['total']);
+        $this->assertEquals(107, $vars['paging']['total']); // 100 + 5 + 2
 
         // page 2
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
-        $this->dispatch('/api/posts/feed', HttpRequest::METHOD_GET, [
+        $this->dispatch('/api/feed', HttpRequest::METHOD_GET, [
             'offset' => 50
         ]);
         $this->assertResponseStatusCode(200);
@@ -723,58 +853,12 @@ class PostRestControllerTest extends TestCase {
         $this->assertArrayHasKey('offset', $vars['paging']);
         $this->assertEquals(50, $vars['paging']['offset']);
         $this->assertArrayHasKey('total', $vars['paging']);
-        $this->assertEquals(102, $vars['paging']['total']);
+        $this->assertEquals(107, $vars['paging']['total']);
 
         // page 3
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
-        $this->dispatch('/api/posts/feed', HttpRequest::METHOD_GET, [
-            'offset' => 100
-        ]);
-        $this->assertResponseStatusCode(200);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayHasKey('result', $vars);
-        $this->assertCount(2, $vars['result']);
-
-        // pagination
-        $this->assertArrayHasKey('paging', $vars);
-        $this->assertArrayHasKey('count', $vars['paging']);
-        $this->assertEquals(2, $vars['paging']['count']);
-        $this->assertArrayHasKey('offset', $vars['paging']);
-        $this->assertEquals(100, $vars['paging']['offset']);
-        $this->assertArrayHasKey('total', $vars['paging']);
-        $this->assertEquals(102, $vars['paging']['total']);
-
-        // page 1 limit
-        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
-        $this->dispatch('/api/posts/feed', HttpRequest::METHOD_GET, [
-            'limit' => 10
-        ]);
-        $this->assertResponseStatusCode(200);
-
-        $viewModel = $this->getViewModel();
-        $this->assertEquals(get_class($viewModel), JsonModel::class);
-        $vars = $viewModel->getVariables();
-
-        $this->assertArrayHasKey('result', $vars);
-        $this->assertCount(10, $vars['result']);
-
-        // pagination
-        $this->assertArrayHasKey('paging', $vars);
-        $this->assertArrayHasKey('count', $vars['paging']);
-        $this->assertEquals(10, $vars['paging']['count']);
-        $this->assertArrayHasKey('offset', $vars['paging']);
-        $this->assertEquals(0, $vars['paging']['offset']);
-        $this->assertArrayHasKey('total', $vars['paging']);
-        $this->assertEquals(102, $vars['paging']['total']);
-
-        // page 10 limit
-        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
-        $this->dispatch('/api/posts/feed', HttpRequest::METHOD_GET, [
-            'offset' => 95,
+        $this->dispatch('/api/feed', HttpRequest::METHOD_GET, [
+            'offset' => 100,
             'limit' => 10
         ]);
         $this->assertResponseStatusCode(200);
@@ -793,11 +877,59 @@ class PostRestControllerTest extends TestCase {
         $this->assertArrayHasKey('offset', $vars['paging']);
         $this->assertEquals(100, $vars['paging']['offset']);
         $this->assertArrayHasKey('total', $vars['paging']);
-        $this->assertEquals(102, $vars['paging']['total']);
+        $this->assertEquals(107, $vars['paging']['total']);
+
+        // page 1 limit
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
+        $this->dispatch('/api/feed', HttpRequest::METHOD_GET, [
+            'limit' => 10,
+            'offset' => 0
+        ]);
+        $this->assertResponseStatusCode(200);
+
+        $viewModel = $this->getViewModel();
+        $this->assertEquals(get_class($viewModel), JsonModel::class);
+        $vars = $viewModel->getVariables();
+
+        $this->assertArrayHasKey('result', $vars);
+        $this->assertCount(10, $vars['result']);
+
+        // pagination
+        $this->assertArrayHasKey('paging', $vars);
+        $this->assertArrayHasKey('count', $vars['paging']);
+        $this->assertEquals(10, $vars['paging']['count']);
+        $this->assertArrayHasKey('offset', $vars['paging']);
+        $this->assertEquals(0, $vars['paging']['offset']);
+        $this->assertArrayHasKey('total', $vars['paging']);
+        $this->assertEquals(107, $vars['paging']['total']);
+
+        // page 20 limit
+        $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
+        $this->dispatch('/api/feed', HttpRequest::METHOD_GET, [
+            'offset' => 95,
+            'limit' => 20
+        ]);
+        $this->assertResponseStatusCode(200);
+
+        $viewModel = $this->getViewModel();
+        $this->assertEquals(get_class($viewModel), JsonModel::class);
+        $vars = $viewModel->getVariables();
+
+        $this->assertArrayHasKey('result', $vars);
+        $this->assertCount(12, $vars['result']);
+
+        // pagination
+        $this->assertArrayHasKey('paging', $vars);
+        $this->assertArrayHasKey('count', $vars['paging']);
+        $this->assertEquals(12, $vars['paging']['count']);
+        $this->assertArrayHasKey('offset', $vars['paging']);
+        $this->assertEquals(95, $vars['paging']['offset']);
+        $this->assertArrayHasKey('total', $vars['paging']);
+        $this->assertEquals(107, $vars['paging']['total']);
         
         // too much on limit
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
-        $this->dispatch('/api/posts/feed', HttpRequest::METHOD_GET, [
+        $this->dispatch('/api/feed', HttpRequest::METHOD_GET, [
             'limit' => 100
         ]);
         $this->assertResponseStatusCode(403);

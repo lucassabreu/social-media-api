@@ -10,6 +10,9 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
 
+/**
+ * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
+ */
 class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
 {
     public function __construct () {

@@ -6,6 +6,7 @@ use Core\Model\DAO\DAOInterface;
 use Core\Model\Entity\Entity;
 use Core\Service\DAOServiceInterface;
 use Core\Service\Service;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Abstract class with basic logic to DAO Service classes
@@ -13,6 +14,11 @@ use Core\Service\Service;
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 abstract class AbstractDAOService extends Service implements DAOServiceInterface {
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    private $serviceLocator;
 
     /**
      * @var DAOInterface
@@ -94,6 +100,13 @@ abstract class AbstractDAOService extends Service implements DAOServiceInterface
         return $this->dao->rollback();
     }
 
+    public function setServiceLocator (ServiceLocatorInterface $sl) {
+        $this->serviceLocator = $sl;
+    }
+
+    protected function getServiceLocator() {
+        return $this->serviceLocator;
+    }
 }
 
 ?>

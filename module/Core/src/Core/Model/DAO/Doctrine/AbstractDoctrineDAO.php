@@ -13,6 +13,7 @@ use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Basic implemented abstract class for DAO based on Doctrine
@@ -21,6 +22,11 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
  * @abstract
  */
 abstract class AbstractDoctrineDAO implements DAOInterface {
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    private $serviceLocator;
 
     /**
      * @var array
@@ -176,7 +182,7 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
             foreach ($orderBy as $column => $order)
                 $qb->orderBy("ent.$column", $order);
 
-        $paginator = new Paginator($qb->getQuery());
+        $paginator = new Paginator($qb->getQuery(), false);
         $adapter = new DoctrinePaginator($paginator);
 
         return $adapter;
@@ -250,6 +256,14 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
 
     public function rollback() {
         return $this->getEntityManager()->rollback();
+    }
+
+    public function setServiceLocator (ServiceLocatorInterface $sl) {
+        $this->serviceLocator = $sl;
+    }
+
+    protected function getServiceLocator() {
+        return $this->serviceLocator;
     }
 
 }

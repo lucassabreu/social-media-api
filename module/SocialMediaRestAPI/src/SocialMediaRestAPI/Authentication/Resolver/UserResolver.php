@@ -1,6 +1,6 @@
 <?php
 
-namespace SocialMediaRestAPI\Authentification\Resolver;
+namespace SocialMediaRestAPI\Authentication\Resolver;
 
 use SocialMediaRestAPI\Service\UserDAOService;
 use Zend\Authentication\Adapter\Http;

@@ -16,6 +16,18 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
 {
     use UserHelperTrait;
 
+    /**
+     * @var PostDAOService
+     */
+    private $postDAOService = null;
+
+    protected function getPostDAOService() {
+        if ($this->postDAOService === null)
+            $this->postDAOService = $this->getServiceLocator()->get(PostDAOService::class);
+        
+        return $this->postDAOService;
+    }
+
     public function remove (Entity $user) {
 
         if ($user === null || !($user instanceof User))
@@ -27,7 +39,11 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
 
         foreach ($friendList as $friend)
             $this->removeFriendship($user, $friend);
-        
+
+        $posts = $this->getPostDAOService()->fetchUserPosts($user);
+        foreach ($posts as $post)
+            $this->getPostDAOService()->remove($post);
+
         return parent::remove($user);
     }
     

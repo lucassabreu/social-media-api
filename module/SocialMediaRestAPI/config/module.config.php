@@ -3,19 +3,20 @@
 namespace SocialMediaRestAPI;
 
 use Zend\Authentication\AuthenticationService;
+use SocialMediaRestAPI\Authentication\Resolver\UserResolver;
 
 return [
     'http_auth' => [
         'adapter' => [
             'options' => [
-                'accept_schemes' => ['basic'],
-                'realm' => 'social-media-api',
+                'accept_schemes' => 'basic',
+                'realm' => '/api',
             ],
         ],
         'resolvers' => [
             'basic_resolver' => function ($sm) {
                 $userDAOService = $sm->get('SocialMediaRestAPI\Service\UserDAOService');
-                return Authentication\Resolver\UserResolver($userDAOService);
+                return new UserResolver($userDAOService);
             }
         ]
     ],
@@ -34,10 +35,7 @@ return [
                 'model' => 'SocialMediaRestAPI\Model\Doctrine\UserDAODoctrine',
             ],
             'SocialMediaRestAPI\Service\PostDAOService' => [
-                'service' => function($sm) {
-                    $dao = $sm->get('SocialMediaRestAPI\Service\UserDAOService');
-                    return new Service\PostDAOService($dao);
-                },
+                'service' => 'SocialMediaRestAPI\Service\PostDAOService',
                 'model' => 'SocialMediaRestAPI\Model\Doctrine\PostDAODoctrine',
             ],
         ],
@@ -49,12 +47,20 @@ return [
             'SocialMediaRestAPI\Controller\UserRest' => function($sm) {
                 $sl = $sm->getServiceLocator();
                 $dao = $sl->get('SocialMediaRestAPI\Service\UserDAOService');
-                return new Controller\UserRestController($dao);
+                $auth = $sl->get('Zend\Authentication\AuthenticationService');
+                return new Controller\UserRestController($dao, $auth);
             },
             'SocialMediaRestAPI\Controller\FriendRest' => function($sm) {
                 $sl = $sm->getServiceLocator();
                 $dao = $sl->get('SocialMediaRestAPI\Service\UserDAOService');
-                return new Controller\FriendRestController($dao);
+                $auth = $sl->get('Zend\Authentication\AuthenticationService');
+                return new Controller\FriendRestController($dao, $auth);
+            },
+            'SocialMediaRestAPI\Controller\PostRest' => function($sm) {
+                $sl = $sm->getServiceLocator();
+                $dao = $sl->get('SocialMediaRestAPI\Service\PostDAOService');
+                $auth = $sl->get('Zend\Authentication\AuthenticationService');
+                return new Controller\PostRestController($dao, $auth);
             },
         ],
     ],
@@ -68,6 +74,16 @@ return [
                         'id'     => '[0-9]+',
                     ],
                     'defaults' => [
+                        'controller' => 'SocialMediaRestAPI\Controller\UserRest',
+                    ],
+                ],
+            ],
+            'user-self-rest' => [
+                'type'    => 'literal',
+                'options' => [
+                    'route'    => '/api/users/self',
+                    'defaults' => [
+                        'action' => 'self',
                         'controller' => 'SocialMediaRestAPI\Controller\UserRest',
                     ],
                 ],
@@ -95,6 +111,41 @@ return [
                     ],
                     'defaults' => [
                         'controller' => 'SocialMediaRestAPI\Controller\FriendRest',
+                    ],
+                ],
+            ],
+            'posts-feed-rest' => [
+                'type'    => 'literal',
+                'options' => [
+                    'route'    => '/api/feed',
+                    'defaults' => [
+                        'action' => 'feed',
+                        'controller' => 'SocialMediaRestAPI\Controller\PostRest',
+                    ],
+                ],
+            ],
+            'posts-rest' => [
+                'type'    => 'segment',
+                'options' => [
+                    'route'    => '/api/posts[/[:id]]',
+                    'constraints' => [
+                        'id'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'controller' => 'SocialMediaRestAPI\Controller\PostRest',
+                    ],
+                ],
+            ],
+            'posts-user-rest' => [
+                'type'    => 'segment',
+                'options' => [
+                    'route'    => '/api/posts/user/[:userId]',
+                    'constraints' => [
+                        'userId'     => '[0-9]+',
+                    ],
+                    'defaults' => [
+                        'action' => 'byUser',
+                        'controller' => 'SocialMediaRestAPI\Controller\PostRest',
                     ],
                 ],
             ],

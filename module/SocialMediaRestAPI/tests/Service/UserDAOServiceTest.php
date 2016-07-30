@@ -2,7 +2,7 @@
 
 namespace SocialMediaRestAPITest\Service;
 
-include_once __DIR__ . '/../Traits/UserTestTrait.php';
+include_once __DIR__ . '/../Traits/ModelHelpTestTrait.php';
 
 use Core\Test\TestCase;
 use Zend\StdLib\ArrayUtils;
@@ -10,14 +10,14 @@ use SocialMediaRestAPI\DAO\UserDAOInterface;
 use SocialMediaRestAPI\Service\UserDAOService;
 use SocialMediaRestAPI\Model\Entity\User;
 use Core\Model\DAO\Exception\DAOException;
-use SocialMediaRestAPITest\Traits\UserTestTrait;
+use SocialMediaRestAPITest\Traits\ModelHelpTestTrait;
 
 /**
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 class UserDAOServiceTest extends TestCase
 {
-    use UserTestTrait;
+    use ModelHelpTestTrait;
 
     public function setUp() {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
@@ -383,9 +383,12 @@ class UserDAOServiceTest extends TestCase
         $userDAOService->save($friend);
 
         $userDAOService->createFriendship($user, $friend);
-
         $this->assertEquals(count($user->getFriends()), 1);
         $this->assertEquals(count($friend->getFriends()), 1);
+
+        $this->createGenericPosts($friend, 10);
+        $posts = $this->getPostDAOService()->fetchAll();
+        $this->assertCount(10, $posts);
 
         $userDAOService->remove($friend);
 
@@ -395,5 +398,7 @@ class UserDAOServiceTest extends TestCase
         $user = $userDAOService->findByUsername('user@localhost.net');
         $this->assertEquals(count($user->getFriends()), 0);
 
+        $posts = $this->getPostDAOService()->fetchAll();
+        $this->assertCount(0, $posts);
     }
 }

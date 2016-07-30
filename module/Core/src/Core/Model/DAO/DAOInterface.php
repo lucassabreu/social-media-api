@@ -6,6 +6,7 @@ use Core\Model\DAO\DAOInterface;
 use Core\Model\DAO\Exception\DAOException;
 use Core\Model\Entity\Entity;
 use Zend\Paginator\Adapter\AdapterInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Basic interface for DAO classes.
@@ -13,6 +14,13 @@ use Zend\Paginator\Adapter\AdapterInterface;
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 interface DAOInterface {
+
+    /**
+     * Sets a instance of ServiceLocatorInterface to be used for DI
+     * @param ServiceLocatorInterface $sl
+     * @return void
+     */
+    public function setServiceLocator (ServiceLocatorInterface $sl);
 
     /**
      * Retrieves the name of entity going to be managed by.

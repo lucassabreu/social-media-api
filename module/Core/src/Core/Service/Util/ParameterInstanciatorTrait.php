@@ -3,7 +3,7 @@
 namespace Core\Service\Util;
 
 use Exception;
-use Clousure;
+use Closure;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 trait ParameterInstanciatorTrait {

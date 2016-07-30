@@ -3,7 +3,7 @@ Alguns exemplos sobre como chamar o SocialMediaRestAPI.
 
 Abstrato:
 
-Esta aplicação trata de três recursos: Usuário (users), Amizade (friendships) e Postagens (## POSTs). Todo o conteúdo deste aplicativo é aberto a todo aquele que acessar o sistema, parecendo "Twitter" em uma forma muito simples, de modo que a leitura de dados que você não vai precisar autenticar-se, mas quando chega a hora de publicar e fazer amizades, então será necessária autenticação. A autenticação no sistema foi feito usando Authorition Basic, então espera-se que este aplicativo será executado através de HTTPS.
+Esta aplicação trata de três recursos: Usuário (users), Amizade (friendships) e Postagens (posts). Todo o conteúdo deste aplicativo é aberto a todo aquele que acessar o sistema, parecendo "Twitter" em uma forma muito simples, de modo que a leitura de dados que você não vai precisar autenticar-se, mas quando chega a hora de publicar e fazer amizades, então será necessária autenticação. A autenticação no sistema foi feito usando Authorition Basic, então espera-se que este aplicativo será executado através de HTTPS.
 
 As tecnologias aplicadas a este projecto foi Zend Framework 2, Módulo Doctrine, PHPUnit e zend-mvc-auth para lidar com os cabeçalhos de autorização.
 

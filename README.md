@@ -9,7 +9,7 @@ As tecnologias aplicadas a este projecto foi Zend Framework 2, Módulo Doctrine,
 
 A escolha sobre estas bibliotecas foi baseada no meu conhecimento sobre eles, e também na quantidade de documentação que existe das mesmas.
 
-Link para o processo de Instalação/Execução: [clique aqui](#Executando/Instalando)
+Link para o processo de Instalação/Execução: [clique aqui](#executandoinstalando)
 
 Mais abaixo estão as funções e formas de uso da solução construída. Essa documentação foi criada com base na seguinte coleção do Postman: [https://www.getpostman.com/collections/ad1379f35c25b4c0a8bc](https://www.getpostman.com/collections/ad1379f35c25b4c0a8bc), a documentação gerada pelo Postman pode ser acessada aqui: [https://documenter.getpostman.com/collection/view/69638-c7efcf2e-dce5-73d0-4596-caf3a7dc5a41](https://documenter.getpostman.com/collection/view/69638-c7efcf2e-dce5-73d0-4596-caf3a7dc5a41)
 

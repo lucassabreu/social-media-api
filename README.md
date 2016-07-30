@@ -575,7 +575,7 @@ Permite eliminar a Postagem informada na URL.
 | Authorization | Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2 |
 
 ### Exemplo Chamada em cURL
-```
+```sh
 curl --request DELETE \
   --url 'http://localhost:8080/api/posts/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \

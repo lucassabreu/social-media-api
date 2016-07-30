@@ -170,7 +170,11 @@ class UserRestController extends AbstractRestfulController
             return $this->returnError(404, sprintf("User %d does not exist !", $id));
         
         return new JsonModel([
-            'result' => $this->entityToJson($user),
+            'result' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'username' => $user->username,
+            ]
         ]);
     }
 

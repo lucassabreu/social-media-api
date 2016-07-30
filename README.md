@@ -9,6 +9,8 @@ As tecnologias aplicadas a este projecto foi Zend Framework 2, Módulo Doctrine,
 
 A escolha sobre estas bibliotecas foi baseada no meu conhecimento sobre eles, e também na quantidade de documentação que existe das mesmas.
 
+Link para o processo de Instalação/Execução: [clique aqui](#Executando/Instalando)
+
 Mais abaixo estão as funções e formas de uso da solução construída. Essa documentação foi criada com base na seguinte coleção do Postman: [https://www.getpostman.com/collections/ad1379f35c25b4c0a8bc](https://www.getpostman.com/collections/ad1379f35c25b4c0a8bc), a documentação gerada pelo Postman pode ser acessada aqui: [https://documenter.getpostman.com/collection/view/69638-c7efcf2e-dce5-73d0-4596-caf3a7dc5a41](https://documenter.getpostman.com/collection/view/69638-c7efcf2e-dce5-73d0-4596-caf3a7dc5a41)
 
 ## POST Criar Novo Usuário
@@ -365,6 +367,7 @@ Retorna as Postagens de todo o sistema, essa função permite paginação dos re
 ```
 
 ### Exemplo Chamada em cURL
+
 ```sh
 curl --request GET \
   --url http://localhost:8080/api/posts
@@ -580,4 +583,72 @@ curl --request DELETE \
   --url 'http://localhost:8080/api/posts/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --header 'content-type: multipart/form-data; boundary=---011000010111000001101001'
-```  
+```
+
+# Executando/Instalando
+
+A execução pode ser feita diretamente usando o comando abaixo dentro da pasta do projeto:
+
+```sh
+$ php -S 0.0.0.0:8080 -t public/ public/index.php 
+```
+
+As regras abaixo foram traduzidas do [README.md do ZendSkeletonApplication](https://github.com/zendframework/ZendSkeletonApplication/blob/master/README.md#web-server-setup)
+
+### Instalação Apache
+
+Para instalar no Apache, configure um "virtual host" apontando para pasta public/ do projeto e você já estará pronto para rodar ! Deve se parecer com o exemplo abaixo:
+
+```apache
+<VirtualHost *:80>
+    ServerName social-media-api.localhost
+    DocumentRoot /caminho/para/social-media-api/public
+    <Directory /caminho/para/social-media-api/public>
+        DirectoryIndex index.php
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+        <IfModule mod_authz_core.c>
+        Require all granted
+        </IfModule>
+    </Directory>
+</VirtualHost>
+```
+
+### Instalação Nginx
+
+Para instalar no nginx, abra o seu arquivo `/path/to/nginx/nginx.conf` e adicione um
+[incluir diretório](http://nginx.org/en/docs/ngx_core_module.html#include) como abaixo
+no bloco `http`, se ainda não existir:
+
+```nginx
+http {
+    # ...
+    include sites-enabled/*.conf;
+}
+```
+
+Crie um arquivo de configuração de virtual host para o seu projeto em `/path/to/nginx/sites-enabled/social-media-api.localhost.conf`
+deve paracer como abaixo:
+
+```nginx
+server {
+    listen       80;
+    server_name  social-media-api.localhost;
+    root         /caminho/para/social-media-api/public;
+
+    location / {
+        index index.php;
+        try_files $uri $uri/ @php;
+    }
+
+    location @php {
+        # Pass the PHP requests to FastCGI server (php-fpm) on 127.0.0.1:9000
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param  SCRIPT_FILENAME /caminho/para/social-media-api/public/index.php;
+        include fastcgi_params;
+    }
+}
+```
+
+Reinicie o nginx, agora você deve estar pronto para ir !

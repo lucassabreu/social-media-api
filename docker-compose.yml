@@ -1,0 +1,10 @@
+version: "2.0"
+services:
+    php-cli:
+        build:
+            dockerfile: DevOps/Dockerfile
+            context: .
+        image: social-media-api/cli:local
+        volumes:
+            - .:/social-media-api
+        working_dir: /social-media-api

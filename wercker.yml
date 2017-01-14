@@ -1,4 +1,4 @@
-box: php:7
+box: lucassabreu/social-media-api
 build:
     steps:
         - script:

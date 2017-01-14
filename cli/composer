@@ -1,0 +1,11 @@
+#!/bin/bash
+
+cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+
+if [ ! -f "composer.phar" ]; then
+    curl -sL https://getcomposer.org/composer.phar -o composer.phar;
+    chmod +x composer.phar;
+fi
+
+php composer.phar self-update
+php composer.phar "$@"

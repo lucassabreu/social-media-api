@@ -1,0 +1,9 @@
+box: php:7
+build:
+    steps:
+        - download-dependencies:
+            name: "Download Dependencies"
+            code: cli/composer install --prefer-dist --no-suggest --optimize-autoloader 
+        - unit-tests:
+            name: "Run Unit Tests"
+            code: cli/unit-tests

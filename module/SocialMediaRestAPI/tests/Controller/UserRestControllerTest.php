@@ -21,7 +21,7 @@ class UserRestControllerTest extends TestCase {
         parent::setUp();
     }
 
-    public function testRestAPICanBeAccessed()
+    public function testRestApiCanBeAccessed()
     {
         $this->dispatch('/api/users');
         $this->assertResponseStatusCode(200);
@@ -290,7 +290,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCantKnowYourselfIfYouDontTellMeWhoAreYou() {
         $userDAOService = $this->getUserDAOService();
@@ -302,7 +302,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCanKnowYourself() {
         $userDAOService = $this->getUserDAOService();
@@ -329,7 +329,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testGetOneUser() {
 
@@ -371,7 +371,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCreateANewUser() {
 
@@ -431,7 +431,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCantChangeTheNameWithoutAuthorization() {
         $userDAOService = $this->getUserDAOService();
@@ -448,7 +448,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCanChangeTheName() {
         $userDAOService = $this->getUserDAOService();
@@ -518,7 +518,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCanChangePassword() {
         $userDAOService = $this->getUserDAOService();
@@ -544,7 +544,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCanChangePasswordMayShowErrors() {
         $userDAOService = $this->getUserDAOService();
@@ -619,7 +619,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCantDeleteUserWithoutAuthorization () {
         $userDAOService = $this->getUserDAOService();
@@ -632,7 +632,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testDeleteUser () {
         $userDAOService = $this->getUserDAOService();
@@ -649,7 +649,7 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCantDeleteOtherUser () {
         $userDAOService = $this->getUserDAOService();

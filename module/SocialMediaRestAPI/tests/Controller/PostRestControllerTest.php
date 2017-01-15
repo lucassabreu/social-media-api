@@ -21,7 +21,7 @@ class PostRestControllerTest extends TestCase {
         parent::setUp();
     }
 
-    public function testRestAPICanBeAccessed()
+    public function testRestApiCanBeAccessed()
     {
         $this->dispatch('/api/posts');
 
@@ -46,7 +46,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanCreateAPost () {
         $postDAOService = $this->getPostDAOService();
@@ -91,7 +91,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCantUpdateAPostWithoutAuthentication () {
         $this->dispatch('/api/posts/1', HttpRequest::METHOD_PUT, [
@@ -101,7 +101,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanUpdateAPost () {
         $postDAOService = $this->getPostDAOService();
@@ -145,7 +145,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCantUpdateOthersUsersPosts () {
         $postDAOService = $this->getPostDAOService();
@@ -182,7 +182,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanViewAPost () {
         $postDAOService = $this->getPostDAOService();
@@ -230,7 +230,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanRemoveAPost () {
         $postDAOService = $this->getPostDAOService();
@@ -257,7 +257,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCantDeleteAPostWithoutAuthentication () {
         $postDAOService = $this->getPostDAOService();
@@ -312,7 +312,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanListPostsWithFilter () {
         $this->loadBasicDataPosts();
@@ -353,7 +353,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanListPostsWithoutFilter () {
         $users = $this->loadBasicDataPosts();
@@ -506,7 +506,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanListPostsFromAUser () {
 
@@ -549,7 +549,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanListPostsFromAUserWithoutFilter () {
         $users = $this->loadDataListPostsFromUser();
@@ -716,7 +716,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCantSeeTheFeedWithoutAuthorization () {
         $this->dispatch('/api/feed', HttpRequest::METHOD_GET);
@@ -762,7 +762,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanSeeTheFeed () {
 
@@ -806,7 +806,7 @@ class PostRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed
+     * @depends testRestApiCanBeAccessed
      */
     public function testCanSeeTheFeedWithoutFilter () {
         $users = $this->loadDataSeeTheFeed();

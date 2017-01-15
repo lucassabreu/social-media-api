@@ -1,6 +1,5 @@
-# Social Media API
-
-[![wercker status](https://app.wercker.com/status/c13dad202359b5eb3a8ca7e68faebea5/s/master "wercker status")](https://app.wercker.com/project/byKey/c13dad202359b5eb3a8ca7e68faebea5)
+Social Media API [![wercker status](https://app.wercker.com/status/c13dad202359b5eb3a8ca7e68faebea5/s/master "wercker status")](https://app.wercker.com/project/byKey/c13dad202359b5eb3a8ca7e68faebea5)
+----------------
 
 Alguns exemplos sobre como chamar o SocialMediaRestAPI.
 

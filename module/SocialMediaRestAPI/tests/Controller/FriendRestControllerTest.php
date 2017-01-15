@@ -21,7 +21,7 @@ class FriendRestControllerTest extends TestCase {
         parent::setUp();
     }
 
-    public function testRestAPICanBeAccessed()
+    public function testRestApiCanBeAccessed()
     {
         $this->createGenericUsers(1);
 
@@ -35,7 +35,7 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCantCreateAFriendshipWithoutAuthorization() {
         $userDAOService = $this->getUserDAOService();
@@ -53,7 +53,7 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCreateAFriendship() {
         $userDAOService = $this->getUserDAOService();
@@ -153,7 +153,7 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testListFriends() {
         $users = $this->createGenericUsers(3);
@@ -220,7 +220,7 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCantUnfriendUsersWithoutAuthorization() {
         $userDAOService = $this->getUserDAOService();
@@ -238,7 +238,7 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestAPICanBeAccessed 
+     * @depends testRestApiCanBeAccessed 
      */
     public function testCanUnfriendUsers() {
         

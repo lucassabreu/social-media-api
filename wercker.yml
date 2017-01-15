@@ -1,4 +1,4 @@
-box: lucassabreu/social-media-api 
+box: docker:dind 
 build:
     steps:
         - script:

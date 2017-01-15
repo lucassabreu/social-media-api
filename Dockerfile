@@ -6,3 +6,5 @@ RUN apt-get update && \
 
 # Install PHP extensions
 RUN docker-php-ext-install -j$(nproc) pdo pdo_sqlite pdo_mysql intl
+
+COPY ./devops/docker/custom.ini /usr/local/etc/php/conf.d/666-custom.ini

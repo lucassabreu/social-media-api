@@ -2,7 +2,7 @@ version: "2.0"
 services:
     php-cli:
         build:
-            dockerfile: DevOps/Dockerfile
+            dockerfile: Dockerfile
             context: .
         image: social-media-api/cli:local
         volumes:

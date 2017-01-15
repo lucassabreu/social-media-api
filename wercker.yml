@@ -1,8 +1,8 @@
-box: docker
+box: lucassabreu/social-media-api 
 build:
     steps:
         - script:
             name: "Runs build and tests"
             code: | 
-                docker-compose run --rm php-cli bash -c "source cli/build"
+                source cli/build
 

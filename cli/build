@@ -1,0 +1,3 @@
+source cli/fix-permissions
+cli/composer install --prefer-dist --no-suggest --optimize-autoloader 
+cli/unit-tests

@@ -1,8 +1,8 @@
-box: lucassabreu/social-media-api 
+box: lucassabreu/social-media-api
 build:
     steps:
         - script:
             name: "Runs build and tests"
-            code: | 
+            code: |
                 source cli/build
 

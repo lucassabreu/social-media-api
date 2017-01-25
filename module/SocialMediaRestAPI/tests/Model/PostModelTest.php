@@ -19,12 +19,6 @@ class PostModelTest extends TestCase {
         parent::setUp();
     }
 
-    /**
-     * @covers Post:getInputFilter
-     * @covers Post::__set
-     * @covers Post::__get
-     * @covers Post::valid
-     */
     public function testPostInputFilter () {
         $post = new Post();
 
@@ -42,14 +36,6 @@ class PostModelTest extends TestCase {
         $this->assertEquals($post->text, "something funny");
     }
 
-    /**
-     * @covers Post::setData
-     * @covers Post::exchangeArray
-     * @covers Post::getData
-     * @covers Post::getArrayCopy
-     * @covers Post::toArray
-     * @covers Post::valid
-     */
     public function testGetAndSetDataIntoPost () {
         $values = [
             "id" => '01.0',
@@ -84,16 +70,12 @@ class PostModelTest extends TestCase {
 
     /**
      * @depends testGetAndSetDataIntoPost
-     * @covers Post::valid
-     * @covers Post::validate
      */
     public function testCanValidatePost($post) {
         $this->assertTrue($post->validate());
     }
 
     /**
-     * @covers Post::valid
-     * @covers Post::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
     public function testIfNothingWasInsertedMustThrowError() {
@@ -102,8 +84,6 @@ class PostModelTest extends TestCase {
     }
 
     /**
-     * @covers Post::valid
-     * @covers Post::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
     public function testCantPostNothing() {
@@ -112,29 +92,21 @@ class PostModelTest extends TestCase {
     }
 
     /**
-     * @covers Post::valid
-     * @covers Post::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
     public function testCantSetInvalidDate() {
         $post = new Post();
-        $post->datePublish = "ipsum";        
+        $post->datePublish = "ipsum";
     }
 
-    /**
-     * @covers Post::valid
-     * @covers Post::validate
-     */
     public function testCanSetValidDateString() {
         $post = new Post();
         $post->datePublish = "2016-07-01 12:00:00";
         $this->assertTrue($post->datePublish instanceof \DateTime, "It is not a \DateTime object");
-        $this->assertEquals($post->datePublish->format('Y-m-d H:i:s'), "2016-07-01 12:00:00");        
+        $this->assertEquals($post->datePublish->format('Y-m-d H:i:s'), "2016-07-01 12:00:00");
     }
 
     /**
-     * @covers Post::valid
-     * @covers Post::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
     public function testPublishDateMustInformmed() {

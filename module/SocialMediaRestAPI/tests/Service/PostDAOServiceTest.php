@@ -35,8 +35,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::save
-     * @covers PostDAOService::findById
      * @depends testHasBeenRegisteredForDi
      */
     public function testCanCreateAndRetrieve() {
@@ -72,7 +70,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Publish date cannot be changed !
@@ -88,7 +85,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage User cannot be changed !
@@ -105,7 +101,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed a valid User !
@@ -123,7 +118,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed a valid publish date !
@@ -140,7 +134,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
      */
     public function testCanRemoveAPost() {
@@ -156,7 +149,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::fetchUserPosts
      * @depends testCanCreateAndRetrieve
      */
     public function testCanGetAUsersPost() {
@@ -194,7 +186,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::fetchUserPosts
      * @depends testCanGetAUsersPost
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
@@ -205,7 +196,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::fetchUserFeed
      * @depends testCanCreateAndRetrieve
      */
     public function testCanGetUsersFeed() {
@@ -274,7 +264,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::fetchUserFeed
      * @depends testCanGetUsersFeed
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
@@ -284,10 +273,6 @@ class PostDAOServiceTest extends TestCase
         $postDAOService->fetchUserFeed(null);
     }
 
-    /**
-     * @covers PostDAOService::getUserFeedAdapterPaginator
-     * @--depends testCanCreateAndRetrieve
-     */
     public function testGetPaginatedFeed() {
         $userDAOService = $this->getUserDAOService();
         $postDAOService = $this->getPostDAOService();
@@ -341,7 +326,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::getUserFeedAdapterPaginator
      * @depends testGetPaginatedFeed
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
@@ -352,7 +336,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::save
      * @depends testCanCreateAndRetrieve
      */
     public function testCanGetAUsersPostPaginator() {
@@ -370,7 +353,7 @@ class PostDAOServiceTest extends TestCase
 
         foreach($posts as $post)
             $postDAOService->save($post);
-        
+
         $paginator = $postDAOService->getUserPostsAdapterPaginator($user);
         $this->assertEquals(5, $paginator->count());
         $feed = $paginator->getItems(2, 5);
@@ -383,7 +366,6 @@ class PostDAOServiceTest extends TestCase
     }
 
     /**
-     * @covers PostDAOService::getUserPostsAdapterPaginator
      * @depends testCanGetAUsersPostPaginator
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !

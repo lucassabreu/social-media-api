@@ -12,7 +12,7 @@ use Core\Model\DAO\Exception\DAOException;
 /**
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class UserModelTest extends TestCase 
+class UserModelTest extends TestCase
 {
     public function setUp()
     {
@@ -25,12 +25,6 @@ class UserModelTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * @convers User::getInputFilter
-     * @convers User::__set
-     * @convers User::__get
-     * @convers User::valid
-     */
     public function testUserInputFilterFilters() {
         $user = new User();
 
@@ -51,14 +45,6 @@ class UserModelTest extends TestCase
         $this->assertEquals($user->name, 'Lucas dos Santos Abreu');
     }
 
-    /**
-     * @convers User::setData
-     * @convers User::exchangeArray
-     * @convers User::getData
-     * @convers User::getArrayCopy
-     * @convers User::toArray
-     * @convers User::valid
-     */
     public function testGetAndSetDataIntoUser () {
 
         $values = [
@@ -93,8 +79,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testGetAndSetDataIntoUser
-     * @convers User::valid
-     * @convers User::validate
      */
     public function testCanValidateAUser($user) {
         $this->assertTrue($user->validate());
@@ -102,29 +86,23 @@ class UserModelTest extends TestCase
     }
 
     /**
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
     public function testIfNothingWasInsertedMustThrowError() {
         $user = new User();
-        $this->assertFalse($user->validate());
+        $user->validate();
     }
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testCannotSetAUsernameThatIsNotAEmail ($user) {
-         $user->username = "joaozinho da silva";
-     }
+    public function testCannotSetAUsernameThatIsNotAEmail ($user) {
+        $user->username = "joaozinho da silva";
+    }
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testEmailForUsernameMustBeComplete ($user) {
@@ -133,8 +111,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testEmailForUsernameMustBeOnly100AtLength ($user) {
@@ -143,8 +119,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testUsernameMustBeInformmed ($user) {
@@ -153,8 +127,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testUsernameMustBeInformmedAndNotNull ($user) {
@@ -163,8 +135,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testPasswordMustBeInformmed ($user) {
@@ -173,7 +143,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testPasswordMustBeInformmedAndNotNull ($user) {
@@ -182,8 +151,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testNameMustBeInformmed ($user) {
@@ -192,7 +159,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testNameMustBeInformmedAndNotNull ($user) {
@@ -201,8 +167,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
      public function testNameMustBeOnly150AtLength ($user) {
@@ -211,8 +175,6 @@ class UserModelTest extends TestCase
 
     /**
      * @depends testCanValidateAUser
-     * @convers User::valid
-     * @convers User::validate
      */
      public function testIdCanBeNull ($user) {
          $user->id = null;

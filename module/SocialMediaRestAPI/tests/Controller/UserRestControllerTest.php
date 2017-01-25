@@ -39,9 +39,6 @@ class UserRestControllerTest extends TestCase {
         $this->assertMatchedRouteName('user-self-rest');
     }
 
-    /**
-     * @covers 
-     */
     public function testListUsers() {
 
         $userDAOService = $this->getUserDAOService();

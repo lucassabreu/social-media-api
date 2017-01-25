@@ -23,14 +23,11 @@ class UserResolverTest extends TestCase {
         return new UserResolver ($this->getUserDAOService());
     }
 
-    /**
-     * @covers UserResolver::resolve
-     */
     public function testCanAuthenticate () {
         $userDAOService = $this->getUserDAOService();
         $resolver = $this->getUserResolver();
 
-        $user = $this->newUser('lucas.s.abreu@gmail.com', 
+        $user = $this->newUser('lucas.s.abreu@gmail.com',
                                'Lucas dos Santos Abreu',
                                '123456');
         $userDAOService->save($user);
@@ -46,7 +43,7 @@ class UserResolverTest extends TestCase {
         $this->assertEquals($return['user']->id, 1);
 
         $return = $resolver->resolve('lucas.s.abreu@gmail.com', 'rest-api', 'errado');
-        
+
         $this->assertFalse($return);
 
         $return = $resolver->resolve('joaozinho@gmail.com', 'rest-api', '123456');
@@ -55,7 +52,6 @@ class UserResolverTest extends TestCase {
     }
 
     /**
-     * @covers UserResolver::resolve
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Username is required
      */
@@ -65,7 +61,6 @@ class UserResolverTest extends TestCase {
     }
 
     /**
-     * @covers UserResolver::resolve
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Username must consist only of printable characters, excluding the colon
      */
@@ -75,7 +70,6 @@ class UserResolverTest extends TestCase {
     }
 
     /**
-     * @covers UserResolver::resolve
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Username must consist only of printable characters, excluding the colon
      */
@@ -85,7 +79,6 @@ class UserResolverTest extends TestCase {
     }
 
     /**
-     * @covers UserResolver::resolve
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Password is required
      */

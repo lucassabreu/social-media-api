@@ -1,3 +1,4 @@
-source cli/fix-permissions
-cli/composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader 
+#!/bin/bash
+cli/fix-permissions
+cli/composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
 cli/unit-tests

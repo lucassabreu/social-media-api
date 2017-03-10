@@ -13,3 +13,4 @@ temp/
 vendor/
 tests/_reports/
 
+*.sw*

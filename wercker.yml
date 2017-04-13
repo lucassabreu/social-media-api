@@ -1,4 +1,4 @@
-box: lucassabreu/social-media-api
+box: lucassabreu/social-media-api:cli
 build:
     steps:
         - script:

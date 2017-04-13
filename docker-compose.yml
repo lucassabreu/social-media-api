@@ -2,9 +2,33 @@ version: "2.0"
 services:
     php-cli:
         build:
-            dockerfile: Dockerfile
+            dockerfile: Dockerfile.cli
             context: .
         image: social-media-api/cli:local
         volumes:
             - .:/social-media-api
         working_dir: /social-media-api
+    web:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        image: social-media-api/web:local
+        volumes:
+            - .:/var/www/html
+            - ./devops/apache/vhost.conf:/etc/apache2/sites-enabled/000-default.conf
+        ports:
+            - 8080:80
+        links:
+            - db
+    db:
+        image: mysql:5.7
+        working_dir: /var/www/html
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=sma
+            - MYSQL_USER=sma
+            - MYSQL_PASSWORD=sma
+        volumes:
+            - ./.data/db:/var/lib/mysql
+            - ./config/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+

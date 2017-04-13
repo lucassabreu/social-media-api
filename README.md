@@ -30,7 +30,7 @@ Cria um novo usuário no sistema validando para que o mesmo e-mail não seja uti
 
 ### Exemplo Chamada em cURL
 ```sh
-curl -request POST \
+curl -X POST \
   --url http://localhost:8080/api/users \
   --data 'name=Lucas%20dos%20Santos%20Abreu&username=lucas.s.abreu%40gmail.com&password=123456'
 ```
@@ -60,7 +60,7 @@ Uma vez que seja informado usuário e senha corretos será retornado um JSON no 
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url http://localhost:8080/api/users/self \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
@@ -100,7 +100,7 @@ Retorna os usuário cadastrados no sistema no momento, suporta filtro por nome d
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url http://localhost:8080/api/users
 ```
 
@@ -122,7 +122,7 @@ Retorna as informações do usuári do ID passado.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url 'http://localhost:8080/api/users/[:id]'
 ```
 
@@ -154,7 +154,7 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request PUT \
+curl -X PUT \
   --url 'http://localhost:8080/api/users/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --data name=Lucas%20Abreu
@@ -179,7 +179,7 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request PUT \
+curl -X PUT \
   --url 'http://localhost:8080/api/users/[:id]/change-password' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --data 'password=123456&newPassword=654321'
@@ -199,7 +199,7 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request DELETE \
+curl -X DELETE \
   --url 'http://localhost:8080/api/users/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
@@ -232,7 +232,7 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl -request POST \
+curl -X POST \
   --url 'http://localhost:8080/api/users/[:userId]/friends' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --data id=%5B%3AidFriend%5D
@@ -263,7 +263,7 @@ Permite listar as amizades do usuário da URL
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url 'http://localhost:8080/api/users/[:id]/friends' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
@@ -282,7 +282,7 @@ Apenas irá funcionar se o usuário do parâmetro for o mesmo que esta logado.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request DELETE \
+curl -X DELETE \
   --url 'http://localhost:8080/api/users/[:idUser]/friends/[:idFriend]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
@@ -317,7 +317,7 @@ Permite criar uma nova Postagem para o usuário autorizado no sistema. Somente �
 
 ### Exemplo Chamada em cURL
 ```sh
-curl -request POST \
+curl -X POST \
   --url http://localhost:8080/api/posts \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --header 'content-type: multipart/form-data; boundary=---011000010111000001101001' \
@@ -371,7 +371,7 @@ Retorna as Postagens de todo o sistema, essa função permite paginação dos re
 ### Exemplo Chamada em cURL
 
 ```sh
-curl --request GET \
+curl -X GET \
   --url http://localhost:8080/api/posts
 ```
 ## GET Listar Postagem Filtrando
@@ -414,7 +414,7 @@ Retorna as Postagens de todo o sistema, essa função permite paginação dos re
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url 'http://localhost:8080/api/posts?q=text%3Afunny'
 ```
 ## GET Listar Postagens do Usuário
@@ -461,7 +461,7 @@ Permite listar todas as Postagens de *UM* usuário, como um perfil, esta funçã
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url 'http://localhost:8080/api/posts/user/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
@@ -512,7 +512,7 @@ Retorna o Feed do usuário autenticado, sendo com## POSTa das próprias Postagen
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url http://localhost:8080/api/feed \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
@@ -540,7 +540,7 @@ Retorna a data de publicação, Id do usuário, texto e Id da mesma.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request GET \
+curl -X GET \
   --url 'http://localhost:8080/api/posts/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2'
 ```
@@ -562,7 +562,7 @@ Modifica o texto da Postagem informada no parâmetro da URL.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request PUT \
+curl -X PUT \
   --url http://localhost:8080/api/posts/1 \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --data text=not%20that%20funny
@@ -581,7 +581,7 @@ Permite eliminar a Postagem informada na URL.
 
 ### Exemplo Chamada em cURL
 ```sh
-curl --request DELETE \
+curl -X DELETE \
   --url 'http://localhost:8080/api/posts/[:id]' \
   --header 'authorization: Basic bHVjYXMucy5hYnJldUBnbWFpbC5jb206MTIzNDU2' \
   --header 'content-type: multipart/form-data; boundary=---011000010111000001101001'

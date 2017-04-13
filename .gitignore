@@ -14,3 +14,4 @@ vendor/
 tests/_reports/
 
 *.sw*
+.data

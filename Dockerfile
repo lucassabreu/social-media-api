@@ -1,16 +1,12 @@
-FROM php:7
+FROM php:7.1.3-apache
 
 RUN apt-get update && \
-    apt-get install -y wget zip git libfreetype6-dev \
-        libmcrypt-dev libssl-dev libicu-dev libsqlite3-dev
-
-# Install PHP extensions
-RUN docker-php-ext-install -j$(nproc) pdo pdo_sqlite pdo_mysql intl
-
-RUN cd /tmp && wget http://xdebug.org/files/xdebug-2.5.0.tgz && tar -xvzf xdebug-2.5.0.tgz \
-    && cd xdebug-2.5.0 && phpize && ./configure && make && make install \
-    && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20160303 \
-    && echo "zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so" > /usr/local/etc/php/conf.d/xdebug.ini \
-&& echo "xdebug.var_display_max_depth=15" >> /usr/local/etc/php/conf.d/xdebug.ini
+    apt-get install -y libicu-dev && \
+    docker-php-ext-install -j$(nproc) pdo pdo_mysql intl
 
 COPY ./devops/docker/custom.ini /usr/local/etc/php/conf.d/666-custom.ini
+COPY ./devops/apache/vhost.conf /etc/apache2/sites-avaliable/000-default.conf
+COPY . /var/www/html
+
+RUN rm -rf /var/www/html/devops && echo "ServerName social-media-api.local" >> /etc/apache2/apache2.conf && a2enmod rewrite
+

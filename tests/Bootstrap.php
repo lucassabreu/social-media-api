@@ -15,7 +15,8 @@ class Bootstrap
     protected static $serviceManager;
     protected static $config;
 
-    public static function getTestConfig() {
+    public static function getTestConfig()
+    {
         return static::$config;
     }
 

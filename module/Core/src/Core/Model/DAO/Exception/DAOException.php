@@ -7,7 +7,7 @@ namespace Core\Model\DAO\Exception;
 use Exception;
 
 /**
- * Base class for custom DAO exceptions 
+ * Base class for custom DAO exceptions
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */

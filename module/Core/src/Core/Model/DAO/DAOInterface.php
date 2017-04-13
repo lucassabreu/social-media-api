@@ -25,22 +25,22 @@ interface DAOInterface
 
     /**
      * Retrieves the name of entity going to be managed by.
-     * @return string 
+     * @return string
      */
     public function getEntityClassName();
 
     /**
-     * Retrieves the instance of entity based id. 
-     * 
+     * Retrieves the instance of entity based id.
+     *
      * If ID of class is not-unique attribute, that that can be passed by two
      * ways:
-     * 
+     *
      *  DAOInterface::findById($id1, $id2, $id...);
-     *  
+     *
      *  or
-     *      
+     *
      *  DAOInterface::findById(array($id1, $id2, $id...));
-     * 
+     *
      * @param array $key Param or sequence of params to identify entity.
      * @return Entity
      */
@@ -51,7 +51,7 @@ interface DAOInterface
      * @param Entity|array|mixed $ent Entity to be saved or ID for find it
      * @param array $values Values to save
      * @return Entity
-     * 
+     *
      * @throws DAOException Error in entity values.
      */
     public function save($ent, array $values = null);
@@ -60,7 +60,7 @@ interface DAOInterface
      * Removes the param entity.
      * @param Entity $ent
      * @return Entity
-     * 
+     *
      * @throws DAOException Error of relation or state.
      */
     public function remove(Entity $ent);

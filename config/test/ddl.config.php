@@ -16,7 +16,7 @@ return [
         'drop' => 'DROP TABLE users;',
     ],
     'posts' => [
-        'create' => [ 
+        'create' => [
             "CREATE TABLE `posts` (
                 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
                 `userId` int(11) unsigned NOT NULL,
@@ -33,7 +33,7 @@ return [
         'drop' => 'DROP TABLE posts;',
     ],
     'friendship' => [
-        'create' => [ 
+        'create' => [
             "CREATE TABLE `friendships` (
                 `userId` int(11) unsigned NOT NULL,
                 `userFriendId` int(11) unsigned NOT NULL,

@@ -22,7 +22,7 @@ use Zend\View\Renderer\PhpRenderer;
 
 /**
  * Base class for controller at application
- * 
+ *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 abstract class AbstractController extends AbstractActionController
@@ -30,7 +30,7 @@ abstract class AbstractController extends AbstractActionController
 
     /**
      * DAO instance for controller
-     * 
+     *
      * @var DAOInterface
      */
     private $dao = null;

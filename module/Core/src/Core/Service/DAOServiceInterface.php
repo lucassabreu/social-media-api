@@ -7,7 +7,7 @@ use Core\Service\DAOServiceInterface;
 
 /**
  * Base interface for DAO services.
- * 
+ *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
 interface DAOServiceInterface extends DAOInterface

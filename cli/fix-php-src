@@ -1,0 +1,23 @@
+#!/bin/bash
+php_cs_fixer="docker-compose run --rm -u $UID php-cli ./vendor/bin/php-cs-fixer"
+
+if [ -z "$1" ] || [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+    echo \
+'This command will fix PHP source files based on parameters
+    -d, --diff  Will fix the files marked as edited on Git
+    -a, --all   Will fix all the files into the folder "module"
+    <path/file> Will fix the files in the path informmed
+    '
+    exit
+fi
+
+FILES=''
+if [[ "$1" = '-d' || "$1" = '--diff' ]]; then
+    FILES=$(git status --short | egrep -v "^ *D" | cut -c 4- | egrep '(.php|/)$')
+elif [[ "$1" = '-a' || "$1" = '--all' ]]; then
+    FILES="./module"
+else
+    FILES="$@"
+fi
+
+$php_cs_fixer fix --config .php_cs.dist $FILES

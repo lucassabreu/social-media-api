@@ -14,18 +14,18 @@ use Zend\InputFilter\Factory;
 
 /**
  * Base class for entities managed by Core\Model\DAOInterface.
- * 
+ *
  * @see DAOInterface
- * 
+ *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
- * 
+ *
  */
 abstract class Entity implements JsonSerializable, Serializable, InputFilterAwareInterface
 {
 
     /**
      * Filters
-     * 
+     *
      * @var InputFilter
      */
     protected $inputFilter = null;

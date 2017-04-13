@@ -10,7 +10,8 @@ use Zend\Form\View\Helper\FormSelect as ZendFormSelect;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class FormSelect extends ZendFormSelect {
+class FormSelect extends ZendFormSelect
+{
     
     /**
      * Generate an opening select tag
@@ -20,7 +21,8 @@ class FormSelect extends ZendFormSelect {
      * @throws Exception\DomainException
      * @return string
      */
-    public function openTag($attributesOrElement = null) {
+    public function openTag($attributesOrElement = null)
+    {
         if (null === $attributesOrElement) {
             return '<select>';
         }
@@ -61,10 +63,8 @@ class FormSelect extends ZendFormSelect {
      *
      * @return string
      */
-    public function closeTag() {
+    public function closeTag()
+    {
         return '</select>';
     }
-
 }
-
-?>

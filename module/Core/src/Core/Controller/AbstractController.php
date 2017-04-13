@@ -25,7 +25,8 @@ use Zend\View\Renderer\PhpRenderer;
  * 
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-abstract class AbstractController extends AbstractActionController {
+abstract class AbstractController extends AbstractActionController
+{
 
     /**
      * DAO instance for controller
@@ -45,7 +46,8 @@ abstract class AbstractController extends AbstractActionController {
      * @param string $name
      * @return mixed|ServiceManagerAwareInterface|ServiceLocatorAwareInterface
      */
-    public function getService($name) {
+    public function getService($name)
+    {
         return $this->getServiceLocator()->get($name);
     }
 
@@ -54,8 +56,8 @@ abstract class AbstractController extends AbstractActionController {
      * @param ViewModel|array|mixed $model
      * @param string $layout Layout to be used
      */
-    public function renderModel($model) {
-
+    public function renderModel($model)
+    {
         if (is_array($model)) {
             $model = new ViewModel($model);
         }
@@ -74,23 +76,21 @@ abstract class AbstractController extends AbstractActionController {
      * Retrieves a DAO instance
      * @return DAOInterface
      */
-    public function dao($name = null) {
-
+    public function dao($name = null)
+    {
         if ($name === null) {
-            if ($this->dao === null)
+            if ($this->dao === null) {
                 $this->dao = $this->getService($this->daoName);
+            }
 
             return $this->dao;
-        }
-        else
+        } else {
             return $this->getService($name);
+        }
     }
 
-    public function indexAction() {
+    public function indexAction()
+    {
         return new ViewModel();
     }
-
-
 }
-
-?>

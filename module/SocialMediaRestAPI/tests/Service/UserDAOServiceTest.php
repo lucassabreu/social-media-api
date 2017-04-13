@@ -19,13 +19,15 @@ class UserDAOServiceTest extends TestCase
 {
     use ModelHelpTestTrait;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         $this->setUpDatabase = true;
         parent::setUp();
     }
 
-    public function testHasBeenRegisteredForDi() {
+    public function testHasBeenRegisteredForDi()
+    {
         $userDAOService = $this->getUserDAOService();
         $this->assertNotNull($userDAOService);
         $this->assertEquals(get_class($userDAOService), UserDAOService::class);
@@ -35,7 +37,8 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testHasBeenRegisteredForDi
      */
-    public function testSaveAndRetrieveAUser() {
+    public function testSaveAndRetrieveAUser()
+    {
         $uDAO = $this->getUserDAOService();
         $user = $this->newUser('lucas.s.abreu@gmail.com', 'Lucas dos Santos Abreu', '123456');
         $user = $uDAO->save($user);
@@ -63,7 +66,8 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testSaveAndRetrieveAUser
      */
-    public function testCanFindByUsername () {
+    public function testCanFindByUsername()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $this->newUser('alguem@gmail.com', 'Alguem', '123456');
         $userDAOService->save($user);
@@ -80,9 +84,10 @@ class UserDAOServiceTest extends TestCase
 
     /**
      * @expectedException \Core\Model\DAO\Exception\DAOException
-     * @expectedExceptionMessageRegExp /Aready exists a User with the username \".+\"/ 
+     * @expectedExceptionMessageRegExp /Aready exists a User with the username \".+\"/
      */
-    public function testCanHasOnlyOneUserByUsername () {
+    public function testCanHasOnlyOneUserByUsername()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $this->newUser();
         $user->username = "lucas.s.abreu@gmail.com";
@@ -98,7 +103,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Username can't be changed !
      */
-    public function testCantChangeUsername () {
+    public function testCantChangeUsername()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $this->newUser();
         $user->username = 'um@localhost.com';
@@ -113,9 +119,10 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testCanFindByUsername
      * @expectedException \Core\Model\DAO\Exception\DAOException
-     * @expectedExceptionMessage To change the password must use changeUserPassword method ! 
+     * @expectedExceptionMessage To change the password must use changeUserPassword method !
      */
-    public function testCantChangePasswordOnSave () {
+    public function testCantChangePasswordOnSave()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $this->newUser('lucas.s.abreu2@gmail.com');
         $user->password = '123456';
@@ -131,8 +138,8 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testCantChangePasswordOnSave
      */
-    public function testChangeUsersPassword () {
-
+    public function testChangeUsersPassword()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user = $this->newUser("lucas@localhost.com");
@@ -149,8 +156,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Password is not correct !
      */
-    public function testMustInformTheCurrentPasswordToChangeIt () {
-
+    public function testMustInformTheCurrentPasswordToChangeIt()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user = $this->newUser("lucas@localhost.com");
@@ -165,8 +172,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed a new password !
      */
-    public function testMustInformTheNewPassword () {
-
+    public function testMustInformTheNewPassword()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user = $this->newUser("lucas@localhost.com");
@@ -179,13 +186,14 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testCantChangePasswordOnSave
      */
-    public function testCantChangePasswordIfTheOldIsWrong () {
+    public function testCantChangePasswordIfTheOldIsWrong()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->findByUsername('lucas.s.abreu@gmail.com');
     }
 
-    public function testCanDeleteUsers() {
-
+    public function testCanDeleteUsers()
+    {
         $user1 = $this->newUser('user1@localhost.com');
         $user2 = $this->newUser('user2@localhost.com');
 
@@ -202,8 +210,8 @@ class UserDAOServiceTest extends TestCase
         $this->assertNull($user);
     }
 
-    public function testMakeFriends() {
-
+    public function testMakeFriends()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user1 = $this->newUser('user0@localhost.net');
@@ -239,13 +247,13 @@ class UserDAOServiceTest extends TestCase
 
         $this->assertEquals(count($user->getFriends()), 1);
         $this->assertEquals(count($friend->getFriends()), 2);
-
     }
 
     /**
      * @depends testMakeFriends
      */
-    public function testRemoveFriendship() {
+    public function testRemoveFriendship()
+    {
         $users = [];
 
         $users[] = $this->newUser("user0@localhost.com");
@@ -271,7 +279,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage You can not befriend yourself !
      */
-    public function testCanBefriendYourself() {
+    public function testCanBefriendYourself()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user = $this->newUser();
@@ -285,8 +294,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessageRegExp /You and \".+\" are aready friends \!/
      */
-    public function testOnlyOneFriendshipByDuo () {
-
+    public function testOnlyOneFriendshipByDuo()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user = $this->newUser('user@localhost.net');
@@ -308,7 +317,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed the two users to create a friendship !
      */
-    public function testMustBeTwoToBeAFrienship () {
+    public function testMustBeTwoToBeAFrienship()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $this->newUser('user@localhost.net');
 
@@ -321,7 +331,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed the two users to remove a friendship !
      */
-    public function testYouMustHaveAFriendToUnfriendSomeone () {
+    public function testYouMustHaveAFriendToUnfriendSomeone()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $this->newUser('user@localhost.net');
 
@@ -333,7 +344,8 @@ class UserDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage You can not unfriend yourself !
      */
-    public function testCantUnfriendYourself() {
+    public function testCantUnfriendYourself()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user = $this->newUser();
@@ -345,8 +357,8 @@ class UserDAOServiceTest extends TestCase
     /**
      * @depends testMakeFriends
      */
-    public function testRemoveUser () {
-
+    public function testRemoveUser()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $user = $this->newUser('user@localhost.net');

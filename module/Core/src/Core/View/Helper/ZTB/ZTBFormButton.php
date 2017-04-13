@@ -12,24 +12,29 @@ use Exception;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class ZTBFormButton extends FormButton {
-
-    public function __invoke(ElementInterface $element = null, $buttonContent = null, $extendParams = array()) {
-        if (!$element)
+class ZTBFormButton extends FormButton
+{
+    public function __invoke(ElementInterface $element = null, $buttonContent = null, $extendParams = array())
+    {
+        if (!$element) {
             return $this;
+        }
 
         return $this->render($element, $buttonContent, $extendParams);
     }
 
-    public function render(ElementInterface $element, $buttonContent = null, $extendParams = array()) {
+    public function render(ElementInterface $element, $buttonContent = null, $extendParams = array())
+    {
         if (count($extendParams) !== 0) {
             $options = $element->getOptions();
 
-            if (isset($extendParams['btn_type']))
+            if (isset($extendParams['btn_type'])) {
                 $options['btn_type'] = $extendParams['btn_type'];
+            }
 
-            if (isset($extendParams['icon']))
+            if (isset($extendParams['icon'])) {
                 $options['icon'] = $extendParams['icon'];
+            }
 
             $element->setOptions($options);
         }
@@ -37,8 +42,8 @@ class ZTBFormButton extends FormButton {
         return parent::render($element, $buttonContent);
     }
 
-    public function openTag($attributesOrElement = null) {
-
+    public function openTag($attributesOrElement = null)
+    {
         $return = "";
         $icon = null;
 
@@ -60,8 +65,9 @@ class ZTBFormButton extends FormButton {
                 unset($attributesOrElement['btn_type']);
             }
 
-            if (!(strpos($class, 'btn ') > 0))
+            if (!(strpos($class, 'btn ') > 0)) {
                 $class = "btn $class";
+            }
 
             $attributesOrElement['class'] = trim($class);
 
@@ -81,10 +87,11 @@ class ZTBFormButton extends FormButton {
             $element = $attributesOrElement;
             /* @var $element ElementInterface */
 
-            if ($element->getAttribute('class') === null)
+            if ($element->getAttribute('class') === null) {
                 $class = '';
-            else
+            } else {
                 $class = "{$element->getAttribute('class')} ";
+            }
 
             $options = $element->getOptions();
 
@@ -93,8 +100,9 @@ class ZTBFormButton extends FormButton {
                 unset($options['btn_type']);
             }
 
-            if (!(strpos($class, "btn ") > 0))
+            if (!(strpos($class, "btn ") > 0)) {
                 $class = "btn $class";
+            }
 
             $element->setAttribute('class', trim($class));
 
@@ -111,15 +119,13 @@ class ZTBFormButton extends FormButton {
         if ($icon !== null) {
             $icons = preg_split('/ /', $icon);
             $icon = "icon";
-            foreach ($icons as $ic)
+            foreach ($icons as $ic) {
                 $icon .= " icon-$ic";
+            }
 
             $return = $return . sprintf('<i class="%s"></i> ', $icon);
         }
 
         return $return;
     }
-
 }
-
-?>

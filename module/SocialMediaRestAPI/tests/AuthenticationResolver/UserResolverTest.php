@@ -9,21 +9,24 @@ use SocialMediaRestAPI\Authentication\Resolver\UserResolver;
 use SocialMediaRestAPI\Model\Entity\User;
 use SocialMediaRestAPITest\Traits\ModelHelpTestTrait;
 
-class UserResolverTest extends TestCase {
-
+class UserResolverTest extends TestCase
+{
     use ModelHelpTestTrait;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         $this->setUpDatabase = true;
         parent::setUp();
     }
 
-    public function getUserResolver () {
-        return new UserResolver ($this->getUserDAOService());
+    public function getUserResolver()
+    {
+        return new UserResolver($this->getUserDAOService());
     }
 
-    public function testCanAuthenticate () {
+    public function testCanAuthenticate()
+    {
         $userDAOService = $this->getUserDAOService();
         $resolver = $this->getUserResolver();
 
@@ -55,7 +58,8 @@ class UserResolverTest extends TestCase {
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Username is required
      */
-    public function testMustBeInformmedAUsername () {
+    public function testMustBeInformmedAUsername()
+    {
         $resolver = $this->getUserResolver();
         $return = $resolver->resolve('', 'rest-api', '123456');
     }
@@ -64,7 +68,8 @@ class UserResolverTest extends TestCase {
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Username must consist only of printable characters, excluding the colon
      */
-    public function testUsernameMustBePrintable () {
+    public function testUsernameMustBePrintable()
+    {
         $resolver = $this->getUserResolver();
         $return = $resolver->resolve('lucas' . chr(2), 'rest-api', '123456');
     }
@@ -73,7 +78,8 @@ class UserResolverTest extends TestCase {
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Username must consist only of printable characters, excluding the colon
      */
-    public function testUsernameMustBePrintableExceptionColon () {
+    public function testUsernameMustBePrintableExceptionColon()
+    {
         $resolver = $this->getUserResolver();
         $return = $resolver->resolve('lucas.s.abreu:gmail.com', 'rest-api', '123456');
     }
@@ -82,7 +88,8 @@ class UserResolverTest extends TestCase {
      * @expectedException \Zend\Authentication\Adapter\Http\Exception\InvalidArgumentException
      * @expectedExceptionMessage Password is required
      */
-    public function testMustBeInformmedAPassword () {
+    public function testMustBeInformmedAPassword()
+    {
         $resolver = $this->getUserResolver();
         $return = $resolver->resolve('lucas.s.abreu@gmail.com', 'rest-api', '');
     }

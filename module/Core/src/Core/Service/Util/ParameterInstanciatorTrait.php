@@ -6,7 +6,8 @@ use Exception;
 use Closure;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-trait ParameterInstanciatorTrait {
+trait ParameterInstanciatorTrait
+{
 
     /**
      * Retrieves a instance of param.
@@ -15,7 +16,8 @@ trait ParameterInstanciatorTrait {
      * @return DAOInterface
      * @throws Exception When the param not be a Closure or a valid class name.
      */
-    protected function returnInstanceOf($param, ServiceLocatorInterface $serviceLocator) {
+    protected function returnInstanceOf($param, ServiceLocatorInterface $serviceLocator)
+    {
         $instance = null;
 
         if ($param instanceof Closure) {
@@ -24,8 +26,9 @@ trait ParameterInstanciatorTrait {
             if (class_exists('\\' . $param)) {
                 $param = ('\\' . $param);
                 $instance = new $param();
-            } else
+            } else {
                 throw new Exception("A dependent object must be a anonimous function or a class name valid. Param: $param");
+            }
         }
 
         return $instance;

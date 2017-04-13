@@ -16,9 +16,10 @@ use Zend\View\Model\JsonModel;
 
 /**
  * AbstractRestfulController with some alterations to fulfill needs
- * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com> 
+ * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class AbstractRestfulController extends ZendRestfulController {
+class AbstractRestfulController extends ZendRestfulController
+{
 
     /**
      * Handle the request
@@ -36,7 +37,7 @@ class AbstractRestfulController extends ZendRestfulController {
             $model = $this->returnAuthenticationFail();
             $e->setResult($model);
             return $model;
-        } catch(Exception $ex) {
+        } catch (Exception $ex) {
             $model = $this->returnError(403, $ex->getMessage());
             $e->setResult($model);
             return $model;
@@ -47,7 +48,8 @@ class AbstractRestfulController extends ZendRestfulController {
      * Retrieves the Query parameters from the Request
      * @return ParametersInterface
      */
-    protected function getQuery($name, $default = null) {
+    protected function getQuery($name, $default = null)
+    {
         return $this->getRequest()->getQuery($name, $default);
     }
 
@@ -55,7 +57,8 @@ class AbstractRestfulController extends ZendRestfulController {
      * Retrieves the Post parameters from the Request
      * @return ParametersInterface
      */
-    protected function getPost($name, $default = null) {
+    protected function getPost($name, $default = null)
+    {
         return $this->getRequest()->getPost($name, $default);
     }
 
@@ -65,7 +68,8 @@ class AbstractRestfulController extends ZendRestfulController {
      * @param $message
      * @return JsonModel
      */
-    protected function returnError($statusCode, $message) {
+    protected function returnError($statusCode, $message)
+    {
         $this->setStatusCode($statusCode);
         $model = new JsonModel([
             'error' => [
@@ -76,7 +80,8 @@ class AbstractRestfulController extends ZendRestfulController {
         return $model;
     }
 
-    protected function returnAuthenticationFail () {
+    protected function returnAuthenticationFail()
+    {
         return $this->returnError(401, "You must be authenticated to perform this action !");
     }
 
@@ -85,7 +90,8 @@ class AbstractRestfulController extends ZendRestfulController {
      * @param $statusCode
      * @return void
      */
-    public function setStatusCode($statusCode) {
+    public function setStatusCode($statusCode)
+    {
         $this->getResponse()->setStatusCode($statusCode);
     }
 
@@ -93,18 +99,20 @@ class AbstractRestfulController extends ZendRestfulController {
      * Execute a Paginator Adapter and retrive a Json array formatted
      * @param $adapter AdapterInterface to be consumed
      * @param $limit Number of items to read
-     * @param $offset Where to start 
+     * @param $offset Where to start
      * @return array
      */
-    protected function convertPaginatorToJson (AdapterInterface $adapter, $limit, $offset) {
+    protected function convertPaginatorToJson(AdapterInterface $adapter, $limit, $offset)
+    {
         $return = [
             'result' => [],
         ];
 
         $items = $adapter->getItems($offset, $limit);
 
-        foreach($items as $item)
+        foreach ($items as $item) {
             $return['result'][] = $this->entityToJson($item);
+        }
 
         $return['paging'] = [
             'count' => count($items),
@@ -115,7 +123,8 @@ class AbstractRestfulController extends ZendRestfulController {
         return $return;
     }
 
-    protected function entityToJson (Entity $ent) {
+    protected function entityToJson(Entity $ent)
+    {
         return $ent->getData();
     }
 }

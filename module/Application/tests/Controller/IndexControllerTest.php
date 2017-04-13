@@ -11,20 +11,18 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
     {
         $config = __DIR__ . '/../../../../config/test/application.config.php';
         
-        if (file_exists($config))
-        {
+        if (file_exists($config)) {
             $this->setApplicationConfig(
                 ArrayUtils::merge(
                     include __DIR__ . '/../../../../config/application.config.php',
                     include $config
                 )
             );
-        }
-        else {
+        } else {
             $this->setApplicationConfig(
                 include __DIR__ . '/../../../../config/application.config.php'
             );
-        } 
+        }
         parent::setUp();
     }
 

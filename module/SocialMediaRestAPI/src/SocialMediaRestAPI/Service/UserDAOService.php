@@ -21,33 +21,40 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
      */
     private $postDAOService = null;
 
-    protected function getPostDAOService() {
-        if ($this->postDAOService === null)
+    protected function getPostDAOService()
+    {
+        if ($this->postDAOService === null) {
             $this->postDAOService = $this->getServiceLocator()->get(PostDAOService::class);
+        }
         
         return $this->postDAOService;
     }
 
-    public function remove (Entity $user) {
-
-        if ($user === null || !($user instanceof User))
+    public function remove(Entity $user)
+    {
+        if ($user === null || !($user instanceof User)) {
             throw new DAOException("Must be informmed a user to remove !");
+        }
 
         $friendList = [];
-        foreach($user->getFriends() as $friend)
+        foreach ($user->getFriends() as $friend) {
             $friendList[] = $friend;
+        }
 
-        foreach ($friendList as $friend)
+        foreach ($friendList as $friend) {
             $this->removeFriendship($user, $friend);
+        }
 
         $posts = $this->getPostDAOService()->fetchUserPosts($user);
-        foreach ($posts as $post)
+        foreach ($posts as $post) {
             $this->getPostDAOService()->remove($post);
+        }
 
         return parent::remove($user);
     }
     
-    public function save($ent, array $values = null) {
+    public function save($ent, array $values = null)
+    {
 
         /* @var $user User */
         $user = null;
@@ -56,47 +63,54 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
             $user = new User();
             unset($values['id']);
         } else {
-            if (!($ent instanceof User))
+            if (!($ent instanceof User)) {
                 $user = $this->findById($ent);
-            else 
+            } else {
                 $user = $ent;
-        }
-
-        if ($values == null)
-            $values = $user->getArrayCopy();
-
-        if ($user->id !== null) {
-            $oldUser = $this->findById($user->id);
-            if ($oldUser !== null)
-                $user->setData($oldUser->getData());
-            else {
-                $user->id = null;
-                if (isset($values['id']))
-                    unset($values['id']);
             }
         }
 
-        if (isset($values['friends']))
+        if ($values == null) {
+            $values = $user->getArrayCopy();
+        }
+
+        if ($user->id !== null) {
+            $oldUser = $this->findById($user->id);
+            if ($oldUser !== null) {
+                $user->setData($oldUser->getData());
+            } else {
+                $user->id = null;
+                if (isset($values['id'])) {
+                    unset($values['id']);
+                }
+            }
+        }
+
+        if (isset($values['friends'])) {
             unset($values['friends']);
+        }
 
         if ($user->id === null) { // insert
             $values['password'] = md5($values['password']);
             $user->setData($values);
         } else { // update
 
-            if (isset($values['username']) && $values['username'] != $user->username)
+            if (isset($values['username']) && $values['username'] != $user->username) {
                 throw new DAOException("Username can't be changed !");
+            }
 
-            if (isset($values['password']) && $values['password'] !== $user->password) 
+            if (isset($values['password']) && $values['password'] !== $user->password) {
                 throw new DAOException("To change the password must use changeUserPassword method !");
+            }
         }
 
         $otherUser = $this->findByUsername($user->username);
 
-        if ($otherUser !== null && $otherUser->id !== $user->id)
+        if ($otherUser !== null && $otherUser->id !== $user->id) {
             throw new DAOException(
                 sprintf("Aready exists a User with the username \"%s\"",
                         $user->username));
+        }
 
         $user->setData($values);
         $user->validate();
@@ -109,46 +123,52 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
      * @param $username
      * @return User
      */
-    public function findByUsername ($username) {
-
-        $users = $this->fetchByParams ([
+    public function findByUsername($username)
+    {
+        $users = $this->fetchByParams([
             'username' => $username,
         ]);
 
-        if (count($users) == 1)
+        if (count($users) == 1) {
             return $users[0];
-        else
+        } else {
             return null;
+        }
     }
 
     /**
-     * Change the parameter's user password for the $newPassword, only when $password 
+     * Change the parameter's user password for the $newPassword, only when $password
      * is equal to tue current one
      * @param $user
      * @param $password
      * @param $newPassword
      * @return User
      */
-    public function changeUserPassword ($ent, $password, $newPassword) {
+    public function changeUserPassword($ent, $password, $newPassword)
+    {
 
         /* @var $user User */
         $user = null;
 
-        if (!($ent instanceof User))
+        if (!($ent instanceof User)) {
             $user = $this->findById($ent);
-        else
+        } else {
             $user = $ent;
+        }
 
-        if($user === null)
+        if ($user === null) {
             throw new DAOException("This method can only be used for user that exists !");
+        }
 
-        if($newPassword === null || trim($newPassword) == "")
+        if ($newPassword === null || trim($newPassword) == "") {
             throw new DAOException("Must be informmed a new password !");
+        }
 
         $password = md5($password);
 
-        if ($password !== $user->password)
+        if ($password !== $user->password) {
             throw new DAOException("Password is not correct !");
+        }
 
         $user->password = md5($newPassword);
         $user = $this->dao->save($user);
@@ -162,25 +182,30 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
      * @param $friend
      * @return void
      */
-    public function createFriendship($user, $friend) {
-
-        if ($user !== null && !($user instanceof User))
+    public function createFriendship($user, $friend)
+    {
+        if ($user !== null && !($user instanceof User)) {
             $user = $this->findById($user);
+        }
 
-        if ($friend !== null && !($friend instanceof User))
+        if ($friend !== null && !($friend instanceof User)) {
             $friend = $this->findById($friend);
+        }
 
-        if ($user === null || $friend === null)
+        if ($user === null || $friend === null) {
             throw new DAOException("Must be informmed the two users to create a friendship !");
+        }
 
-        if ($user->id === $friend->id)
+        if ($user->id === $friend->id) {
             throw new DAOException("You can not befriend yourself !");
+        }
 
         $otherFriend = $this->returnFriendById($friend->id, $user->getFriends());
 
-        if ($otherFriend !== null)
+        if ($otherFriend !== null) {
             throw new DAOException(sprintf("You and \"%s\" are aready friends !",
                                             $friend->name));
+        }
 
         $user->getFriends()->add($friend);
         $friend->getFriends()->add($user);
@@ -197,30 +222,35 @@ class UserDAOService extends AbstractDAOService implements UserDAOInterface
      * @param $friend
      * @return void
      */
-    public function removeFriendship ($user, $friend) {
-
-        if ($user !== null && !($user instanceof User))
+    public function removeFriendship($user, $friend)
+    {
+        if ($user !== null && !($user instanceof User)) {
             $user = $this->findById($user);
+        }
 
-        if ($friend !== null && !($friend instanceof User))
+        if ($friend !== null && !($friend instanceof User)) {
             $friend = $this->findById($friend);
+        }
 
-        if ($user === null || $friend === null)
+        if ($user === null || $friend === null) {
             throw new DAOException("Must be informmed the two users to remove a friendship !");
+        }
 
-        if ($user->id === $friend->id)
+        if ($user->id === $friend->id) {
             throw new DAOException("You can not unfriend yourself !");
+        }
 
         $otherFriend = $this->returnFriendById($friend->id, $user->getFriends());
-        if ($otherFriend !== null)
+        if ($otherFriend !== null) {
             $user->getFriends()->removeElement($otherFriend);
+        }
 
         $otherFriend = $this->returnFriendById($user->id, $friend->getFriends());
-        if ($otherFriend !== null)
+        if ($otherFriend !== null) {
             $friend->getFriends()->removeElement($otherFriend);
+        }
 
         $this->dao->save($user);
         $this->dao->save($friend);
     }
-
 }

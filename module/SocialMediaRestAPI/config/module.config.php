@@ -22,7 +22,7 @@ return [
     ],
     'service_manager' => [
         'factories' => [
-            'Zend\Authentication\Adapter\Http' => 
+            'Zend\Authentication\Adapter\Http' =>
                 'Core\Authentification\Http\AuthentificationAdapterFactory',
             'Zend\Authentication\AuthenticationService' => function ($sm) {
                 $adapter = $sm->get('Zend\Authentication\Adapter\Http');
@@ -44,19 +44,19 @@ return [
         'invokables' => [
         ],
         'factories' => [
-            'SocialMediaRestAPI\Controller\UserRest' => function($sm) {
+            'SocialMediaRestAPI\Controller\UserRest' => function ($sm) {
                 $sl = $sm->getServiceLocator();
                 $dao = $sl->get('SocialMediaRestAPI\Service\UserDAOService');
                 $auth = $sl->get('Zend\Authentication\AuthenticationService');
                 return new Controller\UserRestController($dao, $auth);
             },
-            'SocialMediaRestAPI\Controller\FriendRest' => function($sm) {
+            'SocialMediaRestAPI\Controller\FriendRest' => function ($sm) {
                 $sl = $sm->getServiceLocator();
                 $dao = $sl->get('SocialMediaRestAPI\Service\UserDAOService');
                 $auth = $sl->get('Zend\Authentication\AuthenticationService');
                 return new Controller\FriendRestController($dao, $auth);
             },
-            'SocialMediaRestAPI\Controller\PostRest' => function($sm) {
+            'SocialMediaRestAPI\Controller\PostRest' => function ($sm) {
                 $sl = $sm->getServiceLocator();
                 $dao = $sl->get('SocialMediaRestAPI\Service\PostDAOService');
                 $auth = $sl->get('Zend\Authentication\AuthenticationService');

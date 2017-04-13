@@ -8,16 +8,18 @@ use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
 
 /**
- * Class retrieves a filled ACL. 
+ * Class retrieves a filled ACL.
  * @author Lucas dos Santos abreu <lucas.s.abreu@gmail.com>
  */
-class Builder extends Service {
+class Builder extends Service
+{
 
     /**
      * Constroi a ACL
-     * @return Acl 
+     * @return Acl
      */
-    public function build() {
+    public function build()
+    {
         $config = $this->getService('Config');
         $acl = new Acl();
         foreach ($config['acl']['roles'] as $role => $parent) {
@@ -41,5 +43,4 @@ class Builder extends Service {
 
         return $acl;
     }
-
 }

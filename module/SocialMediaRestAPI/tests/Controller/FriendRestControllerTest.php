@@ -10,12 +10,13 @@ use SocialMediaRestAPITest\Traits;
 use Zend\View\Model\JsonModel;
 use Zend\Http\Request as HttpRequest;
 
-class FriendRestControllerTest extends TestCase {
-
+class FriendRestControllerTest extends TestCase
+{
     use Traits\ModelHelpTestTrait;
     use Traits\HttpAuthorizationBasicTrait;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         $this->setUpDatabase = true;
         parent::setUp();
@@ -35,9 +36,10 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCantCreateAFriendshipWithoutAuthorization() {
+    public function testCantCreateAFriendshipWithoutAuthorization()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $users = [];
@@ -53,9 +55,10 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCreateAFriendship() {
+    public function testCreateAFriendship()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $users = [];
@@ -132,7 +135,7 @@ class FriendRestControllerTest extends TestCase {
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
 
-        $this->assertEquals("Must be informmed the two users to create a friendship !", 
+        $this->assertEquals("Must be informmed the two users to create a friendship !",
             $vars['error']['message']);
 
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
@@ -153,9 +156,10 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testListFriends() {
+    public function testListFriends()
+    {
         $users = $this->createGenericUsers(3);
         $userDAOService = $this->getUserDAOService();
 
@@ -220,9 +224,10 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCantUnfriendUsersWithoutAuthorization() {
+    public function testCantUnfriendUsersWithoutAuthorization()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $users = [];
@@ -238,10 +243,10 @@ class FriendRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCanUnfriendUsers() {
-        
+    public function testCanUnfriendUsers()
+    {
         $userDAOService = $this->getUserDAOService();
 
         $users = [];
@@ -274,6 +279,6 @@ class FriendRestControllerTest extends TestCase {
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
         
-        $this->assertEquals("You can't modify others users data !", $vars['error']['message']); 
+        $this->assertEquals("You can't modify others users data !", $vars['error']['message']);
     }
 }

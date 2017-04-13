@@ -11,7 +11,8 @@ use Zend\Validator\AbstractValidator;
  * Callback Validor expanded.
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class GenericValidator extends AbstractValidator {
+class GenericValidator extends AbstractValidator
+{
 
     /**
      * Anonnimous function with the validation
@@ -19,9 +20,11 @@ class GenericValidator extends AbstractValidator {
      */
     public $validatorFunction = null;
 
-    public function isValid($value) {
-        if ($this->validatorFunction == null || !($this->validatorFunction instanceof Closure))
+    public function isValid($value)
+    {
+        if ($this->validatorFunction == null || !($this->validatorFunction instanceof Closure)) {
             throw new InvalidArgumentException("The property validatorFunction must be a Closure");
+        }
 
         return $this->validatorFunction->__invoke($value, $this);
     }
@@ -31,7 +34,8 @@ class GenericValidator extends AbstractValidator {
      * @param  string $value      OPTIONAL
      * @return void
      */
-    public function error($messageKey, $value = null) {
+    public function error($messageKey, $value = null)
+    {
         if ($messageKey === null) {
             $keys = array_keys($this->abstractOptions['messageTemplates']);
             $messageKey = current($keys);
@@ -41,7 +45,7 @@ class GenericValidator extends AbstractValidator {
             $value = $this->value;
         }
 
-        $this->abstractOptions['messageTemplates'][$messageKey] = $messageKey;     
+        $this->abstractOptions['messageTemplates'][$messageKey] = $messageKey;
         $this->abstractOptions['messages'][$messageKey] = $this->createMessage($messageKey, $value);
     }
 
@@ -49,7 +53,8 @@ class GenericValidator extends AbstractValidator {
      * Retrives the validator function
      * @return Closure
      */
-    public function getValidatorFunction() {
+    public function getValidatorFunction()
+    {
         return $this->validatorFunction;
     }
 
@@ -58,11 +63,9 @@ class GenericValidator extends AbstractValidator {
      * @param Closure $validatorFunction
      * @return GenericValidator
      */
-    public function setValidatorFunction($validatorFunction) {
+    public function setValidatorFunction($validatorFunction)
+    {
         $this->validatorFunction = $validatorFunction;
         return $this;
     }
-
 }
-
-?>

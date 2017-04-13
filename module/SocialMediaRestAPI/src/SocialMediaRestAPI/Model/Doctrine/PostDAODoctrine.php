@@ -15,7 +15,8 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator;
  */
 class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
 {
-    public function __construct () {
+    public function __construct()
+    {
         parent::__construct('SocialMediaRestAPI\Model\Entity\Post');
     }
 
@@ -25,11 +26,11 @@ class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
      * @param array $params
      * @return QueryBuilder
      */
-    private function buildUserFeedQuery($user, array $params, $limit = null, $offset = null) {
-
+    private function buildUserFeedQuery($user, array $params, $limit = null, $offset = null)
+    {
         $users = [];
 
-        foreach($user->getFriends() as $friend) {
+        foreach ($user->getFriends() as $friend) {
             $users[] = $friend;
         }
 
@@ -46,7 +47,8 @@ class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
     /**
      * @override
      */
-    public function fetchUserFeed ($user, array $params = [], $limit = null, $offset = null) {
+    public function fetchUserFeed($user, array $params = [], $limit = null, $offset = null)
+    {
         $qb = $this->buildUserFeedQuery($user, $params, $limit, $offset);
         $qb->orderBy("ent.datePublish", "DESC");
         $query = $qb->getQuery();
@@ -56,14 +58,17 @@ class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
     /**
      * @override
      */
-    public function getUserFeedAdapterPaginator($user, array $params = [], $orderBy = null) {
+    public function getUserFeedAdapterPaginator($user, array $params = [], $orderBy = null)
+    {
         $qb = $this->buildUserFeedQuery($user, $params);
 
-        if ($orderBy != null)
-            foreach ($orderBy as $column => $order)
+        if ($orderBy != null) {
+            foreach ($orderBy as $column => $order) {
                 $qb->orderBy("ent.$column", $order);
-        else
+            }
+        } else {
             $qb->orderBy("ent.datePublish", "DESC");
+        }
         
         $paginator = new Paginator($qb->getQuery(), false); // problems with orderby that no one wants to solve
         $adapter = new DoctrinePaginator($paginator);
@@ -77,7 +82,8 @@ class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
      * @param array $params
      * @return QueryBuilder
      */
-    private function buildUsersPostQuery($user, array $params, $limit = null, $offset = null) {
+    private function buildUsersPostQuery($user, array $params, $limit = null, $offset = null)
+    {
         $params['user'] = $user;
         $qb = $this->getQuery($params, $limit, $offset);
         return $qb;
@@ -86,7 +92,8 @@ class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
     /**
      * @override
      */
-    public function fetchUserPosts ($user, array $params = [], $limit = null, $offset = null) {
+    public function fetchUserPosts($user, array $params = [], $limit = null, $offset = null)
+    {
         $qb = $this->buildUsersPostQuery($user, $params, $limit, $offset);
         $qb->orderBy("ent.datePublish", "DESC");
         $query = $qb->getQuery();
@@ -96,19 +103,21 @@ class PostDAODoctrine extends AbstractDoctrineDAO implements PostDAOInterface
     /**
      * @override
      */
-    public function getUserPostsAdapterPaginator ($user, array $params = [], $orderBy = null) {
+    public function getUserPostsAdapterPaginator($user, array $params = [], $orderBy = null)
+    {
         $qb = $this->buildUsersPostQuery($user, $params);
 
-        if ($orderBy != null)
-            foreach ($orderBy as $column => $order)
+        if ($orderBy != null) {
+            foreach ($orderBy as $column => $order) {
                 $qb->orderBy("ent.$column", $order);
-        else
+            }
+        } else {
             $qb->orderBy("ent.datePublish", "DESC");
+        }
         
         $paginator = new Paginator($qb->getQuery(), false); // problems with orderby that no one wants to solve
         $adapter = new DoctrinePaginator($paginator);
 
         return $adapter;
     }
-
 }

@@ -15,3 +15,4 @@ tests/_reports/
 
 *.sw*
 .data
+.php_cs.cache

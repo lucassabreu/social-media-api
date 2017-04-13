@@ -21,13 +21,15 @@ class PostDAOServiceTest extends TestCase
 {
     use ModelHelpTestTrait;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         $this->setUpDatabase = true;
         parent::setUp();
     }
 
-    public function testHasBeenRegisteredForDi() {
+    public function testHasBeenRegisteredForDi()
+    {
         $postDAOService = $this->getPostDAOService();
         $this->assertNotNull($postDAOService);
         $this->assertEquals(get_class($postDAOService), PostDAOService::class);
@@ -37,7 +39,8 @@ class PostDAOServiceTest extends TestCase
     /**
      * @depends testHasBeenRegisteredForDi
      */
-    public function testCanCreateAndRetrieve() {
+    public function testCanCreateAndRetrieve()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $user = $this->createGenericUsers(1)[0];
@@ -74,7 +77,8 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Publish date cannot be changed !
      */
-    public function testCannotChangeDatePublish() {
+    public function testCannotChangeDatePublish()
+    {
         $post = $this->newPost('something funny', null, "2016-07-07 12:00:01");
         $postDAOService = $this->getPostDAOService();
         $post = $postDAOService->save($post);
@@ -89,7 +93,8 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage User cannot be changed !
      */
-    public function testCannotChangeUser() {
+    public function testCannotChangeUser()
+    {
         $users = $this->createGenericUsers(2);
         $post = $this->newPost('something funny', $users[0]);
         $postDAOService = $this->getPostDAOService();
@@ -105,7 +110,8 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed a valid User !
      */
-    public function testCantSetAInvalidUser () {
+    public function testCantSetAInvalidUser()
+    {
         $post = new Post();
         $post->datePublish = new DateTime();
         $post->text = "something funny";
@@ -122,7 +128,8 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must be informmed a valid publish date !
      */
-    public function testCantSetAInvalidPublishDate () {
+    public function testCantSetAInvalidPublishDate()
+    {
         $post = new Post();
         $post->text = "something funny";
         $post->user = $this->createGenericUsers(1)[0];
@@ -136,7 +143,8 @@ class PostDAOServiceTest extends TestCase
     /**
      * @depends testCanCreateAndRetrieve
      */
-    public function testCanRemoveAPost() {
+    public function testCanRemoveAPost()
+    {
         $user = $this->createGenericUsers(1)[0];
         $post = $this->createGenericPosts($user, 1)[0];
         $this->assertEquals(1, $post->id);
@@ -151,7 +159,8 @@ class PostDAOServiceTest extends TestCase
     /**
      * @depends testCanCreateAndRetrieve
      */
-    public function testCanGetAUsersPost() {
+    public function testCanGetAUsersPost()
+    {
         $userDAOService = $this->getUserDAOService();
         $postDAOService = $this->getPostDAOService();
 
@@ -164,8 +173,9 @@ class PostDAOServiceTest extends TestCase
         $posts[] = $this->newPost("a post", $user, "2016-07-01 18:00:00");
         $posts[] = $this->newPost("a post", $user, "2016-07-02 12:00:00");
 
-        foreach($posts as $post)
+        foreach ($posts as $post) {
             $postDAOService->save($post);
+        }
         
         $uPosts = $postDAOService->fetchUserPosts($user);
         $this->assertCount(5, $uPosts);
@@ -190,7 +200,8 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
-    public function testCanotGetPostsFromNobody() {
+    public function testCanotGetPostsFromNobody()
+    {
         $postDAOService = $this->getPostDAOService();
         $postDAOService->fetchUserPosts(null);
     }
@@ -198,7 +209,8 @@ class PostDAOServiceTest extends TestCase
     /**
      * @depends testCanCreateAndRetrieve
      */
-    public function testCanGetUsersFeed() {
+    public function testCanGetUsersFeed()
+    {
         $userDAOService = $this->getUserDAOService();
         $postDAOService = $this->getPostDAOService();
 
@@ -223,8 +235,9 @@ class PostDAOServiceTest extends TestCase
         $posts[] = $this->newPost("a post", $users[2], "2016-07-01 01:00:00");
         $posts[] = $this->newPost("a post", $users[2], "2016-07-03 18:00:00");
 
-        foreach($posts as $post)
+        foreach ($posts as $post) {
             $postDAOService->save($post);
+        }
 
         $feed = $postDAOService->fetchUserFeed($users[0]);
         $this->assertCount(7, $feed);
@@ -268,12 +281,14 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
-    public function testCanotGetFeedFromNobody() {
+    public function testCanotGetFeedFromNobody()
+    {
         $postDAOService = $this->getPostDAOService();
         $postDAOService->fetchUserFeed(null);
     }
 
-    public function testGetPaginatedFeed() {
+    public function testGetPaginatedFeed()
+    {
         $userDAOService = $this->getUserDAOService();
         $postDAOService = $this->getPostDAOService();
 
@@ -298,8 +313,9 @@ class PostDAOServiceTest extends TestCase
         $posts[] = $this->newPost("a post", $users[2], "2016-07-01 01:00:00");
         $posts[] = $this->newPost("a post", $users[2], "2016-07-03 18:00:00");
 
-        foreach($posts as $post)
+        foreach ($posts as $post) {
             $postDAOService->save($post);
+        }
 
         $paginator = $postDAOService->getUserFeedAdapterPaginator($users[0]);
         $this->assertNotNull($paginator);
@@ -330,7 +346,8 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
-    public function testCanotGetFeedPaginatorFromNobody() {
+    public function testCanotGetFeedPaginatorFromNobody()
+    {
         $postDAOService = $this->getPostDAOService();
         $postDAOService->getUserFeedAdapterPaginator(null);
     }
@@ -338,7 +355,8 @@ class PostDAOServiceTest extends TestCase
     /**
      * @depends testCanCreateAndRetrieve
      */
-    public function testCanGetAUsersPostPaginator() {
+    public function testCanGetAUsersPostPaginator()
+    {
         $userDAOService = $this->getUserDAOService();
         $postDAOService = $this->getPostDAOService();
 
@@ -351,8 +369,9 @@ class PostDAOServiceTest extends TestCase
         $posts[] = $this->newPost("a post", $user, "2016-07-01 18:00:00");
         $posts[] = $this->newPost("a post", $user, "2016-07-02 12:00:00");
 
-        foreach($posts as $post)
+        foreach ($posts as $post) {
             $postDAOService->save($post);
+        }
 
         $paginator = $postDAOService->getUserPostsAdapterPaginator($user);
         $this->assertEquals(5, $paginator->count());
@@ -370,9 +389,9 @@ class PostDAOServiceTest extends TestCase
      * @expectedException \Core\Model\DAO\Exception\DAOException
      * @expectedExceptionMessage Must inform a user to list posts !
      */
-    public function testCanotGetUserPostsPaginatorFromNobody() {
+    public function testCanotGetUserPostsPaginatorFromNobody()
+    {
         $postDAOService = $this->getPostDAOService();
         $postDAOService->getUserPostsAdapterPaginator(null);
     }
-
 }

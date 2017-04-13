@@ -14,7 +14,8 @@ use Zend\Session\SessionManager;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class Service {
+class Service
+{
 
     /**
      * @var SessionManager
@@ -26,8 +27,8 @@ class Service {
      * @param string (optional) $attribute Attribute of session wanted
      * @return mixed|null
      */
-    public function getCurrentUser() {
-
+    public function getCurrentUser()
+    {
         $authService = new AuthenticationService();
         /* @var $authService AuthenticationService */
 
@@ -41,7 +42,8 @@ class Service {
      * @param string $name
      * @return Container
      */
-    protected function getSessionContainer($name = "Default") {
+    protected function getSessionContainer($name = "Default")
+    {
         // $this->getService('Zend\Session\SessionManager');
         return new Container($name);
     }
@@ -50,7 +52,7 @@ class Service {
      * Sets the <code>SessionManager</code>
      * @param SessionManager
      */
-    public function setSessionManager(SessionManager $sm) 
+    public function setSessionManager(SessionManager $sm)
     {
         $this->sessionManager = $sm;
     }
@@ -58,9 +60,8 @@ class Service {
     /**
      * Retrieves the <code>SessionManager</code> associated with the session
      */
-    protected function getSessionManager() {
+    protected function getSessionManager()
+    {
         return $this->sessionManager;
     }
 }
-
-?>

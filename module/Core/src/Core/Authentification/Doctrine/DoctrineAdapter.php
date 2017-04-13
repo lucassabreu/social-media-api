@@ -10,43 +10,47 @@ use Zend\Authentication\Adapter\ValidatableAdapterInterface;
  *
  * @see ObjectRepository
  * @see ValidatableAdapterInterface
- * 
+ *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class DoctrineAdapter implements ValidatableAdapterInterface {
-
+class DoctrineAdapter implements ValidatableAdapterInterface
+{
     protected $adapter = null;
 
-    public function __construct(ObjectRepository $adapter) {
+    public function __construct(ObjectRepository $adapter)
+    {
         $this->adapter = $adapter;
     }
 
-    public function getDoctrineAdapter() {
+    public function getDoctrineAdapter()
+    {
         return $this->adapter;
     }
 
-    public function getCredential() {
+    public function getCredential()
+    {
         return $this->adapter->getCredentialValue();
     }
 
-    public function getIdentity() {
+    public function getIdentity()
+    {
         return $this->adapter->getIdentityValue();
     }
 
-    public function setCredential($credential) {
+    public function setCredential($credential)
+    {
         $this->adapter->setCredentialValue($credential);
         return $this;
     }
 
-    public function setIdentity($identity) {
+    public function setIdentity($identity)
+    {
         $this->adapter->setIdentityValue($identity);
         return $this;
     }
 
-    public function authenticate() {
+    public function authenticate()
+    {
         return $this->adapter->authenticate();
     }
-
 }
-
-?>

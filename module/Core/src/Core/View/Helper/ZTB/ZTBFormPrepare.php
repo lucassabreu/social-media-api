@@ -10,7 +10,8 @@ use Zend\View\Helper\AbstractHelper;
  * Helper to prepare form and form items to use Twitter Bootstrap
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class ZTBFormPrepare extends AbstractHelper {
+class ZTBFormPrepare extends AbstractHelper
+{
 
     /**
      * Alter attribute on Form to use Twitter Bootstrap CSS classes
@@ -18,21 +19,20 @@ class ZTBFormPrepare extends AbstractHelper {
      * @param string $formLayout (optional)
      * @return Form
      */
-    public function __invoke(Form $form, $formLayout = null) {
-        if (!is_null($formLayout))
+    public function __invoke(Form $form, $formLayout = null)
+    {
+        if (!is_null($formLayout)) {
             $form->setAttribute('class', "form-$formLayout");
+        }
 
         foreach ($form as $element):
             $element->setLabelAttributes(array('class' => 'control-label'));
 
-            if (($element instanceof Button)) :
+        if (($element instanceof Button)) :
                 $element->setAttribute('class', 'btn');
-            endif;
+        endif;
         endforeach;
 
         return $form;
     }
-
 }
-
-?>

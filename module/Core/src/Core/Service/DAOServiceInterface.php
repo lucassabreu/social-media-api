@@ -10,7 +10,8 @@ use Core\Service\DAOServiceInterface;
  * 
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-interface DAOServiceInterface extends DAOInterface {
+interface DAOServiceInterface extends DAOInterface
+{
 
     /**
      * Sets the DAO object
@@ -19,5 +20,3 @@ interface DAOServiceInterface extends DAOInterface {
      */
     public function setDAOInterface(DAOInterface $dao);
 }
-
-?>

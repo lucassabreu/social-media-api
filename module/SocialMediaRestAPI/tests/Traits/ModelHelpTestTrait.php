@@ -17,13 +17,15 @@ use DateTime;
  * @see \SocialMediaRestAPI\Service\PostDAOService
  * @see \SocialMediaRestAPI\Service\UserDAOService
  */
-trait ModelHelpTestTrait {
+trait ModelHelpTestTrait
+{
 
     /**
      * Retrieve the <code>UserDAOService</code>
      * @return UserDAOService
      */
-    private function getUserDAOService() {
+    private function getUserDAOService()
+    {
         return $this->getServiceManager()->get('SocialMediaRestAPI\Service\UserDAOService');
     }
 
@@ -34,9 +36,10 @@ trait ModelHelpTestTrait {
      * @param $password optional default = 123465
      * @return User
      */
-    private function newUser($username = "lucas.s.abreu@gmail.com", 
+    private function newUser($username = "lucas.s.abreu@gmail.com",
                              $name = "Lucas dos Santos Abreu",
-                             $password = '123456') {
+                             $password = '123456')
+    {
         $user = new User();
         $user->setData([
             'name' => $name,
@@ -51,10 +54,11 @@ trait ModelHelpTestTrait {
      * @param $howMany Number of users to be created
      * @return array Array with the created users
      */
-    private function createGenericUsers($howMany) {
+    private function createGenericUsers($howMany)
+    {
         $userDAOService = $this->getUserDAOService();
         $users = [];
-        for($i = 1; $i <= $howMany; $i++) {
+        for ($i = 1; $i <= $howMany; $i++) {
             $users[] = $userDAOService->save(
                 $this->newUser("user$i@localhost.net",
                                "Usuário $i"));
@@ -66,7 +70,8 @@ trait ModelHelpTestTrait {
      * Retrieve the <code>PostDAOService</code>
      * @return PostDAOService
      */
-    private function getPostDAOService() {
+    private function getPostDAOService()
+    {
         return $this->getServiceManager()->get('SocialMediaRestAPI\Service\PostDAOService');
     }
 
@@ -77,8 +82,8 @@ trait ModelHelpTestTrait {
      * @param string|DateTime $datePublish
      * @return Post
      */
-    private function newPost($text = "a generic post", User $user = null, $datePublish = null) {
-        
+    private function newPost($text = "a generic post", User $user = null, $datePublish = null)
+    {
         $datePublish = $datePublish === null ? new DateTime() : $datePublish;
         $user = $user !== null ? $user : $this->createGenericUsers(1)[0];
         
@@ -96,10 +101,11 @@ trait ModelHelpTestTrait {
      * @param int $qtt number of posts to be created
      * @return array posts
      */
-    private function createGenericPosts(User $user, $qtt) {
+    private function createGenericPosts(User $user, $qtt)
+    {
         $postDAOService = $this->getPostDAOService();
         $posts = [];
-        for($i = 1; $i <= $qtt; $i++) {
+        for ($i = 1; $i <= $qtt; $i++) {
             $posts[] = $postDAOService->save(
                 $this->newPost("the post number $i from $user->name", $user)
             );

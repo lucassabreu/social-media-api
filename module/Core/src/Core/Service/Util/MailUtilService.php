@@ -16,11 +16,12 @@ use Zend\Mime\Part;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class MailUtilService extends Service {
+class MailUtilService extends Service
+{
 
     /**
      * Send a e-mail by the params.
-     * 
+     *
      * @param string $title Message's title
      * @param string $body Content will be send
      * @param string $mimeType Mime-Type of <code>$body</code>
@@ -28,8 +29,8 @@ class MailUtilService extends Service {
      * @param array $cc (optional) Array with format email => names
      * @param array $cco (optional) Array with format email => names
      */
-    public function sendEmail($title, $body, $mimeType, $to, $cc = array(), $cco = array()) {
-
+    public function sendEmail($title, $body, $mimeType, $to, $cc = array(), $cco = array())
+    {
         $config = $this->getService('Config');
         /* @var $config array */
 
@@ -53,10 +54,11 @@ class MailUtilService extends Service {
             $message->addTo($email, $name);
         }
 
-        if (isset($config['email_sending']['fromName']))
+        if (isset($config['email_sending']['fromName'])) {
             $message->addFrom($config['email_sending']['from'], $config['email_sending']['fromName']);
-        else
+        } else {
             $message->addFrom($config['email_sending']['from']);
+        }
 
         $message->setSubject($title);
 
@@ -65,7 +67,4 @@ class MailUtilService extends Service {
         $transport->setOptions($options);
         $transport->send($message);
     }
-
 }
-
-?>

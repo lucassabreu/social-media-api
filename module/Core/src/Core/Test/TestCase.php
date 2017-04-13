@@ -11,27 +11,31 @@ use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 /**
  * Base Test Case class
  */
-abstract class TestCase extends AbstractHttpControllerTestCase {
-
+abstract class TestCase extends AbstractHttpControllerTestCase
+{
     protected $setUpDatabase = false;
     
-    public function setUp() {
+    public function setUp()
+    {
         parent::setup();
-        if ($this->setUpDatabase == true)
+        if ($this->setUpDatabase == true) {
             $this->createDatabase();
+        }
     }
 
-    public function tearDown() {
+    public function tearDown()
+    {
         parent::tearDown();
-        if ($this->setUpDatabase)
+        if ($this->setUpDatabase) {
             $this->dropDatabase();
+        }
     }
 
     /**
      * @return void
      */
-    public function createDatabase() {
-
+    public function createDatabase()
+    {
         if ($this->getServiceManager()->has('Doctrine\ORM\EntityManager')) {
             $this->generateSchema();
         } else {
@@ -51,8 +55,9 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
             if (isset($config['ddl'])) {
                 $queries = $config['ddl'];
                 foreach ($queries as $queries) {
-                    foreach ($queries['create'] as $query)
+                    foreach ($queries['create'] as $query) {
                         $dbAdapter->query($query, Adapter::QUERY_MODE_EXECUTE);
+                    }
                 }
             }
         }
@@ -75,7 +80,8 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
     /**
      * @return void
      */
-    public function dropDatabase() {
+    public function dropDatabase()
+    {
         if (!$this->getServiceManager()->has('Doctrine\ORM\EntityManager')) {
             $dbAdapter = $this->getAdapter();
 
@@ -99,10 +105,11 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
     }
 
     /**
-     * 
+     *
      * @return Adapter
      */
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->getServiceManager()->get('DbAdapter');
     }
 
@@ -110,7 +117,8 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
      * Retrieve the current ServiceManager.
      * @return ServiceManager
      */
-    public function getServiceManager() {
+    public function getServiceManager()
+    {
         return $this->getApplication()->getServiceManager();
     }
 
@@ -120,7 +128,8 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
      * @param  string $service
      * @return ServiceLocatorAwareInterface
      */
-    protected function getService($service) {
+    protected function getService($service)
+    {
         return $this->getServiceManager()->get($service);
     }
 
@@ -128,7 +137,8 @@ abstract class TestCase extends AbstractHttpControllerTestCase {
      * Retrieves the ViewModel returned by the Controller
      * return \Zend\View\Model\ViewModel
      */
-    protected function getViewModel() {
+    protected function getViewModel()
+    {
         return $this->getApplication()->getMvcEvent()->getViewModel();
     }
 }

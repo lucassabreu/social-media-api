@@ -2,7 +2,8 @@
 
 namespace Core\Model\Entity;
 
-trait EntityTrait {
+trait EntityTrait
+{
 
     /**
      * Set and validate field values
@@ -11,15 +12,17 @@ trait EntityTrait {
      * @param string $value
      * @return void
      */
-    public function __set($key, $value) {
+    public function __set($key, $value)
+    {
         $this->$key = $this->valid($key, $value);
     }
 
     /**
      * @param string $key
-     * @return mixed 
+     * @return mixed
      */
-    public function __get($key) {
+    public function __get($key)
+    {
         return $this->$key;
     }
 
@@ -29,7 +32,8 @@ trait EntityTrait {
      * @param array $data
      * @return void
      */
-    public function setData($data) {
+    public function setData($data)
+    {
         foreach ($data as $key => $value) {
             $this->__set($key, $value);
         }
@@ -40,10 +44,10 @@ trait EntityTrait {
      *
      * @return array
      */
-    public function getData() {
+    public function getData()
+    {
         $data = get_object_vars($this);
         unset($data['inputFilter']);
         return $data;
     }
-
 }

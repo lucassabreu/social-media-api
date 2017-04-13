@@ -11,11 +11,13 @@ use SocialMediaRestAPITest\Traits;
 use Zend\View\Model\JsonModel;
 use Zend\Http\Request as HttpRequest;
 
-class PostRestControllerTest extends TestCase {
+class PostRestControllerTest extends TestCase
+{
     use Traits\ModelHelpTestTrait;
     use Traits\HttpAuthorizationBasicTrait;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         $this->setUpDatabase = true;
         parent::setUp();
@@ -48,7 +50,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanCreateAPost () {
+    public function testCanCreateAPost()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $user = $this->newUser('lucas.s.abreu@gmail.com',
@@ -93,7 +96,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCantUpdateAPostWithoutAuthentication () {
+    public function testCantUpdateAPostWithoutAuthentication()
+    {
         $this->dispatch('/api/posts/1', HttpRequest::METHOD_PUT, [
             'text' => 'not that funny'
         ]);
@@ -103,7 +107,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanUpdateAPost () {
+    public function testCanUpdateAPost()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $user = $this->newUser('lucas.s.abreu@gmail.com',
@@ -147,7 +152,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCantUpdateOthersUsersPosts () {
+    public function testCantUpdateOthersUsersPosts()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $user = $this->getUserDAOService()->save(
@@ -184,7 +190,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanViewAPost () {
+    public function testCanViewAPost()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $user = $this->newUser('lucas.s.abreu@gmail.com',
@@ -232,7 +239,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanRemoveAPost () {
+    public function testCanRemoveAPost()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $user = $this->newUser('lucas.s.abreu@gmail.com',
@@ -259,7 +267,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCantDeleteAPostWithoutAuthentication () {
+    public function testCantDeleteAPostWithoutAuthentication()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $user = $this->newUser('lucas.s.abreu@gmail.com',
@@ -291,8 +300,8 @@ class PostRestControllerTest extends TestCase {
         $this->assertEquals("You can't modify others users data !", $vars['error']['message']);
     }
 
-    private function loadBasicDataPosts () {
-
+    private function loadBasicDataPosts()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $users = $this->createGenericUsers(3);
@@ -305,8 +314,9 @@ class PostRestControllerTest extends TestCase {
         $posts[] = $this->newPost("other post with cheese", $users[0], "2016-07-02 12:00:00");
         $posts[] = $this->newPost("a post", $users[2], "2016-07-02 12:00:00");
 
-        foreach($posts as $post)
+        foreach ($posts as $post) {
             $postDAOService->save($post);
+        }
 
         return $users;
     }
@@ -314,7 +324,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanListPostsWithFilter () {
+    public function testCanListPostsWithFilter()
+    {
         $this->loadBasicDataPosts();
         $postDAOService = $this->getPostDAOService();
 
@@ -355,7 +366,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanListPostsWithoutFilter () {
+    public function testCanListPostsWithoutFilter()
+    {
         $users = $this->loadBasicDataPosts();
         $postDAOService = $this->getPostDAOService();
         
@@ -486,7 +498,8 @@ class PostRestControllerTest extends TestCase {
         $this->assertEquals("Maximum limit is 50, parameter used was 100", $vars['error']['message']);
     }
 
-    private function loadDataListPostsFromUser() {
+    private function loadDataListPostsFromUser()
+    {
         $postDAOService = $this->getPostDAOService();
 
         $users = $this->createGenericUsers(3);
@@ -499,17 +512,18 @@ class PostRestControllerTest extends TestCase {
         $posts[] = $this->newPost("a post", $users[1], "2016-07-01 18:00:00");
         $posts[] = $this->newPost("other post with cheese", $users[0], "2016-07-02 12:00:00");
 
-        foreach($posts as $post)
+        foreach ($posts as $post) {
             $postDAOService->save($post);
+        }
 
-        return $users;   
+        return $users;
     }
 
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanListPostsFromAUser () {
-
+    public function testCanListPostsFromAUser()
+    {
         $this->loadDataListPostsFromUser();
 
         $this->dispatch('/api/posts/user/2', HttpRequest::METHOD_GET, [
@@ -545,13 +559,13 @@ class PostRestControllerTest extends TestCase {
         // order
         $this->assertEquals("2016-07-03 11:00:00", $vars['result'][0]['datePublish']);
         $this->assertEquals("2016-07-01 11:00:00", $vars['result'][1]['datePublish']);
-        
     }
 
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanListPostsFromAUserWithoutFilter () {
+    public function testCanListPostsFromAUserWithoutFilter()
+    {
         $users = $this->loadDataListPostsFromUser();
 
         $this->createGenericPosts($users[0], 100);
@@ -718,13 +732,14 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCantSeeTheFeedWithoutAuthorization () {
+    public function testCantSeeTheFeedWithoutAuthorization()
+    {
         $this->dispatch('/api/feed', HttpRequest::METHOD_GET);
         $this->assertResponseStatusCode(401);
     }
 
-    public function loadDataSeeTheFeed () {
-
+    public function loadDataSeeTheFeed()
+    {
         $postDAOService = $this->getPostDAOService();
         $userDAOService = $this->getUserDAOService();
 
@@ -755,8 +770,9 @@ class PostRestControllerTest extends TestCase {
         $posts[] = $this->newPost("a post", $users[2], "2016-07-02 12:00:00");
         $posts[] = $this->newPost("a post with cheese", $users[2], "2016-07-03 18:00:00");
 
-        foreach($posts as $post)
+        foreach ($posts as $post) {
             $postDAOService->save($post);
+        }
 
         return $users;
     }
@@ -764,8 +780,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanSeeTheFeed () {
-
+    public function testCanSeeTheFeed()
+    {
         $this->loadDataSeeTheFeed();
 
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
@@ -808,7 +824,8 @@ class PostRestControllerTest extends TestCase {
     /**
      * @depends testRestApiCanBeAccessed
      */
-    public function testCanSeeTheFeedWithoutFilter () {
+    public function testCanSeeTheFeedWithoutFilter()
+    {
         $users = $this->loadDataSeeTheFeed();
         $this->createGenericPosts($users[2], 100);
 
@@ -943,5 +960,4 @@ class PostRestControllerTest extends TestCase {
         $this->assertArrayHasKey('message', $vars['error']);
         $this->assertEquals("Maximum limit is 50, parameter used was 100", $vars['error']['message']);
     }
-
 }

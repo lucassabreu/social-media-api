@@ -10,7 +10,8 @@ use Zend\Form\Form as ZendForm;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class Form extends ZendForm {
+class Form extends ZendForm
+{
 
     /**
      * Array with messages of exceptions not associatad with fields
@@ -21,11 +22,11 @@ class Form extends ZendForm {
     /**
      * Set all the elements on form to read only
      */
-    public function readonly() {
+    public function readonly()
+    {
         foreach ($this as $element) {
             if ($element->getAttribute('type') == 'select' || $element->getAttribute('type') == 'checkbox'):
-                $element->setAttribute('disabled', 'disabled');
-            else:
+                $element->setAttribute('disabled', 'disabled'); else:
                 $element->setAttribute('readonly', 'readonly');
             endif;
         }
@@ -34,7 +35,8 @@ class Form extends ZendForm {
     /**
      * Enable the elements
      */
-    public function editable() {
+    public function editable()
+    {
         foreach ($this as $element) {
             $element->setAttribute('readonly', null);
         }
@@ -44,7 +46,8 @@ class Form extends ZendForm {
      * Retrieves the exception messages
      * @return array
      */
-    public function getExceptionMessages() {
+    public function getExceptionMessages()
+    {
         return $this->exceptionMessages;
     }
 
@@ -52,12 +55,13 @@ class Form extends ZendForm {
      * Set the form's messages
      * @param \Exception|string $exceptionMessage
      */
-    public function setExceptionMessages($exceptionMessages = array()) {
-
+    public function setExceptionMessages($exceptionMessages = array())
+    {
         foreach ($exceptionMessages as $key => $value) {
-            if ($value instanceof Exception)
-            /* @var $value Exception */
+            if ($value instanceof Exception) {
+                /* @var $value Exception */
                 $exceptionMessages[$key] = $value = $value->getMessage();
+            }
         }
 
         $this->exceptionMessages = $exceptionMessages;
@@ -67,33 +71,35 @@ class Form extends ZendForm {
      * Add a message (<code>string</code> or <code>Exception</code>) to the form
      * @param \Exception|string $exceptionMessage
      */
-    public function addExceptionMessage($exceptionMessage) {
-        if ($exceptionMessage instanceof Exception)
+    public function addExceptionMessage($exceptionMessage)
+    {
+        if ($exceptionMessage instanceof Exception) {
             $exceptionMessage = $exceptionMessage->getMessage();
+        }
 
         $this->exceptionMessages[] = $exceptionMessage;
     }
 
-    public function getMessages($elementName = null) {
-
+    public function getMessages($elementName = null)
+    {
         $messages = parent::getMessages($elementName);
 
-        if ($elementName !== null)
+        if ($elementName !== null) {
             return $messages;
-        else {
-            if (count($this->getExceptionMessages()) > 0)
+        } else {
+            if (count($this->getExceptionMessages()) > 0) {
                 $messages[$this->getName()] = $this->getExceptionMessages();
+            }
             return $messages;
         }
     }
 
-    public function isValid() {
-        if (count($this->exceptionMessages) === 0 && parent::isValid())
+    public function isValid()
+    {
+        if (count($this->exceptionMessages) === 0 && parent::isValid()) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
-
 }
-
-?>

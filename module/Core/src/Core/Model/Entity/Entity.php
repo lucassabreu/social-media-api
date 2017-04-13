@@ -20,7 +20,8 @@ use Zend\InputFilter\Factory;
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  * 
  */
-abstract class Entity implements JsonSerializable, Serializable, InputFilterAwareInterface {
+abstract class Entity implements JsonSerializable, Serializable, InputFilterAwareInterface
+{
 
     /**
      * Filters
@@ -35,14 +36,14 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      * @param array $data
      * @return void
      */
-    public abstract function setData($data);
+    abstract public function setData($data);
 
     /**
      * Return all entity data in array format
      *
      * @return array
      */
-    public abstract function getData();
+    abstract public function getData();
 
     /**
      * Used by TableGateway
@@ -50,7 +51,8 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      * @param array $data
      * @return void
      */
-    public function exchangeArray($data) {
+    public function exchangeArray($data)
+    {
         $this->setData($data);
     }
 
@@ -60,7 +62,8 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      * @param array $data
      * @return void
      */
-    public function getArrayCopy() {
+    public function getArrayCopy()
+    {
         return $this->getData();
     }
 
@@ -68,7 +71,8 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      * @param InputFilterInterface $inputFilter
      * @return void
      */
-    public function setInputFilter(InputFilterInterface $inputFilter) {
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
         throw new DAOException("Not used");
     }
 
@@ -77,7 +81,8 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      *
      * @return InputFilter
      */
-    public function getInputFilter() {
+    public function getInputFilter()
+    {
         if ($this->inputFilter === null) {
             $factory = new Factory();
             $this->inputFilter = $factory->createInputFilter(array());
@@ -93,12 +98,15 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      * @param mixed $value
      * @return mixed
      */
-    protected function valid($key, $value) {
-        if (!$this->getInputFilter())
+    protected function valid($key, $value)
+    {
+        if (!$this->getInputFilter()) {
             return $value;
+        }
 
-        if (!$this->getInputFilter()->has($key))
+        if (!$this->getInputFilter()->has($key)) {
             return $value;
+        }
 
         try {
             $filter = $this->getInputFilter()->get($key);
@@ -122,24 +130,29 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      *
      * @return array
      */
-    public function toArray() {
+    public function toArray()
+    {
         return $this->getData();
     }
 
-    public function serialize() {
+    public function serialize()
+    {
         return serialize($this->toArray());
     }
 
-    public function unserialize($serialized) {
+    public function unserialize($serialized)
+    {
         $this->setData(unserialize($serialized));
         return $this;
     }
 
-    public function jsonSerialize () {
+    public function jsonSerialize()
+    {
         return $this->toArray();
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return __CLASS__;
     }
 
@@ -147,8 +160,8 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      * Execute validations on entity
      * @return boolean
      */
-    public function validate() {
-
+    public function validate()
+    {
         $data = $this->getData();
 
         foreach ($data as $key => $value) {
@@ -163,10 +176,8 @@ abstract class Entity implements JsonSerializable, Serializable, InputFilterAwar
      * @see Entity#validate
      * @return boolean
      */
-    public function isValid() {
+    public function isValid()
+    {
         return $this->validate();
     }
-
 }
-
-?>

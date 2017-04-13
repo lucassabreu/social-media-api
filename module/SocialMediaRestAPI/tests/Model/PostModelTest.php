@@ -10,16 +10,18 @@ use SocialMediaRestAPI\Model\Entity\Post;
 use SocialMediaRestAPITest\Traits\ModelHelpTestTrait;
 use DateTime;
 
-class PostModelTest extends TestCase {
-
+class PostModelTest extends TestCase
+{
     use ModelHelpTestTrait;
 
-    public function setup () {
+    public function setup()
+    {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         parent::setUp();
     }
 
-    public function testPostInputFilter () {
+    public function testPostInputFilter()
+    {
         $post = new Post();
 
         $if = $post->getInputFilter();
@@ -36,7 +38,8 @@ class PostModelTest extends TestCase {
         $this->assertEquals($post->text, "something funny");
     }
 
-    public function testGetAndSetDataIntoPost () {
+    public function testGetAndSetDataIntoPost()
+    {
         $values = [
             "id" => '01.0',
             "user" => $this->newUser(),
@@ -61,7 +64,8 @@ class PostModelTest extends TestCase {
         return $post;
     }
 
-    private function validatePostData ($data) {
+    private function validatePostData($data)
+    {
         $this->assertEquals($data['id'], 1);
         $this->assertEquals($data['text'], "something funny");
         $this->assertEquals(get_class($data['user']), User::class);
@@ -71,14 +75,16 @@ class PostModelTest extends TestCase {
     /**
      * @depends testGetAndSetDataIntoPost
      */
-    public function testCanValidatePost($post) {
+    public function testCanValidatePost($post)
+    {
         $this->assertTrue($post->validate());
     }
 
     /**
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-    public function testIfNothingWasInsertedMustThrowError() {
+    public function testIfNothingWasInsertedMustThrowError()
+    {
         $post = new Post();
         $this->assertFalse($post->validate());
     }
@@ -86,7 +92,8 @@ class PostModelTest extends TestCase {
     /**
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-    public function testCantPostNothing() {
+    public function testCantPostNothing()
+    {
         $post = new Post();
         $post->text = "";
     }
@@ -94,12 +101,14 @@ class PostModelTest extends TestCase {
     /**
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-    public function testCantSetInvalidDate() {
+    public function testCantSetInvalidDate()
+    {
         $post = new Post();
         $post->datePublish = "ipsum";
     }
 
-    public function testCanSetValidDateString() {
+    public function testCanSetValidDateString()
+    {
         $post = new Post();
         $post->datePublish = "2016-07-01 12:00:00";
         $this->assertTrue($post->datePublish instanceof \DateTime, "It is not a \DateTime object");
@@ -109,9 +118,9 @@ class PostModelTest extends TestCase {
     /**
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-    public function testPublishDateMustInformmed() {
+    public function testPublishDateMustInformmed()
+    {
         $post = new Post();
         $post->datePublish = null;
     }
-
 }

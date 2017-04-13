@@ -10,7 +10,8 @@ use Zend\Paginator\Adapter\AdapterInterface;
 /**
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-interface PostDAOInterface extends DAOInterface {
+interface PostDAOInterface extends DAOInterface
+{
 
     /**
      * Retrieves an user's feed
@@ -20,12 +21,12 @@ interface PostDAOInterface extends DAOInterface {
      * @param int $offset (optional)
      * @return array Posts on the feed
      */
-    public function fetchUserFeed ($user, array $params = [], $limit = null, $offset = null);
+    public function fetchUserFeed($user, array $params = [], $limit = null, $offset = null);
 
     /**
      * Returns a Paginator Adapter for the user's feed based on params.
      * @param array|mixed $params (optional) array with filters
-     * @param array $orderBy (optional) posts order 
+     * @param array $orderBy (optional) posts order
      * @return AdapterInterface
      */
     public function getUserFeedAdapterPaginator($user, array $params = [], $orderBy = null);
@@ -38,15 +39,14 @@ interface PostDAOInterface extends DAOInterface {
      * @param int $offset (optional)
      * @return array user's posts
      */
-    public function fetchUserPosts ($user, array $params = [], $limit = null, $offset = null);
+    public function fetchUserPosts($user, array $params = [], $limit = null, $offset = null);
 
     /**
      * Returns a Paginator Adapter with the posts created by parameters user
      * @param mixed|User $user
      * @param array $params (optional) array with filters
-     * @param array $orderBy (optional) posts order 
+     * @param array $orderBy (optional) posts order
      * @return array user's posts
      */
-    public function getUserPostsAdapterPaginator ($user, array $params = [], $orderBy = null);
-
+    public function getUserPostsAdapterPaginator($user, array $params = [], $orderBy = null);
 }

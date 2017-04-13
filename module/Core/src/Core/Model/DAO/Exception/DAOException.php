@@ -11,8 +11,6 @@ use Exception;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-class DAOException extends Exception {
-    
+class DAOException extends Exception
+{
 }
-
-?>

@@ -21,7 +21,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  * @abstract
  */
-abstract class AbstractDoctrineDAO implements DAOInterface {
+abstract class AbstractDoctrineDAO implements DAOInterface
+{
 
     /**
      * @var ServiceLocatorInterface
@@ -47,14 +48,16 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
      * Retrieve the instance of EntityManager
      * @return EntityManager
      */
-    public function getEntityManager() {
+    public function getEntityManager()
+    {
         return $this->em;
     }
 
     /**
      * Sets the EntityManager into the DoctrineDAO service
      */
-    public function setEntityManager(EntityManager $em) {
+    public function setEntityManager(EntityManager $em)
+    {
         $this->em = $em;
     }
 
@@ -62,7 +65,8 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
      * Retrieves the Repository relative to managed entity.
      * @return EntityRepository
      */
-    public function getRepository() {
+    public function getRepository()
+    {
         return $this->getEntityManager()->getRepository($this->getEntityClassName());
     }
 
@@ -70,21 +74,25 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
      * Constructor of class
      * @param string $className Name of class going to manage.
      */
-    public function __construct($className) {
+    public function __construct($className)
+    {
         $this->setEntityClassName($className);
     }
 
-    public function fetchAll($limite = null, $offset = null) {
+    public function fetchAll($limite = null, $offset = null)
+    {
         $query = $this->getQuery(null, $limite, $offset)->getQuery();
         return $query->execute();
     }
 
-    public function fetchByParams(array $params, $limite = null, $offset = null) {
+    public function fetchByParams(array $params, $limite = null, $offset = null)
+    {
         $query = $this->getQuery($params, $limite, $offset)->getQuery();
         return $query->execute();
     }
 
-    protected function _processClause($column, $clause, &$qbParams, $qb, $and) {
+    protected function _processClause($column, $clause, &$qbParams, $qb, $and)
+    {
         if (is_array($clause)) {
             if (isset($clause['in'])) {
                 $and->add("$column IN (?" . count($qbParams) . ")");
@@ -95,9 +103,9 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
                 $qbParams[] = $clause[1];
             }
         } else {
-            if (strpos($clause, '%') !== false)
+            if (strpos($clause, '%') !== false) {
                 $and->add($qb->expr()->like($column, "?" . count($qbParams)));
-            else {
+            } else {
                 if (strtoupper($clause) === 'IS NULL' || $clause === null) {
                     $and->add($qb->expr()->isNull($column));
                     return;
@@ -122,7 +130,8 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
      * @param integer $offset
      * @return QueryBuilder
      */
-    protected function getQuery($params = null, $limit = null, $offset = null) {
+    protected function getQuery($params = null, $limit = null, $offset = null)
+    {
         $qb = $this->getRepository()->createQueryBuilder('ent');
 
         $innerJoins = array();
@@ -156,31 +165,39 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
                         $qb->join("ent.$joinTable", $joinTable, Join::WITH, $with);
                     }
 
-                    if ($and->count() > 0)
+                    if ($and->count() > 0) {
                         $qb->where($and);
+                    }
 
-                    if (count($qbParams) > 0)
+                    if (count($qbParams) > 0) {
                         $qb->setParameters($qbParams);
+                    }
                 }
-            } else
+            } else {
                 $qb->where($params);
+            }
         }
 
-        if ($limit != null)
+        if ($limit != null) {
             $qb->setMaxResults($limit);
+        }
 
-        if ($offset != null)
+        if ($offset != null) {
             $qb->setFirstResult($offset);
+        }
 
         return $qb;
     }
 
-    public function getAdapterPaginator($params, $orderBy = null) {
+    public function getAdapterPaginator($params, $orderBy = null)
+    {
         $qb = $this->getQuery($params);
 
-        if ($orderBy != null)
-            foreach ($orderBy as $column => $order)
+        if ($orderBy != null) {
+            foreach ($orderBy as $column => $order) {
                 $qb->orderBy("ent.$column", $order);
+            }
+        }
 
         $paginator = new Paginator($qb->getQuery(), false);
         $adapter = new DoctrinePaginator($paginator);
@@ -188,16 +205,20 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
         return $adapter;
     }
 
-    public function findById($id) {
-        if (!is_array($id))
+    public function findById($id)
+    {
+        if (!is_array($id)) {
             $id = array($id);
+        }
         $ent = $this->find($id);
-        if($ent !== null)
+        if ($ent !== null) {
             $this->getEntityManager()->refresh($ent);
+        }
         return $ent;
     }
 
-    protected function find(array $id) {
+    protected function find(array $id)
+    {
         $keys = $this->getIdColumns();
 
         $nId = array();
@@ -209,16 +230,19 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
         return $this->getRepository()->find($nId);
     }
 
-    public function save($ent, array $values = null) {
-        if (!($ent instanceof Entity))
+    public function save($ent, array $values = null)
+    {
+        if (!($ent instanceof Entity)) {
             throw new DAOException(sprintf("The abstract class only work with the final state of the object !"));
+        }
         
         $this->getEntityManager()->persist($ent);
         $this->getEntityManager()->flush($ent);
         return $ent;
     }
 
-    public function remove(Entity $ent) {
+    public function remove(Entity $ent)
+    {
         $this->getEntityManager()->remove($ent);
         $this->getEntityManager()->flush($ent);
         return $this;
@@ -229,16 +253,19 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
      * @param string $className
      * @return AbstractDoctrineDAO
      */
-    protected function setEntityClassName($className) {
+    protected function setEntityClassName($className)
+    {
         $this->className = $className;
         return $this;
     }
 
-    public function getEntityClassName() {
+    public function getEntityClassName()
+    {
         return $this->className;
     }
 
-    protected function getIdColumns() {
+    protected function getIdColumns()
+    {
         if ($this->_idColumns === null) {
             $this->_idColumns = $this->getEntityManager()->getClassMetadata('\\' . $this->getEntityClassName())->identifier;
         }
@@ -246,26 +273,28 @@ abstract class AbstractDoctrineDAO implements DAOInterface {
         return $this->_idColumns;
     }
 
-    public function beginTransaction() {
+    public function beginTransaction()
+    {
         return $this->getEntityManager()->beginTransaction();
     }
 
-    public function commit() {
+    public function commit()
+    {
         return $this->getEntityManager()->commit();
     }
 
-    public function rollback() {
+    public function rollback()
+    {
         return $this->getEntityManager()->rollback();
     }
 
-    public function setServiceLocator (ServiceLocatorInterface $sl) {
+    public function setServiceLocator(ServiceLocatorInterface $sl)
+    {
         $this->serviceLocator = $sl;
     }
 
-    protected function getServiceLocator() {
+    protected function getServiceLocator()
+    {
         return $this->serviceLocator;
     }
-
 }
-
-?>

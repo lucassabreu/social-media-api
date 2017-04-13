@@ -10,12 +10,13 @@ use SocialMediaRestAPITest\Traits;
 use Zend\View\Model\JsonModel;
 use Zend\Http\Request as HttpRequest;
 
-class UserRestControllerTest extends TestCase {
-
+class UserRestControllerTest extends TestCase
+{
     use Traits\ModelHelpTestTrait;
     use Traits\HttpAuthorizationBasicTrait;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->setApplicationConfig(\Bootstrap::getTestConfig());
         $this->setUpDatabase = true;
         parent::setUp();
@@ -39,8 +40,8 @@ class UserRestControllerTest extends TestCase {
         $this->assertMatchedRouteName('user-self-rest');
     }
 
-    public function testListUsers() {
-
+    public function testListUsers()
+    {
         $userDAOService = $this->getUserDAOService();
         $users = [];
 
@@ -50,8 +51,9 @@ class UserRestControllerTest extends TestCase {
         $users[] = $this->newUser('user3@localhost.net');
         $users[] = $this->newUser('user4@localhost.net');
 
-        foreach($users as $u)
+        foreach ($users as $u) {
             $userDAOService->save($u);
+        }
 
         $this->dispatch('/api/users');
         $this->assertResponseStatusCode(200);
@@ -86,8 +88,8 @@ class UserRestControllerTest extends TestCase {
     /**
      * @depends testListUsers
      */
-    public function testGetListWithPagination () {
-
+    public function testGetListWithPagination()
+    {
         $totalToCreate = 103;
         $users = $this->createGenericUsers($totalToCreate);
 
@@ -249,15 +251,17 @@ class UserRestControllerTest extends TestCase {
     /**
      * @depends testListUsers
      */
-    public function testGetListWithFilter () {
+    public function testGetListWithFilter()
+    {
         $users = $this->createGenericUsers(50);
 
         $userDAOService = $this->getUserDAOService();
 
-        for($i = 1; $i <= 5; $i++)
+        for ($i = 1; $i <= 5; $i++) {
             $users[] = $userDAOService->save(
                 $this->newUser("outro$i@localhost.net",
                                "Joãozinho $i da Silva"));
+        }
 
         $this->dispatch('/api/users', HttpRequest::METHOD_GET, [
             'q' => 'name:Silva'
@@ -272,7 +276,7 @@ class UserRestControllerTest extends TestCase {
         $this->assertArrayHasKey('result', $vars);
         $this->assertCount(5, $vars['result']);
 
-        foreach($vars['result'] as $user) {
+        foreach ($vars['result'] as $user) {
             $this->assertRegExp("/Joãozinho [0-9] da Silva/", $user['name']);
         }
 
@@ -287,9 +291,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCantKnowYourselfIfYouDontTellMeWhoAreYou() {
+    public function testCantKnowYourselfIfYouDontTellMeWhoAreYou()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -299,9 +304,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCanKnowYourself() {
+    public function testCanKnowYourself()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -326,9 +332,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testGetOneUser() {
+    public function testGetOneUser()
+    {
 
         // init data
         $userDAOService = $this->getUserDAOService();
@@ -368,10 +375,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCreateANewUser() {
-
+    public function testCreateANewUser()
+    {
         $this->dispatch('/api/users', HttpRequest::METHOD_POST, [
             'name' => 'Lucas dos Santos Abreu',
             'username' => 'lucas.s.abreu@gmail.com',
@@ -428,9 +435,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCantChangeTheNameWithoutAuthorization() {
+    public function testCantChangeTheNameWithoutAuthorization()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -445,9 +453,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCanChangeTheName() {
+    public function testCanChangeTheName()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -515,9 +524,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCanChangePassword() {
+    public function testCanChangePassword()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -541,9 +551,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCanChangePasswordMayShowErrors() {
+    public function testCanChangePasswordMayShowErrors()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -616,9 +627,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCantDeleteUserWithoutAuthorization () {
+    public function testCantDeleteUserWithoutAuthorization()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -629,9 +641,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testDeleteUser () {
+    public function testDeleteUser()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -646,9 +659,10 @@ class UserRestControllerTest extends TestCase {
     }
 
     /**
-     * @depends testRestApiCanBeAccessed 
+     * @depends testRestApiCanBeAccessed
      */
-    public function testCantDeleteOtherUser () {
+    public function testCantDeleteOtherUser()
+    {
         $userDAOService = $this->getUserDAOService();
         $user = $userDAOService->save($this->newUser('lucas.s.abreu@gmail.com',
                                                      'Lucas dos Santos Abreu',
@@ -657,7 +671,7 @@ class UserRestControllerTest extends TestCase {
 
         $this->setAuthorizationHeader('lucas.s.abreu@gmail.com', '123456');
         $this->dispatch('/api/users/2', HttpRequest::METHOD_DELETE);
-        $this->assertResponseStatusCode(403);   
+        $this->assertResponseStatusCode(403);
 
         $viewModel = $this->getViewModel();
         $this->assertEquals(get_class($viewModel), JsonModel::class);
@@ -667,6 +681,6 @@ class UserRestControllerTest extends TestCase {
         $this->assertArrayHasKey('error', $vars);
         $this->assertArrayHasKey('message', $vars['error']);
         
-        $this->assertEquals("You can't modify others users data !", $vars['error']['message']); 
+        $this->assertEquals("You can't modify others users data !", $vars['error']['message']);
     }
 }

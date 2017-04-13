@@ -5,14 +5,16 @@ namespace SocialMediaRestAPI\Authentication\Resolver;
 use SocialMediaRestAPI\Service\UserDAOService;
 use Zend\Authentication\Adapter\Http;
 
-class UserResolver implements Http\ResolverInterface {
+class UserResolver implements Http\ResolverInterface
+{
 
     /*
      * @var UserDAOService
      */
     private $userDAOService;
 
-    public function __construct (UserDAOService $userDAOService) {
+    public function __construct(UserDAOService $userDAOService)
+    {
         $this->userDAOService = $userDAOService;
     }
 
@@ -42,27 +44,25 @@ class UserResolver implements Http\ResolverInterface {
         try {
             $user = $this->userDAOService->findByUsername($username);
 
-            if ($user === null)
+            if ($user === null) {
                 return false;
+            }
 
             $password = md5($password);
 
-            if ($password !== $user->password)
+            if ($password !== $user->password) {
                 return false;
+            }
 
             return [
                 'realm' => $realm,
                 'username' => $user->username,
                 'user' => $user,
             ];
-
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new Http\Exception\RuntimeException("Failed to resolve user", 0, $e);
         }
 
         return false;
     }
-
-
-
 }

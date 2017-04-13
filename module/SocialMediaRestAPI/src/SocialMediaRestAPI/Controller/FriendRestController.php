@@ -33,7 +33,8 @@ class FriendRestController extends AbstractRestfulController
      */
     protected $authService;
 
-    protected function entityToJson(Entity $user) {
+    protected function entityToJson(Entity $user)
+    {
         return [
             'id' => $user->id,
             'name' => $user->name,
@@ -43,50 +44,58 @@ class FriendRestController extends AbstractRestfulController
     /**
      * Converts a list of users into Json
      * @param $users a iterable object with users
-     * @return array users in json format 
+     * @return array users in json format
      */
-    protected function listToJson($users) {
+    protected function listToJson($users)
+    {
         $result = [];
-        foreach($users as $u)
-            $result[] = $this->entityToJson($u);        
+        foreach ($users as $u) {
+            $result[] = $this->entityToJson($u);
+        }
         return $result;
     }
 
-    public function __construct(UserDAOService $dao, AuthenticationService $authService) {
+    public function __construct(UserDAOService $dao, AuthenticationService $authService)
+    {
         $this->dao = $dao;
         $this->authService = $authService;
     }
 
-    public function getList() {
+    public function getList()
+    {
         $userId = $this->params('userId');
         $user = $this->dao->findById($userId);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $userId));
+        }
 
         return new JsonModel([
             'result' => $this->listToJson($user->getFriends()),
         ]);
     }
 
-    public function create ($data) {
-
+    public function create($data)
+    {
         $identityUser = $this->getIdentity($this->authService)['user'];
         $userId = $this->params('userId');
         $id = isset($data['id']) ? $data['id'] : null;
 
-        if ($identityUser->id != $userId)
+        if ($identityUser->id != $userId) {
             throw new ForbiddenModifyRequestException();
+        }
 
         $user = $this->dao->findById($userId);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $userId));
+        }
 
-        if ($id === null || $id === "")
+        if ($id === null || $id === "") {
             $friend = null;
-        else
+        } else {
             $friend = $this->dao->findById($id);
+        }
 
         $this->dao->createFriendship($user, $friend);
 
@@ -96,28 +105,29 @@ class FriendRestController extends AbstractRestfulController
         ]);
     }
 
-    public function delete($id) {
-
+    public function delete($id)
+    {
         $identityUser = $this->getIdentity($this->authService)['user'];
         $userId = $this->params('userId');
         $user = $this->dao->findById($userId);
 
-        if ($identityUser->id != $userId)
+        if ($identityUser->id != $userId) {
             throw new ForbiddenModifyRequestException();
+        }
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $id));
+        }
 
-        if ($id === null || $id === "")
+        if ($id === null || $id === "") {
             $friend = null;
-        else
+        } else {
             $friend = $this->dao->findById($id);
+        }
 
         $this->dao->removeFriendship($user, $friend);
 
         $this->setStatusCode(204);
         return new JsonModel();
     }
-
 }
-

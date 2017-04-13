@@ -16,7 +16,8 @@ use Zend\Filter\FilterInterface;
  *
  * @author Lucas dos Santos Abreu
  */
-class Float extends AbstractFilter {
+class Float extends AbstractFilter
+{
 
     /**
      * Defined by Zend\Filter\FilterInterface
@@ -25,13 +26,14 @@ class Float extends AbstractFilter {
      * @param  mixed $value
      * @return float
      */
-    public function filter($value) {
+    public function filter($value)
+    {
         $value = floatval($value);
         
-        if ($value === 0)
+        if ($value === 0) {
             $value = '0.00';
+        }
         
         return $value;
     }
-
 }

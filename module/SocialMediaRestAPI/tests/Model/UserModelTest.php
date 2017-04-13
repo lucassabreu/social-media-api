@@ -25,7 +25,8 @@ class UserModelTest extends TestCase
         parent::setUp();
     }
 
-    public function testUserInputFilterFilters() {
+    public function testUserInputFilterFilters()
+    {
         $user = new User();
 
         $if = $user->getInputFilter();
@@ -45,8 +46,8 @@ class UserModelTest extends TestCase
         $this->assertEquals($user->name, 'Lucas dos Santos Abreu');
     }
 
-    public function testGetAndSetDataIntoUser () {
-
+    public function testGetAndSetDataIntoUser()
+    {
         $values = [
             'id' => '01.0',
             'username' => '   <b>lucas.s.abreu@gmail.com</b> ',
@@ -70,7 +71,8 @@ class UserModelTest extends TestCase
         return $user;
     }
 
-    private function validateUserDataLucas ($data) {
+    private function validateUserDataLucas($data)
+    {
         $this->assertEquals($data['id'], 1);
         $this->assertEquals($data['username'], 'lucas.s.abreu@gmail.com');
         $this->assertEquals($data['password'], '123');
@@ -80,7 +82,8 @@ class UserModelTest extends TestCase
     /**
      * @depends testGetAndSetDataIntoUser
      */
-    public function testCanValidateAUser($user) {
+    public function testCanValidateAUser($user)
+    {
         $this->assertTrue($user->validate());
         return $user;
     }
@@ -88,7 +91,8 @@ class UserModelTest extends TestCase
     /**
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-    public function testIfNothingWasInsertedMustThrowError() {
+    public function testIfNothingWasInsertedMustThrowError()
+    {
         $user = new User();
         $user->validate();
     }
@@ -97,7 +101,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-    public function testCannotSetAUsernameThatIsNotAEmail ($user) {
+    public function testCannotSetAUsernameThatIsNotAEmail($user)
+    {
         $user->username = "joaozinho da silva";
     }
 
@@ -105,7 +110,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testEmailForUsernameMustBeComplete ($user) {
+     public function testEmailForUsernameMustBeComplete($user)
+     {
          $user->username = "joaozinho@";
      }
 
@@ -113,7 +119,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testEmailForUsernameMustBeOnly100AtLength ($user) {
+     public function testEmailForUsernameMustBeOnly100AtLength($user)
+     {
          $user->username = "joaozinhotemumenderecodeemailqueehgrandedemaisenaofazsentidoaquiaindaehcurtoprecisodenovasideiasdetextoipsum@localhost.com";
      }
 
@@ -121,7 +128,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testUsernameMustBeInformmed ($user) {
+     public function testUsernameMustBeInformmed($user)
+     {
          $user->username = "   ";
      }
 
@@ -129,7 +137,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testUsernameMustBeInformmedAndNotNull ($user) {
+     public function testUsernameMustBeInformmedAndNotNull($user)
+     {
          $user->username = null;
      }
 
@@ -137,7 +146,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testPasswordMustBeInformmed ($user) {
+     public function testPasswordMustBeInformmed($user)
+     {
          $user->password = "   ";
      }
 
@@ -145,7 +155,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testPasswordMustBeInformmedAndNotNull ($user) {
+     public function testPasswordMustBeInformmedAndNotNull($user)
+     {
          $user->password = null;
      }
 
@@ -153,7 +164,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testNameMustBeInformmed ($user) {
+     public function testNameMustBeInformmed($user)
+     {
          $user->name = "   ";
      }
 
@@ -161,7 +173,8 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testNameMustBeInformmedAndNotNull ($user) {
+     public function testNameMustBeInformmedAndNotNull($user)
+     {
          $user->name = null;
      }
 
@@ -169,16 +182,17 @@ class UserModelTest extends TestCase
      * @depends testCanValidateAUser
      * @expectedException \Core\Model\DAO\Exception\DAOException
      */
-     public function testNameMustBeOnly150AtLength ($user) {
+     public function testNameMustBeOnly150AtLength($user)
+     {
          $user->username = "Joãozinho tem um nome bem comprido porque alguem tentou trocar o tabeliao por um programa de reconhecimento de voz e não desligaram na hora certa, faltou um pouco";
      }
 
     /**
      * @depends testCanValidateAUser
      */
-     public function testIdCanBeNull ($user) {
+     public function testIdCanBeNull($user)
+     {
          $user->id = null;
          $this->assertNull($user->id);
      }
-
 }

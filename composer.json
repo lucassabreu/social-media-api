@@ -23,7 +23,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5.4",
-        "phpunit/php-code-coverage": "^4.0"
+        "phpunit/php-code-coverage": "^4.0",
+        "friendsofphp/php-cs-fixer": "^2.2"
     },
     "autoload-dev": {
         "psr-4": { "SocialMediaRestAPITest\\": "module/SocialMediaRestAPI/tests/" }

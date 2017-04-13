@@ -31,29 +31,33 @@ class UserRestController extends AbstractRestfulController
      */
     protected $authService;
 
-    protected function entityToJson(Entity $user) {
+    protected function entityToJson(Entity $user)
+    {
         return [
             'id' => $user->id,
             'name' => $user->name,
         ];
     }
 
-    public function __construct(UserDAOService $dao, AuthenticationService $authService) {
+    public function __construct(UserDAOService $dao, AuthenticationService $authService)
+    {
         $this->dao = $dao;
         $this->authService = $authService;
     }
 
-    public function getList() {
-
+    public function getList()
+    {
         $queryString = $this->getQuery('q');
         $params = [];
-        if ($queryString !== null)
+        if ($queryString !== null) {
             $params = $this->processQueryString($queryString, ['name']);
+        }
 
         $limit = intval($this->getQuery('limit', 50));
 
-        if ($limit > 50)
+        if ($limit > 50) {
             return $this->returnError(403, sprintf("Maximum limit is 50, parameter used was %d", $limit));
+        }
 
         $offset = intval($this->getQuery('offset', 0));
 
@@ -65,22 +69,25 @@ class UserRestController extends AbstractRestfulController
         return new JsonModel($return);
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         $user = $this->dao->findById($id);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $id));
+        }
         
         return new JsonModel([
             'result' => $this->entityToJson($user),
         ]);
     }
 
-    public function create ($data) {
+    public function create($data)
+    {
         $user = new User();
 
-        $user->name = isset($data['name']) ? $data['name'] : null; 
-        $user->username = isset($data['username']) ? $data['username'] : null; 
+        $user->name = isset($data['name']) ? $data['name'] : null;
+        $user->username = isset($data['username']) ? $data['username'] : null;
         $user->password = isset($data['password']) ? $data['password'] : null;
         
         $user = $this->dao->save($user);
@@ -90,19 +97,21 @@ class UserRestController extends AbstractRestfulController
         ]);
     }
 
-    public function update($id, $data) {
-
+    public function update($id, $data)
+    {
         $identityUser = $this->getIdentity($this->authService)['user'];
 
-        if ($identityUser->id != $id)
+        if ($identityUser->id != $id) {
             throw new ForbiddenModifyRequestException();
+        }
 
         $user = $this->dao->findById($id);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $id));
+        }
 
-        $user->name = isset($data['name']) ? $data['name'] : null; 
+        $user->name = isset($data['name']) ? $data['name'] : null;
 
         $user = $this->dao->save($user);
 
@@ -111,17 +120,19 @@ class UserRestController extends AbstractRestfulController
         ]);
     }
 
-    public function delete($id) {
-
+    public function delete($id)
+    {
         $identityUser = $this->getIdentity($this->authService)['user'];
 
-        if ($identityUser->id != $id)
+        if ($identityUser->id != $id) {
             throw new ForbiddenModifyRequestException();
+        }
 
         $user = $this->dao->findById($id);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $id));
+        }
 
         $this->dao->remove($user);
 
@@ -129,8 +140,8 @@ class UserRestController extends AbstractRestfulController
         return new JsonModel();
     }
 
-    public function changePasswordAction() {
-
+    public function changePasswordAction()
+    {
         if ($this->getRequest()->getMethod() !== 'PUT') {
             $this->response->setStatusCode(405);
             return [
@@ -139,16 +150,18 @@ class UserRestController extends AbstractRestfulController
         }
 
         $identityUser = $this->getIdentity($this->authService)['user'];
-        $id = $this->params('id');        
+        $id = $this->params('id');
         $data = $this->processBodyContent($this->getRequest());
 
-        if ($identityUser->id != $id)
+        if ($identityUser->id != $id) {
             throw new ForbiddenModifyRequestException();
+        }
 
         $user = $this->dao->findById($id);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $id));
+        }
 
         $password = isset($data['password']) ? $data['password'] : null;
         $newPassword = isset($data['newPassword']) ? $data['newPassword'] : null;
@@ -162,12 +175,14 @@ class UserRestController extends AbstractRestfulController
         ]);
     }
 
-    public function selfAction() {
+    public function selfAction()
+    {
         $identityUser = $this->getIdentity($this->authService)['user'];
         $user = $this->dao->findById($identityUser->id);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $id));
+        }
         
         return new JsonModel([
             'result' => [
@@ -177,6 +192,4 @@ class UserRestController extends AbstractRestfulController
             ]
         ]);
     }
-
 }
-

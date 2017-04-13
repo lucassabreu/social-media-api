@@ -32,7 +32,8 @@ class PostRestController extends AbstractRestfulController
      */
     protected $authService;
 
-    protected function entityToJson(Entity $post) {
+    protected function entityToJson(Entity $post)
+    {
         return [
             'id' => $post->id,
             'userId' => $post->user->id,
@@ -41,22 +42,25 @@ class PostRestController extends AbstractRestfulController
         ];
     }
 
-    public function __construct(PostDAOService $dao, AuthenticationService $authService) {
+    public function __construct(PostDAOService $dao, AuthenticationService $authService)
+    {
         $this->dao = $dao;
         $this->authService = $authService;
     }
 
-    public function getList() {
-
+    public function getList()
+    {
         $queryString = $this->getQuery('q');
         $params = [];
-        if ($queryString !== null)
+        if ($queryString !== null) {
             $params = $this->processQueryString($queryString, ['datePublish', 'text'], ['datePublish']);
+        }
 
         $limit = intval($this->getQuery('limit', 50));
 
-        if ($limit > 50)
+        if ($limit > 50) {
             return $this->returnError(403, sprintf("Maximum limit is 50, parameter used was %d", $limit));
+        }
 
         $offset = intval($this->getQuery('offset', 0));
 
@@ -70,23 +74,26 @@ class PostRestController extends AbstractRestfulController
         return new JsonModel($return);
     }
 
-    public function get($id) {
+    public function get($id)
+    {
         $post = $this->dao->findById($id);
 
-        if ($post === null)
+        if ($post === null) {
             return $this->returnError(404, sprintf("Post %d does not exist !", $id));
+        }
         
         return new JsonModel([
             'result' => $this->entityToJson($post),
         ]);
     }
 
-    public function create ($data) {
+    public function create($data)
+    {
         $user = $this->getIdentity($this->authService)['user'];
 
         $post = new Post();
         $post->user = $user;
-        $post->text = isset($data['text']) ? $data['text'] : null; 
+        $post->text = isset($data['text']) ? $data['text'] : null;
         $post->datePublish = new DateTime('now');
 
         $post = $this->dao->save($post);
@@ -96,18 +103,21 @@ class PostRestController extends AbstractRestfulController
         ]);
     }
 
-    public function update($id, $data) {
+    public function update($id, $data)
+    {
         $user = $this->getIdentity($this->authService)['user'];
 
         $post = $this->dao->findById($id);
 
-        if ($post === null)
+        if ($post === null) {
             return $this->returnError(404, sprintf("Post %d does not exist !", $id));
+        }
 
-        if ($post->user->id !== $user->id)
+        if ($post->user->id !== $user->id) {
             throw new ForbiddenModifyRequestException();
+        }
 
-        $post->text = isset($data['text']) ? $data['text'] : null; 
+        $post->text = isset($data['text']) ? $data['text'] : null;
 
         $post = $this->dao->save($post);
 
@@ -116,16 +126,19 @@ class PostRestController extends AbstractRestfulController
         ]);
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $user = $this->getIdentity($this->authService)['user'];
 
         $post = $this->dao->findById($id);
 
-        if ($post === null)
+        if ($post === null) {
             return $this->returnError(404, sprintf("Post %d does not exist !", $id));
+        }
 
-        if ($post->user->id !== $user->id)
+        if ($post->user->id !== $user->id) {
             throw new ForbiddenModifyRequestException();
+        }
 
         $this->dao->remove($post);
 
@@ -133,7 +146,8 @@ class PostRestController extends AbstractRestfulController
         return new JsonModel();
     }
 
-    public function byUserAction() {
+    public function byUserAction()
+    {
         if ($this->getRequest()->getMethod() !== 'GET') {
             $this->response->setStatusCode(405);
             return [
@@ -141,21 +155,24 @@ class PostRestController extends AbstractRestfulController
             ];
         }
 
-        $userId = $this->params('userId');        
+        $userId = $this->params('userId');
         $user = $this->dao->findUserById($userId);
 
-        if ($user === null)
+        if ($user === null) {
             return $this->returnError(404, sprintf("User %d does not exist !", $userId));
+        }
 
         $queryString = $this->getQuery('q');
         $params = [];
-        if ($queryString !== null)
+        if ($queryString !== null) {
             $params = $this->processQueryString($queryString, ['datePublish', 'text'], ['datePublish']);
+        }
 
         $limit = intval($this->getQuery('limit', 50));
 
-        if ($limit > 50)
+        if ($limit > 50) {
             return $this->returnError(403, sprintf("Maximum limit is 50, parameter used was %d", $limit));
+        }
 
         $offset = intval($this->getQuery('offset', 0));
 
@@ -165,7 +182,8 @@ class PostRestController extends AbstractRestfulController
         return new JsonModel($return);
     }
 
-    public function feedAction() {
+    public function feedAction()
+    {
         if ($this->getRequest()->getMethod() !== 'GET') {
             $this->response->setStatusCode(405);
             return [
@@ -177,13 +195,15 @@ class PostRestController extends AbstractRestfulController
 
         $queryString = $this->getQuery('q');
         $params = [];
-        if ($queryString !== null)
+        if ($queryString !== null) {
             $params = $this->processQueryString($queryString, ['datePublish', 'text'], ['datePublish']);
+        }
 
         $limit = intval($this->getQuery('limit', 50));
 
-        if ($limit > 50)
+        if ($limit > 50) {
             return $this->returnError(403, sprintf("Maximum limit is 50, parameter used was %d", $limit));
+        }
 
         $offset = intval($this->getQuery('offset', 0));
 
@@ -192,6 +212,4 @@ class PostRestController extends AbstractRestfulController
         $return = $this->convertPaginatorToJson($paginador, $limit, $offset);
         return new JsonModel($return);
     }
-
 }
-

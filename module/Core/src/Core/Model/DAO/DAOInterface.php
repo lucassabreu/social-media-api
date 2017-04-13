@@ -13,14 +13,15 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-interface DAOInterface {
+interface DAOInterface
+{
 
     /**
      * Sets a instance of ServiceLocatorInterface to be used for DI
      * @param ServiceLocatorInterface $sl
      * @return void
      */
-    public function setServiceLocator (ServiceLocatorInterface $sl);
+    public function setServiceLocator(ServiceLocatorInterface $sl);
 
     /**
      * Retrieves the name of entity going to be managed by.
@@ -101,5 +102,3 @@ interface DAOInterface {
      */
     public function rollback();
 }
-
-?>

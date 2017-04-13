@@ -15,8 +15,8 @@ use Core\Service\Util\ParameterInstanciatorTrait;
  *
  * @author Lucas dos Santos Abreu <lucas.s.abreu@gmail.com>
  */
-final class DAOServiceFactory implements AbstractFactoryInterface {
-
+final class DAOServiceFactory implements AbstractFactoryInterface
+{
     use ParameterInstanciatorTrait;
 
     protected $services = array();
@@ -26,7 +26,8 @@ final class DAOServiceFactory implements AbstractFactoryInterface {
      */
     protected $serviceLocator = null;
 
-    protected function getConfig() {
+    protected function getConfig()
+    {
         $gConfig = $this->serviceLocator->get('Configuration');
 
         if (isset($gConfig['service_manager']) && isset($gConfig['service_manager']['dao_services'])) {
@@ -36,13 +37,15 @@ final class DAOServiceFactory implements AbstractFactoryInterface {
         }
     }
 
-    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName) {
+    public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
         $this->serviceLocator = $serviceLocator;
         $config = $this->getConfig();
         return isset($config[$requestedName]);
     }
 
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName) {
+    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
+    {
         $this->serviceLocator = $serviceLocator;
         $config = $this->getConfig();
 
@@ -67,7 +70,4 @@ final class DAOServiceFactory implements AbstractFactoryInterface {
 
         return $this->services[$requestedName];
     }
-
 }
-
-?>
